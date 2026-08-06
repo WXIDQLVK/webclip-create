@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<title></title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,sans-serif;color:#111;}
+body{background:#fff;padding:24px;max-width:750px;margin:0 auto;}
+.icon-box{width:160px;height:160px;border:2px dashed #dddddd;border-radius:16px;margin:0 auto 40px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.icon-box img{max-width:90%;max-height:90%;display:none;object-fit:contain;}
+.icon-box .plus{font-size:60px;color:#bbbbbb;user-select:none;}
+#iconInput{position:absolute;width:100%;height:100%;opacity:0;cursor:pointer;}
+.form-item{margin-bottom:28px;}
+.form-label{font-size:17px;margin-bottom:10px;color:#333;display:block;}
+.form-input{width:100%;border:1px solid #ddd;border-radius:10px;padding:14px 16px;font-size:16px;outline:none;background:#fff;}
+.form-input::placeholder{color:#aaa;}
+.form-input:focus{border-color:#007aff;}
+.switch-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #eee;}
+.switch-row span{font-size:18px;}
+.toggle{position:relative;width:60px;height:34px;appearance:none;background:#ddd;border-radius:34px;transition:.3s;cursor:pointer;}
+.toggle:checked{background:#007aff;}
+.toggle::before{content:"";position:absolute;width:28px;height:28px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.toggle:checked::before{transform:translateX(26px);}
+.btn-generate{width:100%;background:#007aff;color:#fff;border:none;border-radius:12px;padding:18px 0;font-size:19px;font-weight:500;margin-top:40px;cursor:pointer;}
+.tip-text{text-align:center;color:#777;font-size:14px;margin-top:14px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="icon-box">
+    <span class="plus">+</span>
+    <img id="iconPreview" alt="图标预览">
+    <input type="file" id="iconInput" accept="image/*">
+</div>
+
+<div class="form-item">
+    <label class="form-label">网页地址</label>
+    <input class="form-input" id="url" placeholder="https://xxx.com">
+</div>
+<div class="form-item">
+    <label class="form-label">组织名称</label>
+    <input class="form-input" id="org" placeholder="自定义组织">
+</div>
+<div class="form-item">
+    <label class="form-label">配置显示名称</label>
+    <input class="form-input" id="cfgName" placeholder="设置里显示的文件名">
+</div>
+<div class="form-item">
+    <label class="form-label">桌面显示名称</label>
+    <input class="form-input" id="homeName" placeholder="手机桌面图标下方文字">
+</div>
+<div class="form-item">
+    <label class="form-label">描述说明</label>
+    <input class="form-input" id="desc" placeholder="安装后在桌面生成网页快捷方式">
+</div>
+
+<div class="switch-row">
+    <span>全屏模式</span>
+    <input type="checkbox" class="toggle" id="fullScreen" checked>
+</div>
+<div class="switch-row">
+    <span>允许删除</span>
+    <input type="checkbox" class="toggle" id="allowDel" checked>
+</div>
+<div class="switch-row">
+    <span>预渲染图标</span>
+    <input type="checkbox" class="toggle" id="preIcon" checked>
+</div>
+<div class="switch-row">
+    <span>忽略清单作用域</span>
+    <input type="checkbox" class="toggle" id="ignoreScope" checked>
+</div>
+
+<button class="btn-generate" id="genBtn">生成配置文件</button>
+
+<script>
+const iconInput = document.getElementById('iconInput');
+const iconPreview = document.getElementById('iconPreview');
+const plusSign = document.querySelector('.plus');
+iconInput.onchange = e=>{
+    const file = e.target.files[0];
+    if(!file)return;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = ev=>{
+        iconPreview.src = ev.target.result;
+        iconPreview.style.display = 'block';
+        plusSign.style.display = 'none';
+    }
+}
+
+async function sendDesktopNotification() {
+    if (Notification.permission === "granted") {
+        new Notification("应用安装已就绪", {
+            body: "请打开设置完成验证"
+        });
+    } else if (Notification.permission !== "denied") {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+            new Notification("应用安装已就绪", {
+                body: "请打开设置完成验证"
+            });
+        }
+    }
+}
+
+function getAllFormData(){
+    return {
+        url: document.getElementById('url').value.trim(),
+        org: document.getElementById('org').value.trim() || "自定义组织",
+        cfgName: document.getElementById('cfgName').value.trim() || "网页快捷配置",
+        homeName: document.getElementById('homeName').value.trim() || "网页快捷方式",
+        desc: document.getElementById('desc').value.trim() || "安装后在桌面生成网页快捷方式",
+        fullScreen: document.getElementById('fullScreen').checked,
+        allowDel: document.getElementById('allowDel').checked,
+        preIcon: document.getElementById('preIcon').checked,
+        ignoreScope: document.getElementById('ignoreScope').checked,
+        icon: iconPreview.src || ""
+    }
+}
+
+document.getElementById('genBtn').addEventListener('click',async ()=>{
+    await sendDesktopNotification();
+    const data = getAllFormData();
+    if(!data.url){
+        alert('请填写网页地址');
+        return;
+    }
+    const plistContent = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.webClip.managed</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadIdentifier</key>
+            <string>webclip.${Date.now()}</string>
+            <key>PayloadUUID</key>
+            <string>${crypto.randomUUID()}</string>
+            <key>URL</key>
+            <string>${data.url}</string>
+            <key>Label</key>
+            <string>${data.homeName}</string>
+            <key>PayloadDescription</key>
+            <string>${data.desc}</string>
+            <key>FullScreen</key>
+            <${data.fullScreen ? 'true' : 'false'}/>
+            <!-- Removable=false：关闭桌面长按删除按钮，保留设置卸载入口，完美契合需求 -->
+            <key>Removable</key>
+            <${data.allowDel ? 'true' : 'false'}/>
+            <key>PrecomposedIcon</key>
+            <${data.preIcon ? 'true' : 'false'}/>
+            <key>IgnoreManifestScope</key>
+            <${data.ignoreScope ? 'true' : 'false'}/>
+            ${data.icon ? `<key>Icon</key><data>${data.icon.split(',')[1]}</data>` : ''}
+        </dict>
+    </array>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>PayloadUUID</key>
+    <string>${crypto.randomUUID()}</string>
+    <key>PayloadIdentifier</key>
+    <string>cfg.${Date.now()}</string>
+    <key>PayloadDisplayName</key>
+    <string>${data.cfgName}</string>
+    <key>PayloadOrganization</key>
+    <string>${data.org}</string>
+    <!-- 不添加RemovalDisallowed，设置内依旧可以正常删除描述文件 -->
+</dict>
+</plist>`;
+
+    const blob = new Blob([plistContent], {type:'application/x-apple-aspen-config'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${data.cfgName}.mobileconfig`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+})
+</script>
+</body>
+</html>
