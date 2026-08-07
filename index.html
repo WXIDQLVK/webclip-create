@@ -233,21 +233,19 @@
       opacity: 0.8;
     }
 
-    /* 苹果系统级弹窗（单按钮「关闭」） */
+    /* 苹果系统级弹窗 */
     .alert-mask {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.35);
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.25s, visibility 0.25s;
-      padding: 0 48px;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      transition: opacity 0.2s, visibility 0.2s;
+      padding: 0 40px;
     }
 
     .alert-mask.show {
@@ -258,12 +256,12 @@
     .alert-box {
       width: 100%;
       max-width: 270px;
-      background: rgba(255, 255, 255, 0.95);
+      background: #f2f2f7;
       border-radius: 14px;
       overflow: hidden;
-      transform: scale(1.1);
-      transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.15);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transform: scale(1.12);
+      transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
     }
 
     .alert-mask.show .alert-box {
@@ -271,7 +269,7 @@
     }
 
     .alert-content {
-      padding: 22px 16px 18px;
+      padding: 20px 16px 16px;
       text-align: center;
     }
 
@@ -279,8 +277,16 @@
       font-size: 17px;
       font-weight: 600;
       color: #000;
-      line-height: 1.4;
+      line-height: 1.35;
       letter-spacing: -0.2px;
+      margin-bottom: 4px;
+    }
+
+    .alert-message {
+      font-size: 13px;
+      color: #000;
+      line-height: 1.4;
+      opacity: 0.85;
     }
 
     .alert-buttons {
@@ -303,7 +309,7 @@
     }
 
     .alert-btn:active {
-      background: rgba(0, 0, 0, 0.05);
+      background: rgba(0, 0, 0, 0.06);
     }
   </style>
 </head>
@@ -331,7 +337,7 @@
       </div>
 
       <div class="form-group">
-        <label>配置名称</label>
+        <label>文件名称</label>
         <input type="text" id="configName" placeholder="设置里显示的文件名" autocomplete="off">
       </div>
 
@@ -345,14 +351,8 @@
         <input type="text" id="description" placeholder="安装后在桌面生成网页快捷方式" autocomplete="off">
       </div>
 
+      <!-- 开关顺序：允许删除 → 全屏模式 → 清单范围 -->
       <div class="switch-group">
-        <div class="switch-item">
-          <span>全屏模式</span>
-          <label class="toggle">
-            <input type="checkbox" id="fullscreen" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
         <div class="switch-item">
           <span>允许删除</span>
           <label class="toggle">
@@ -361,14 +361,14 @@
           </label>
         </div>
         <div class="switch-item">
-          <span>预渲染图标</span>
+          <span>全屏模式</span>
           <label class="toggle">
-            <input type="checkbox" id="preRender" checked>
+            <input type="checkbox" id="fullscreen" checked>
             <span class="slider"></span>
           </label>
         </div>
         <div class="switch-item">
-          <span>忽略清单作用域</span>
+          <span>清单范围</span>
           <label class="toggle">
             <input type="checkbox" id="ignoreScope" checked>
             <span class="slider"></span>
@@ -382,11 +382,12 @@
     </div>
   </div>
 
-  <!-- 苹果系统级弹窗（只有「关闭」） -->
+  <!-- 苹果系统级弹窗（单按钮「关闭」） -->
   <div class="alert-mask" id="alertMask">
     <div class="alert-box">
       <div class="alert-content">
         <div class="alert-title" id="alertTitle">请填写网页地址</div>
+        <div class="alert-message" id="alertMessage" style="display:none;"></div>
       </div>
       <div class="alert-buttons">
         <button class="alert-btn" id="alertClose">关闭</button>
@@ -395,7 +396,6 @@
   </div>
 
   <script>
-    // 页面加载时请求通知权限
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
@@ -420,9 +420,16 @@
 
     const alertMask = document.getElementById('alertMask');
     const alertTitle = document.getElementById('alertTitle');
+    const alertMessage = document.getElementById('alertMessage');
 
-    function showAlert(msg) {
-      alertTitle.textContent = msg;
+    function showAlert(title, message) {
+      alertTitle.textContent = title;
+      if (message) {
+        alertMessage.textContent = message;
+        alertMessage.style.display = 'block';
+      } else {
+        alertMessage.style.display = 'none';
+      }
       alertMask.classList.add('show');
     }
 
@@ -435,10 +442,8 @@
       if (e.target === alertMask) hideAlert();
     });
 
-    // 发送系统通知
     function sendNotification() {
       if (!('Notification' in window)) return;
-
       if (Notification.permission === 'granted') {
         new Notification('应用安装已就绪', {
           body: '请打开设置完成验证',
@@ -465,7 +470,6 @@
       const description = document.getElementById('description').value.trim() || '安装后在桌面生成网页快捷方式';
       const fullscreen = document.getElementById('fullscreen').checked;
       const allowDelete = document.getElementById('allowDelete').checked;
-      const preRender = document.getElementById('preRender').checked;
       const ignoreScope = document.getElementById('ignoreScope').checked;
 
       if (!webUrl) {
@@ -477,7 +481,7 @@
       const uuid2 = generateUUID();
 
       let iconPayload = '';
-      if (iconBase64 && preRender) {
+      if (iconBase64) {
         const pureBase64 = iconBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
         iconPayload = `
         <key>Icon</key>
@@ -510,7 +514,7 @@
       <key>PayloadVersion</key>
       <integer>1</integer>
       <key>Precomposed</key>
-      <${preRender ? 'true' : 'false'}/>
+      <true/>
       <key>URL</key>
       <string>${escapeXml(webUrl)}</string>
       <key>IgnoreManifestScope</key>
@@ -546,7 +550,6 @@
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 2000);
 
-      // 自动弹出系统通知
       sendNotification();
     });
 
