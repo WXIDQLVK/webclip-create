@@ -1,191 +1,476 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="white">
-<title></title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,sans-serif;color:#111;}
-body{background:#fff;padding:24px;max-width:750px;margin:0 auto;}
-.icon-box{width:160px;height:160px;border:2px dashed #dddddd;border-radius:16px;margin:0 auto 40px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.icon-box img{max-width:90%;max-height:90%;display:none;object-fit:contain;}
-.icon-box .plus{font-size:60px;color:#bbbbbb;user-select:none;}
-#iconInput{position:absolute;width:100%;height:100%;opacity:0;cursor:pointer;}
-.form-item{margin-bottom:28px;}
-.form-label{font-size:17px;margin-bottom:10px;color:#333;display:block;}
-.form-input{width:100%;border:1px solid #ddd;border-radius:10px;padding:14px 16px;font-size:16px;outline:none;background:#fff;}
-.form-input::placeholder{color:#aaa;}
-.form-input:focus{border-color:#007aff;}
-.switch-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #eee;}
-.switch-row span{font-size:18px;}
-.toggle{position:relative;width:60px;height:34px;appearance:none;background:#ddd;border-radius:34px;transition:.3s;cursor:pointer;}
-.toggle:checked{background:#007aff;}
-.toggle::before{content:"";position:absolute;width:28px;height:28px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
-.toggle:checked::before{transform:translateX(26px);}
-.btn-generate{width:100%;background:#007aff;color:#fff;border:none;border-radius:12px;padding:18px 0;font-size:19px;font-weight:500;margin-top:40px;cursor:pointer;}
-.tip-text{text-align:center;color:#777;font-size:14px;margin-top:14px;line-height:1.5;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>配置生成工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-frame {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 内容区域 */
+    .content {
+      flex: 1;
+      padding: 24px 20px 100px;
+      overflow-y: auto;
+    }
+
+    /* 图标上传区域 */
+    .icon-upload {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .icon-box {
+      width: 120px;
+      height: 120px;
+      border: 2px dashed #d1d1d6;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      background: #fafafa;
+      transition: border-color 0.2s;
+    }
+
+    .icon-box:hover {
+      border-color: #007aff;
+    }
+
+    .icon-box .plus {
+      font-size: 36px;
+      color: #c7c7cc;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .icon-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+    }
+
+    .icon-box input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* 表单字段 */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1d1d1f;
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 16px;
+      border: 1px solid #e5e5ea;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #1d1d1f;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #c7c7cc;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #007aff;
+    }
+
+    .form-group textarea {
+      height: 48px;
+      resize: none;
+      padding-top: 12px;
+    }
+
+    /* 开关组 */
+    .switch-group {
+      margin-top: 8px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .switch-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .switch-item:last-child {
+      border-bottom: none;
+    }
+
+    .switch-item span {
+      font-size: 16px;
+      color: #1d1d1f;
+    }
+
+    /* 自定义开关 */
+    .toggle {
+      position: relative;
+      width: 51px;
+      height: 31px;
+      cursor: pointer;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle .slider {
+      position: absolute;
+      inset: 0;
+      background: #e5e5ea;
+      border-radius: 31px;
+      transition: background 0.25s;
+    }
+
+    .toggle .slider::before {
+      content: '';
+      position: absolute;
+      width: 27px;
+      height: 27px;
+      left: 2px;
+      top: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle input:checked + .slider {
+      background: #007aff;
+    }
+
+    .toggle input:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    /* 底部按钮 */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      padding: 16px 20px 32px;
+      background: #ffffff;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .generate-btn {
+      width: 100%;
+      height: 50px;
+      background: #007aff;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 500;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      font-family: inherit;
+    }
+
+    .generate-btn:hover {
+      background: #0066d6;
+    }
+
+    .generate-btn:active {
+      opacity: 0.85;
+    }
+
+    /* 成功提示 */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: rgba(0,0,0,0.78);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 15px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  </style>
 </head>
 <body>
-<div class="icon-box">
-    <span class="plus">+</span>
-    <img id="iconPreview" alt="图标预览">
-    <input type="file" id="iconInput" accept="image/*">
-</div>
+  <div class="phone-frame">
+    <div class="content">
+      <!-- 图标上传 -->
+      <div class="icon-upload">
+        <div class="icon-box" id="iconBox">
+          <span class="plus" id="plusIcon">+</span>
+          <img id="iconPreview" style="display:none;" alt="图标">
+          <input type="file" id="iconInput" accept="image/*">
+        </div>
+      </div>
 
-<div class="form-item">
-    <label class="form-label">网页地址</label>
-    <input class="form-input" id="url" placeholder="https://xxx.com">
-</div>
-<div class="form-item">
-    <label class="form-label">组织名称</label>
-    <input class="form-input" id="org" placeholder="自定义组织">
-</div>
-<div class="form-item">
-    <label class="form-label">配置显示名称</label>
-    <input class="form-input" id="cfgName" placeholder="设置里显示的文件名">
-</div>
-<div class="form-item">
-    <label class="form-label">桌面显示名称</label>
-    <input class="form-input" id="homeName" placeholder="手机桌面图标下方文字">
-</div>
-<div class="form-item">
-    <label class="form-label">描述说明</label>
-    <input class="form-input" id="desc" placeholder="安装后在桌面生成网页快捷方式">
-</div>
+      <!-- 表单 -->
+      <div class="form-group">
+        <label>网页地址</label>
+        <input type="url" id="webUrl" placeholder="https://xxx.com" value="">
+      </div>
 
-<div class="switch-row">
-    <span>全屏模式</span>
-    <input type="checkbox" class="toggle" id="fullScreen" checked>
-</div>
-<div class="switch-row">
-    <span>允许删除</span>
-    <input type="checkbox" class="toggle" id="allowDel" checked>
-</div>
-<div class="switch-row">
-    <span>预渲染图标</span>
-    <input type="checkbox" class="toggle" id="preIcon" checked>
-</div>
-<div class="switch-row">
-    <span>忽略清单作用域</span>
-    <input type="checkbox" class="toggle" id="ignoreScope" checked>
-</div>
+      <div class="form-group">
+        <label>组织名称</label>
+        <input type="text" id="orgName" placeholder="自定义组织" value="">
+      </div>
 
-<button class="btn-generate" id="genBtn">生成配置文件</button>
+      <div class="form-group">
+        <label>配置名称</label>
+        <input type="text" id="configName" placeholder="设置里显示的文件名" value="">
+      </div>
 
-<script>
-const iconInput = document.getElementById('iconInput');
-const iconPreview = document.getElementById('iconPreview');
-const plusSign = document.querySelector('.plus');
-iconInput.onchange = e=>{
-    const file = e.target.files[0];
-    if(!file)return;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = ev=>{
-        iconPreview.src = ev.target.result;
+      <div class="form-group">
+        <label>桌面名称</label>
+        <input type="text" id="desktopName" placeholder="手机桌面图标下方文字" value="">
+      </div>
+
+      <div class="form-group">
+        <label>描述说明</label>
+        <input type="text" id="description" placeholder="安装后在桌面生成网页快捷方式" value="">
+      </div>
+
+      <!-- 开关 -->
+      <div class="switch-group">
+        <div class="switch-item">
+          <span>全屏模式</span>
+          <label class="toggle">
+            <input type="checkbox" id="fullscreen" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-item">
+          <span>允许删除</span>
+          <label class="toggle">
+            <input type="checkbox" id="allowDelete" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-item">
+          <span>预渲染图标</span>
+          <label class="toggle">
+            <input type="checkbox" id="preRender" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-item">
+          <span>忽略清单作用域</span>
+          <label class="toggle">
+            <input type="checkbox" id="ignoreScope" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部按钮 -->
+    <div class="footer">
+      <button class="generate-btn" id="generateBtn">生成配置文件</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 图标上传预览
+    const iconInput = document.getElementById('iconInput');
+    const iconPreview = document.getElementById('iconPreview');
+    const plusIcon = document.getElementById('plusIcon');
+    let iconBase64 = '';
+
+    iconInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        iconBase64 = ev.target.result;
+        iconPreview.src = iconBase64;
         iconPreview.style.display = 'block';
-        plusSign.style.display = 'none';
-    }
-}
+        plusIcon.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
 
-async function sendDesktopNotification() {
-    if (Notification.permission === "granted") {
-        new Notification("应用安装已就绪", {
-            body: "请打开设置完成验证"
-        });
-    } else if (Notification.permission !== "denied") {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-            new Notification("应用安装已就绪", {
-                body: "请打开设置完成验证"
-            });
-        }
-    }
-}
+    // 生成配置文件
+    document.getElementById('generateBtn').addEventListener('click', function () {
+      const webUrl = document.getElementById('webUrl').value.trim();
+      const orgName = document.getElementById('orgName').value.trim() || '自定义组织';
+      const configName = document.getElementById('configName').value.trim() || 'WebClip';
+      const desktopName = document.getElementById('desktopName').value.trim() || '网页快捷方式';
+      const description = document.getElementById('description').value.trim() || '安装后在桌面生成网页快捷方式';
+      const fullscreen = document.getElementById('fullscreen').checked;
+      const allowDelete = document.getElementById('allowDelete').checked;
+      const preRender = document.getElementById('preRender').checked;
+      const ignoreScope = document.getElementById('ignoreScope').checked;
 
-function getAllFormData(){
-    return {
-        url: document.getElementById('url').value.trim(),
-        org: document.getElementById('org').value.trim() || "自定义组织",
-        cfgName: document.getElementById('cfgName').value.trim() || "网页快捷配置",
-        homeName: document.getElementById('homeName').value.trim() || "网页快捷方式",
-        desc: document.getElementById('desc').value.trim() || "安装后在桌面生成网页快捷方式",
-        fullScreen: document.getElementById('fullScreen').checked,
-        allowDel: document.getElementById('allowDel').checked,
-        preIcon: document.getElementById('preIcon').checked,
-        ignoreScope: document.getElementById('ignoreScope').checked,
-        icon: iconPreview.src || ""
-    }
-}
-
-document.getElementById('genBtn').addEventListener('click',async ()=>{
-    await sendDesktopNotification();
-    const data = getAllFormData();
-    if(!data.url){
-        alert('请填写网页地址');
+      if (!webUrl) {
+        showToast('请填写网页地址');
         return;
-    }
-    const plistContent = `<?xml version="1.0" encoding="UTF-8"?>
+      }
+
+      // 生成标准 iOS WebClip .mobileconfig
+      const uuid1 = generateUUID();
+      const uuid2 = generateUUID();
+
+      let iconPayload = '';
+      if (iconBase64 && preRender) {
+        const pureBase64 = iconBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
+        iconPayload = `
+        <key>Icon</key>
+        <data>${pureBase64}</data>`;
+      }
+
+      const mobileconfig = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>PayloadContent</key>
-    <array>
-        <dict>
-            <key>PayloadType</key>
-            <string>com.apple.webClip.managed</string>
-            <key>PayloadVersion</key>
-            <integer>1</integer>
-            <key>PayloadIdentifier</key>
-            <string>webclip.${Date.now()}</string>
-            <key>PayloadUUID</key>
-            <string>${crypto.randomUUID()}</string>
-            <key>URL</key>
-            <string>${data.url}</string>
-            <key>Label</key>
-            <string>${data.homeName}</string>
-            <key>PayloadDescription</key>
-            <string>${data.desc}</string>
-            <key>FullScreen</key>
-            <${data.fullScreen ? 'true' : 'false'}/>
-            <!-- Removable=false：关闭桌面长按删除按钮，保留设置卸载入口，完美契合需求 -->
-            <key>Removable</key>
-            <${data.allowDel ? 'true' : 'false'}/>
-            <key>PrecomposedIcon</key>
-            <${data.preIcon ? 'true' : 'false'}/>
-            <key>IgnoreManifestScope</key>
-            <${data.ignoreScope ? 'true' : 'false'}/>
-            ${data.icon ? `<key>Icon</key><data>${data.icon.split(',')[1]}</data>` : ''}
-        </dict>
-    </array>
-    <key>PayloadType</key>
-    <string>Configuration</string>
-    <key>PayloadVersion</key>
-    <integer>1</integer>
-    <key>PayloadUUID</key>
-    <string>${crypto.randomUUID()}</string>
-    <key>PayloadIdentifier</key>
-    <string>cfg.${Date.now()}</string>
-    <key>PayloadDisplayName</key>
-    <string>${data.cfgName}</string>
-    <key>PayloadOrganization</key>
-    <string>${data.org}</string>
-    <!-- 不添加RemovalDisallowed，设置内依旧可以正常删除描述文件 -->
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>FullScreen</key>
+      <${fullscreen ? 'true' : 'false'}/>
+      <key>IsRemovable</key>
+      <${allowDelete ? 'true' : 'false'}/>
+      <key>Label</key>
+      <string>${escapeXml(desktopName)}</string>
+      <key>PayloadDescription</key>
+      <string>${escapeXml(description)}</string>
+      <key>PayloadDisplayName</key>
+      <string>${escapeXml(configName)}</string>
+      <key>PayloadIdentifier</key>
+      <string>com.webclip.${uuid2}</string>
+      <key>PayloadType</key>
+      <string>com.apple.webClip.managed</string>
+      <key>PayloadUUID</key>
+      <string>${uuid2}</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>Precomposed</key>
+      <${preRender ? 'true' : 'false'}/>
+      <key>URL</key>
+      <string>${escapeXml(webUrl)}</string>
+      <key>IgnoreManifestScope</key>
+      <${ignoreScope ? 'true' : 'false'}/>${iconPayload}
+    </dict>
+  </array>
+  <key>PayloadDescription</key>
+  <string>${escapeXml(description)}</string>
+  <key>PayloadDisplayName</key>
+  <string>${escapeXml(configName)}</string>
+  <key>PayloadIdentifier</key>
+  <string>com.webclip.${uuid1}</string>
+  <key>PayloadOrganization</key>
+  <string>${escapeXml(orgName)}</string>
+  <key>PayloadRemovalDisallowed</key>
+  <${allowDelete ? 'false' : 'true'}/>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>${uuid1}</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
 </dict>
 </plist>`;
 
-    const blob = new Blob([plistContent], {type:'application/x-apple-aspen-config'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${data.cfgName}.mobileconfig`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-})
-</script>
+      // 下载文件
+      const blob = new Blob([mobileconfig], { type: 'application/x-apple-aspen-config' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${configName || 'WebClip'}.mobileconfig`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('配置文件已生成');
+    });
+
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }).toUpperCase();
+    }
+
+    function escapeXml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+  </script>
 </body>
 </html>
