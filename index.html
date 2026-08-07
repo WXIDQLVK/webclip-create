@@ -2,8 +2,12 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>配置生成工具</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="创建 WebClip">
+  <title>创建 WebClip</title>
   <style>
     * {
       margin: 0;
@@ -12,11 +16,15 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
-      background: #f5f5f7;
+    html, body {
+      background: #ffffff;
       color: #1d1d1f;
       min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
       display: flex;
       justify-content: center;
     }
@@ -25,31 +33,42 @@
       width: 100%;
       max-width: 430px;
       min-height: 100vh;
+      min-height: -webkit-fill-available;
       background: #ffffff;
       position: relative;
       display: flex;
       flex-direction: column;
     }
 
+    /* 顶部标题 */
+    .page-title {
+      padding: 16px 20px 8px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #1d1d1f;
+      letter-spacing: -0.3px;
+    }
+
     /* 内容区域 */
     .content {
       flex: 1;
-      padding: 24px 20px 100px;
+      padding: 8px 20px 110px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* 图标上传区域 */
     .icon-upload {
       display: flex;
       justify-content: center;
-      margin-bottom: 32px;
+      margin: 12px 0 28px;
     }
 
     .icon-box {
       width: 120px;
       height: 120px;
       border: 2px dashed #d1d1d6;
-      border-radius: 20px;
+      border-radius: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -60,7 +79,7 @@
       transition: border-color 0.2s;
     }
 
-    .icon-box:hover {
+    .icon-box:active {
       border-color: #007aff;
     }
 
@@ -75,7 +94,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 18px;
+      border-radius: 20px;
     }
 
     .icon-box input[type="file"] {
@@ -87,7 +106,7 @@
 
     /* 表单字段 */
     .form-group {
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .form-group label {
@@ -98,8 +117,7 @@
       margin-bottom: 8px;
     }
 
-    .form-group input,
-    .form-group textarea {
+    .form-group input {
       width: 100%;
       height: 48px;
       padding: 0 16px;
@@ -111,27 +129,20 @@
       outline: none;
       transition: border-color 0.2s;
       font-family: inherit;
+      -webkit-appearance: none;
     }
 
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
+    .form-group input::placeholder {
       color: #c7c7cc;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
+    .form-group input:focus {
       border-color: #007aff;
-    }
-
-    .form-group textarea {
-      height: 48px;
-      resize: none;
-      padding-top: 12px;
     }
 
     /* 开关组 */
     .switch-group {
-      margin-top: 8px;
+      margin-top: 4px;
       border-top: 1px solid #f0f0f0;
     }
 
@@ -139,7 +150,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 0;
+      padding: 15px 0;
       border-bottom: 1px solid #f0f0f0;
     }
 
@@ -158,6 +169,7 @@
       width: 51px;
       height: 31px;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .toggle input {
@@ -203,9 +215,10 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 430px;
-      padding: 16px 20px 32px;
+      padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
       background: #ffffff;
       border-top: 1px solid #f0f0f0;
+      z-index: 50;
     }
 
     .generate-btn {
@@ -218,44 +231,95 @@
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.2s, opacity 0.2s;
+      transition: opacity 0.2s;
       font-family: inherit;
-    }
-
-    .generate-btn:hover {
-      background: #0066d6;
+      -webkit-appearance: none;
     }
 
     .generate-btn:active {
-      opacity: 0.85;
+      opacity: 0.8;
     }
 
-    /* 成功提示 */
-    .toast {
+    /* ========== iOS 风格白色弹窗（仿系统对话框） ========== */
+    .alert-mask {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(0,0,0,0.78);
-      color: #fff;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-size: 15px;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s, transform 0.25s;
-      z-index: 999;
-      white-space: nowrap;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+      padding: 0 40px;
     }
 
-    .toast.show {
+    .alert-mask.show {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
+      visibility: visible;
+    }
+
+    .alert-box {
+      width: 100%;
+      max-width: 270px;
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden;
+      transform: scale(1.08);
+      transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    }
+
+    .alert-mask.show .alert-box {
+      transform: scale(1);
+    }
+
+    .alert-content {
+      padding: 20px 16px 16px;
+      text-align: center;
+    }
+
+    .alert-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #000;
+      line-height: 1.35;
+      letter-spacing: -0.2px;
+    }
+
+    .alert-buttons {
+      display: flex;
+      border-top: 0.5px solid rgba(60, 60, 67, 0.29);
+    }
+
+    .alert-btn {
+      flex: 1;
+      height: 44px;
+      border: none;
+      background: transparent;
+      font-size: 17px;
+      color: #007aff;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-appearance: none;
+    }
+
+    .alert-btn:active {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .alert-btn + .alert-btn {
+      border-left: 0.5px solid rgba(60, 60, 67, 0.29);
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
   <div class="phone-frame">
+    <!-- 顶部标题 -->
+    <div class="page-title">创建 WebClip</div>
+
     <div class="content">
       <!-- 图标上传 -->
       <div class="icon-upload">
@@ -269,27 +333,27 @@
       <!-- 表单 -->
       <div class="form-group">
         <label>网页地址</label>
-        <input type="url" id="webUrl" placeholder="https://xxx.com" value="">
+        <input type="url" id="webUrl" placeholder="https://xxx.com" autocomplete="off" autocapitalize="off">
       </div>
 
       <div class="form-group">
         <label>组织名称</label>
-        <input type="text" id="orgName" placeholder="自定义组织" value="">
+        <input type="text" id="orgName" placeholder="自定义组织" autocomplete="off">
       </div>
 
       <div class="form-group">
         <label>配置名称</label>
-        <input type="text" id="configName" placeholder="设置里显示的文件名" value="">
+        <input type="text" id="configName" placeholder="设置里显示的文件名" autocomplete="off">
       </div>
 
       <div class="form-group">
         <label>桌面名称</label>
-        <input type="text" id="desktopName" placeholder="手机桌面图标下方文字" value="">
+        <input type="text" id="desktopName" placeholder="手机桌面图标下方文字" autocomplete="off">
       </div>
 
       <div class="form-group">
         <label>描述说明</label>
-        <input type="text" id="description" placeholder="安装后在桌面生成网页快捷方式" value="">
+        <input type="text" id="description" placeholder="安装后在桌面生成网页快捷方式" autocomplete="off">
       </div>
 
       <!-- 开关 -->
@@ -331,7 +395,18 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <!-- iOS 风格白色弹窗 -->
+  <div class="alert-mask" id="alertMask">
+    <div class="alert-box">
+      <div class="alert-content">
+        <div class="alert-title" id="alertTitle">请填写网页地址</div>
+      </div>
+      <div class="alert-buttons">
+        <button class="alert-btn" id="alertCancel">忽略</button>
+        <button class="alert-btn" id="alertConfirm">允许</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // 图标上传预览
@@ -353,6 +428,25 @@
       reader.readAsDataURL(file);
     });
 
+    // 弹窗控制
+    const alertMask = document.getElementById('alertMask');
+    const alertTitle = document.getElementById('alertTitle');
+
+    function showAlert(msg) {
+      alertTitle.textContent = msg;
+      alertMask.classList.add('show');
+    }
+
+    function hideAlert() {
+      alertMask.classList.remove('show');
+    }
+
+    document.getElementById('alertCancel').addEventListener('click', hideAlert);
+    document.getElementById('alertConfirm').addEventListener('click', hideAlert);
+    alertMask.addEventListener('click', function (e) {
+      if (e.target === alertMask) hideAlert();
+    });
+
     // 生成配置文件
     document.getElementById('generateBtn').addEventListener('click', function () {
       const webUrl = document.getElementById('webUrl').value.trim();
@@ -365,8 +459,9 @@
       const preRender = document.getElementById('preRender').checked;
       const ignoreScope = document.getElementById('ignoreScope').checked;
 
+      // 没填网页地址 → 弹出系统风格白色弹窗
       if (!webUrl) {
-        showToast('请填写网页地址');
+        showAlert('请填写网页地址');
         return;
       }
 
@@ -434,7 +529,7 @@
 </dict>
 </plist>`;
 
-      // 下载文件
+      // 直接下载，不再弹出「配置文件已生成」
       const blob = new Blob([mobileconfig], { type: 'application/x-apple-aspen-config' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -443,9 +538,7 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showToast('配置文件已生成');
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
     });
 
     function generateUUID() {
@@ -463,13 +556,6 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&apos;');
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
     }
   </script>
 </body>
