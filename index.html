@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#ffffff" id="themeColorMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" id="statusBarStyle">
   <meta name="apple-mobile-web-app-title" content="创建 WebClip">
   <title>创建 WebClip</title>
   <style>
     :root {
       --accent: #007aff;
-      --accent-light: rgba(0, 122, 255, 0.15);
+      --accent-light: rgba(0, 122, 255, 0.18);
       --bg: #f2f2f7;
       --card: #ffffff;
       --text: #1d1d1f;
@@ -59,6 +59,7 @@
       letter-spacing: -0.4px;
       background: var(--card);
       flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
     }
 
     /* ========== 内容区 ========== */
@@ -176,7 +177,7 @@
       opacity: 0.8;
     }
 
-    /* ========== 首页列表 ========== */
+    /* ========== 列表 ========== */
     .home-list {
       padding: 12px 16px 30px;
     }
@@ -363,19 +364,13 @@
       color: var(--text);
     }
 
-    .settings-value {
-      font-size: 15px;
-      color: var(--text2);
-      margin-right: 4px;
-    }
-
     .settings-arrow {
       color: var(--text2);
       font-size: 16px;
       opacity: 0.6;
     }
 
-    /* 开关样式 */
+    /* 开关 */
     .toggle {
       position: relative;
       width: 51px;
@@ -419,7 +414,6 @@
       transform: translateX(20px);
     }
 
-    /* 颜色圆点 */
     .color-dot {
       width: 22px;
       height: 22px;
@@ -429,7 +423,6 @@
       box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
     }
 
-    /* 隐藏的原生颜色选择器 */
     #colorPicker {
       position: absolute;
       opacity: 0;
@@ -438,7 +431,7 @@
       pointer-events: none;
     }
 
-    /* ========== 详情 / 安装预览页 ========== */
+    /* ========== 详情页 ========== */
     .detail-page {
       display: none;
       flex-direction: column;
@@ -605,10 +598,10 @@
       margin-bottom: 20px;
     }
 
-    /* ========== 底部导航（更矮 + 更靠下 + 液态玻璃） ========== */
+    /* ========== 底部导航（更圆润 + 流畅滑动） ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
-      padding: 6px 16px calc(6px + env(safe-area-inset-bottom));
+      padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
       background: transparent;
       display: flex;
       justify-content: center;
@@ -618,26 +611,41 @@
     .tab-bar {
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-radius: 22px;
-      padding: 3px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 28px;
+      padding: 4px;
       box-shadow: 
-        0 6px 24px rgba(0, 0, 0, 0.1),
-        0 2px 6px rgba(0, 0, 0, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-      border: 0.5px solid rgba(255, 255, 255, 0.4);
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      border: 0.5px solid rgba(255, 255, 255, 0.5);
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
       max-width: 100%;
       scrollbar-width: none;
-      gap: 1px;
+      gap: 0;
     }
 
     .tab-bar::-webkit-scrollbar {
       display: none;
+    }
+
+    /* 滑动高亮指示器 */
+    .tab-indicator {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: 68px;
+      border-radius: 24px;
+      background: var(--accent-light);
+      transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.25s ease;
+      z-index: 0;
+      pointer-events: none;
     }
 
     .tab-item {
@@ -646,23 +654,22 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1px;
-      padding: 6px 16px;
-      border-radius: 18px;
+      gap: 2px;
+      padding: 8px 14px;
+      border-radius: 24px;
       cursor: pointer;
       color: var(--accent);
       font-size: 10px;
       font-weight: 500;
-      transition: all 0.28s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transition: color 0.25s;
       user-select: none;
-      min-width: 60px;
+      min-width: 68px;
       position: relative;
+      z-index: 1;
     }
 
     .tab-item.active {
-      background: var(--accent-light);
       color: var(--accent);
-      transform: scale(1.02);
     }
 
     .tab-icon {
@@ -675,7 +682,7 @@
     }
 
     .tab-item.active .tab-icon {
-      transform: scale(1.06);
+      transform: scale(1.08);
     }
 
     .tab-icon svg {
@@ -776,7 +783,6 @@
       border-left: 0.5px solid rgba(60, 60, 67, 0.29);
     }
 
-    /* 页面切换 */
     .page {
       display: none;
       flex: 1;
@@ -805,11 +811,11 @@
     }
 
     body.dark .tab-bar {
-      background: rgba(44, 44, 46, 0.78);
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
+      background: rgba(44, 44, 46, 0.82);
+      border: 0.5px solid rgba(255, 255, 255, 0.1);
       box-shadow: 
-        0 6px 24px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     body.dark .settings-group {
@@ -858,7 +864,7 @@
 <body>
   <div class="phone-frame">
 
-    <!-- ========== 应用（原首页） ========== -->
+    <!-- 应用 -->
     <div class="page active" id="pageHome">
       <div class="page-header">应用</div>
       <div class="content">
@@ -866,7 +872,7 @@
       </div>
     </div>
 
-    <!-- ========== 创建页 ========== -->
+    <!-- 创建 -->
     <div class="page" id="pageCreate">
       <div class="page-header">创建 WebClip</div>
       <div class="content">
@@ -909,7 +915,7 @@
       </div>
     </div>
 
-    <!-- ========== 搜索页 ========== -->
+    <!-- 搜索 -->
     <div class="page" id="pageSearch">
       <div class="page-header">搜索</div>
       <div class="search-box">
@@ -920,13 +926,11 @@
       </div>
     </div>
 
-    <!-- ========== 设置页 ========== -->
+    <!-- 设置 -->
     <div class="page" id="pageSettings">
       <div class="page-header">设置</div>
       <div class="content">
         <div class="settings-content">
-
-          <!-- 外观 -->
           <div class="settings-section">
             <div class="settings-section-title">外观</div>
             <div class="settings-group">
@@ -950,7 +954,6 @@
             </div>
           </div>
 
-          <!-- WebClip 选项 -->
           <div class="settings-section">
             <div class="settings-section-title">WebClip 选项</div>
             <div class="settings-group">
@@ -987,11 +990,10 @@
             </div>
           </div>
 
-          <!-- 通用 -->
           <div class="settings-section">
             <div class="settings-section-title">通用</div>
             <div class="settings-group">
-              <div class="settings-item" id="notificationItem">
+              <div class="settings-item">
                 <div class="settings-icon">
                   <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </div>
@@ -1010,12 +1012,11 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
 
-    <!-- ========== 详情 / 安装预览页 ========== -->
+    <!-- 详情页 -->
     <div class="detail-page" id="detailPage">
       <div class="detail-header">
         <button class="detail-close" id="detailBack">✕</button>
@@ -1023,12 +1024,12 @@
       <div class="detail-body" id="detailBody"></div>
     </div>
 
-    <!-- ========== 底部导航（更矮 + 更靠下） ========== -->
+    <!-- 底部导航 -->
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
-        <div class="tab-item active" data-page="pageHome">
+        <div class="tab-indicator" id="tabIndicator"></div>
+        <div class="tab-item active" data-page="pageHome" data-index="0">
           <div class="tab-icon">
-            <!-- 应用图标（网格） -->
             <svg viewBox="0 0 24 24">
               <rect x="3" y="3" width="7" height="7" rx="1.5"/>
               <rect x="14" y="3" width="7" height="7" rx="1.5"/>
@@ -1038,19 +1039,19 @@
           </div>
           <div>应用</div>
         </div>
-        <div class="tab-item" data-page="pageCreate">
+        <div class="tab-item" data-page="pageCreate" data-index="1">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
           </div>
           <div>创建</div>
         </div>
-        <div class="tab-item" data-page="pageSearch">
+        <div class="tab-item" data-page="pageSearch" data-index="2">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </div>
           <div>搜索</div>
         </div>
-        <div class="tab-item" data-page="pageSettings">
+        <div class="tab-item" data-page="pageSettings" data-index="3">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
@@ -1060,10 +1061,8 @@
     </div>
   </div>
 
-  <!-- 隐藏的颜色选择器 -->
   <input type="color" id="colorPicker" value="#007aff">
 
-  <!-- 弹窗 -->
   <div class="alert-mask" id="alertMask">
     <div class="alert-box">
       <div class="alert-content">
@@ -1077,88 +1076,52 @@
   </div>
 
   <script>
-    // ==================== 数据存储 ====================
     const STORAGE_KEY = 'webclip_configs';
     const SETTINGS_KEY = 'webclip_settings';
 
     function getConfigs() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      } catch (e) {
-        return [];
-      }
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { return []; }
     }
-
-    function saveConfigs(list) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
-
+    function saveConfigs(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
     function addConfig(config) {
       const list = getConfigs();
       list.unshift(config);
       saveConfigs(list);
     }
-
     function deleteConfig(id) {
-      const list = getConfigs().filter(c => c.id !== id);
-      saveConfigs(list);
+      saveConfigs(getConfigs().filter(c => c.id !== id));
     }
-
     function getSettings() {
-      try {
-        return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-      } catch (e) {
-        return {};
-      }
+      try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) { return {}; }
     }
+    function saveSettings(obj) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(obj)); }
 
-    function saveSettings(obj) {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(obj));
-    }
-
-    // ==================== 工具函数 ====================
     function generateUUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
         const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
       }).toUpperCase();
     }
-
     function escapeXml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
     }
-
     function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-
     function formatTime(ts) {
-      const d = new Date(ts);
-      const now = new Date();
-      const diff = (now - d) / 1000;
+      const d = new Date(ts), now = new Date(), diff = (now - d) / 1000;
       if (diff < 60) return '刚刚';
-      if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
-      if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
-      if (diff < 86400 * 7) return Math.floor(diff / 86400) + '天前';
+      if (diff < 3600) return Math.floor(diff/60) + '分钟前';
+      if (diff < 86400) return Math.floor(diff/3600) + '小时前';
+      if (diff < 86400*7) return Math.floor(diff/86400) + '天前';
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-
     function formatDate(ts) {
       const d = new Date(ts);
       return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
     }
 
-    // ==================== 弹窗 ====================
+    // 弹窗
     const alertMask = document.getElementById('alertMask');
     const alertTitle = document.getElementById('alertTitle');
     const alertMessage = document.getElementById('alertMessage');
@@ -1166,56 +1129,35 @@
 
     function showAlert(title, message, buttons) {
       alertTitle.textContent = title;
-      if (message) {
-        alertMessage.textContent = message;
-        alertMessage.style.display = 'block';
-      } else {
-        alertMessage.style.display = 'none';
-      }
-
+      if (message) { alertMessage.textContent = message; alertMessage.style.display = 'block'; }
+      else alertMessage.style.display = 'none';
       alertButtons.innerHTML = '';
-      if (!buttons || buttons.length === 0) {
+      if (!buttons || !buttons.length) {
         const btn = document.createElement('button');
-        btn.className = 'alert-btn';
-        btn.textContent = '关闭';
-        btn.onclick = hideAlert;
+        btn.className = 'alert-btn'; btn.textContent = '关闭'; btn.onclick = hideAlert;
         alertButtons.appendChild(btn);
       } else {
         buttons.forEach(b => {
           const btn = document.createElement('button');
           btn.className = 'alert-btn' + (b.danger ? ' danger' : '');
           btn.textContent = b.text;
-          btn.onclick = () => {
-            hideAlert();
-            if (b.onClick) b.onClick();
-          };
+          btn.onclick = () => { hideAlert(); if (b.onClick) b.onClick(); };
           alertButtons.appendChild(btn);
         });
       }
       alertMask.classList.add('show');
     }
+    function hideAlert() { alertMask.classList.remove('show'); }
+    alertMask.addEventListener('click', e => { if (e.target === alertMask) hideAlert(); });
 
-    function hideAlert() {
-      alertMask.classList.remove('show');
-    }
-
-    alertMask.addEventListener('click', function (e) {
-      if (e.target === alertMask) hideAlert();
-    });
-
-    // ==================== 生成 mobileconfig ====================
+    // 生成配置
     function buildMobileConfig(data) {
-      const uuid1 = generateUUID();
-      const uuid2 = generateUUID();
-
+      const uuid1 = generateUUID(), uuid2 = generateUUID();
       let iconPayload = '';
       if (data.iconBase64) {
-        const pureBase64 = data.iconBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
-        iconPayload = `
-        <key>Icon</key>
-        <data>${pureBase64}</data>`;
+        const pure = data.iconBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
+        iconPayload = `\n        <key>Icon</key>\n        <data>${pure}</data>`;
       }
-
       return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -1270,8 +1212,7 @@
     }
 
     function downloadConfig(data) {
-      const mobileconfig = buildMobileConfig(data);
-      const blob = new Blob([mobileconfig], { type: 'application/x-apple-aspen-config' });
+      const blob = new Blob([buildMobileConfig(data)], { type: 'application/x-apple-aspen-config' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -1282,51 +1223,36 @@
       setTimeout(() => URL.revokeObjectURL(url), 2000);
     }
 
-    // ==================== 图标上传 ====================
+    // 图标
     let iconBase64 = '';
-    const iconInput = document.getElementById('iconInput');
-    const iconPreview = document.getElementById('iconPreview');
-    const plusIcon = document.getElementById('plusIcon');
-
-    iconInput.addEventListener('change', function (e) {
+    document.getElementById('iconInput').addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function (ev) {
+      reader.onload = ev => {
         iconBase64 = ev.target.result;
-        iconPreview.src = iconBase64;
-        iconPreview.style.display = 'block';
-        plusIcon.style.display = 'none';
+        document.getElementById('iconPreview').src = iconBase64;
+        document.getElementById('iconPreview').style.display = 'block';
+        document.getElementById('plusIcon').style.display = 'none';
       };
       reader.readAsDataURL(file);
     });
 
-    // ==================== 生成按钮 ====================
-    document.getElementById('generateBtn').addEventListener('click', function () {
+    // 生成
+    document.getElementById('generateBtn').addEventListener('click', () => {
       const webUrl = document.getElementById('webUrl').value.trim();
-      const orgName = document.getElementById('orgName').value.trim() || '自定义组织';
-      const configName = document.getElementById('configName').value.trim() || 'WebClip';
-      const desktopName = document.getElementById('desktopName').value.trim() || '网页快捷方式';
-      const description = document.getElementById('description').value.trim() || '安装后在桌面生成网页快捷方式';
-      const fullscreen = document.getElementById('fullscreen').checked;
-      const allowDelete = document.getElementById('allowDelete').checked;
-      const ignoreScope = document.getElementById('ignoreScope').checked;
-
-      if (!webUrl) {
-        showAlert('请填写网页地址');
-        return;
-      }
+      if (!webUrl) { showAlert('请填写网页地址'); return; }
 
       const config = {
         id: generateUUID(),
         webUrl,
-        orgName,
-        configName,
-        desktopName,
-        description,
-        fullscreen,
-        allowDelete,
-        ignoreScope,
+        orgName: document.getElementById('orgName').value.trim() || '自定义组织',
+        configName: document.getElementById('configName').value.trim() || 'WebClip',
+        desktopName: document.getElementById('desktopName').value.trim() || '网页快捷方式',
+        description: document.getElementById('description').value.trim() || '安装后在桌面生成网页快捷方式',
+        fullscreen: document.getElementById('fullscreen').checked,
+        allowDelete: document.getElementById('allowDelete').checked,
+        ignoreScope: document.getElementById('ignoreScope').checked,
         iconBase64: iconBase64 || '',
         createdAt: Date.now()
       };
@@ -1334,195 +1260,166 @@
       addConfig(config);
       downloadConfig(config);
 
-      showAlert('创建成功', '已保存到首页，并开始下载配置文件', [
-        {
-          text: '去应用查看',
-          onClick: () => {
-            switchTab('pageHome');
-            renderHomeList();
-          }
-        },
+      showAlert('创建成功', '已保存到应用，并开始下载配置文件', [
+        { text: '去应用查看', onClick: () => { switchTab('pageHome'); renderHomeList(); } },
         { text: '继续创建' }
       ]);
     });
 
-    // ==================== 渲染列表 ====================
+    // 列表渲染
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
-      if (!list || list.length === 0) {
+      if (!list.length) {
         container.innerHTML = `<div class="empty-tip">还没有创建任何配置文件<br>去「创建」页面生成一个吧～</div>`;
         return;
       }
-
       container.innerHTML = list.map(item => `
         <div class="config-card" data-id="${item.id}">
-          ${item.iconBase64
-            ? `<img class="config-icon" src="${item.iconBase64}" alt="">`
-            : `<div class="config-icon placeholder">📱</div>`}
+          ${item.iconBase64 ? `<img class="config-icon" src="${item.iconBase64}">` : `<div class="config-icon placeholder">📱</div>`}
           <div class="config-info">
             <div class="config-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="config-desc">${escapeHtml(item.webUrl)}</div>
             <div class="config-time">${formatTime(item.createdAt)}</div>
           </div>
-          <button class="delete-btn" data-id="${item.id}" title="删除">×</button>
+          <button class="delete-btn" data-id="${item.id}">×</button>
         </div>
       `).join('');
 
       container.querySelectorAll('.config-card').forEach(card => {
-        card.addEventListener('click', function (e) {
+        card.addEventListener('click', e => {
           if (e.target.classList.contains('delete-btn')) return;
-          const id = this.dataset.id;
-          const item = getConfigs().find(c => c.id === id);
+          const item = getConfigs().find(c => c.id === card.dataset.id);
           if (item) showDetail(item);
         });
       });
-
       container.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function (e) {
+        btn.addEventListener('click', e => {
           e.stopPropagation();
-          const id = this.dataset.id;
           showAlert('确认删除？', '删除后无法恢复', [
             { text: '取消' },
-            {
-              text: '删除',
-              danger: true,
-              onClick: () => {
-                deleteConfig(id);
-                renderHomeList();
-                renderSearchList(document.getElementById('searchInput').value);
-              }
-            }
+            { text: '删除', danger: true, onClick: () => {
+              deleteConfig(btn.dataset.id);
+              renderHomeList();
+              renderSearchList(document.getElementById('searchInput').value);
+            }}
           ]);
         });
       });
     }
-
-    function renderHomeList() {
-      renderList('homeList', getConfigs());
-    }
-
-    function renderSearchList(keyword = '') {
+    function renderHomeList() { renderList('homeList', getConfigs()); }
+    function renderSearchList(kw = '') {
       const list = getConfigs();
-      const kw = keyword.trim().toLowerCase();
-      const filtered = kw
-        ? list.filter(c =>
-            (c.desktopName || '').toLowerCase().includes(kw) ||
-            (c.configName || '').toLowerCase().includes(kw) ||
-            (c.webUrl || '').toLowerCase().includes(kw) ||
-            (c.description || '').toLowerCase().includes(kw)
-          )
-        : list;
+      const filtered = kw.trim() ? list.filter(c =>
+        (c.desktopName||'').toLowerCase().includes(kw.toLowerCase()) ||
+        (c.configName||'').toLowerCase().includes(kw.toLowerCase()) ||
+        (c.webUrl||'').toLowerCase().includes(kw.toLowerCase())
+      ) : list;
       renderList('searchList', filtered);
     }
 
-    // ==================== 详情页 ====================
+    // 详情
     function showDetail(item) {
-      const body = document.getElementById('detailBody');
-      body.innerHTML = `
+      document.getElementById('detailBody').innerHTML = `
         <div class="app-header">
-          ${item.iconBase64
-            ? `<img class="app-icon" src="${item.iconBase64}" alt="">`
-            : `<div class="app-icon placeholder">📱</div>`}
+          ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder">📱</div>`}
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="app-developer">By ${escapeHtml(item.orgName || '自定义组织')}</div>
             <button class="sign-btn" id="detailInstall">立即安装</button>
           </div>
         </div>
-
         <div class="info-pills">
-          <div class="info-pill">
-            <div class="value">1.0.0</div>
-            <div class="label">Version</div>
-          </div>
-          <div class="info-pill">
-            <div class="value">2.0 MB</div>
-            <div class="label">Size</div>
-          </div>
-          <div class="info-pill">
-            <div class="value">${formatDate(item.createdAt)}</div>
-            <div class="label">Updated</div>
-          </div>
+          <div class="info-pill"><div class="value">1.0.0</div><div class="label">Version</div></div>
+          <div class="info-pill"><div class="value">2.0 MB</div><div class="label">Size</div></div>
+          <div class="info-pill"><div class="value">${formatDate(item.createdAt)}</div><div class="label">Updated</div></div>
         </div>
-
         <div class="section-title">Description</div>
-        <div class="app-description">
-          ${escapeHtml(item.description || '安装后在桌面生成网页快捷方式')}
-        </div>
-
-        <div class="tips-box">
-          安装之前请确认使用苹果自带的 Safari 浏览器打开，否则无法正常下载。如果没有自动跳转，请按照以下步骤安装：【设置 → 通用 → VPN与设备管理】。若 60 秒后没弹出安装，请刷新页面。
-        </div>
+        <div class="app-description">${escapeHtml(item.description || '安装后在桌面生成网页快捷方式')}</div>
+        <div class="tips-box">安装之前请确认使用苹果自带的 Safari 浏览器打开，否则无法正常下载。如果没有自动跳转，请按照以下步骤安装：【设置 → 通用 → VPN与设备管理】。若 60 秒后没弹出安装，请刷新页面。</div>
       `;
-
-      document.getElementById('detailInstall').onclick = () => {
-        downloadConfig(item);
-      };
-
+      document.getElementById('detailInstall').onclick = () => downloadConfig(item);
       document.getElementById('detailPage').classList.add('show');
     }
-
     document.getElementById('detailBack').addEventListener('click', () => {
       document.getElementById('detailPage').classList.remove('show');
     });
 
-    // ==================== 底部导航切换 ====================
+    // 底部导航 + 指示器动画
+    const tabBar = document.getElementById('tabBar');
+    const indicator = document.getElementById('tabIndicator');
+    const tabItems = document.querySelectorAll('.tab-item');
+
+    function updateIndicator(index) {
+      const item = tabItems[index];
+      if (!item) return;
+      const barRect = tabBar.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const offset = itemRect.left - barRect.left + tabBar.scrollLeft;
+      indicator.style.width = itemRect.width + 'px';
+      indicator.style.transform = `translateX(${offset - 4}px)`;
+    }
+
     function switchTab(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
 
-      document.querySelectorAll('.tab-item').forEach(t => {
-        t.classList.toggle('active', t.dataset.page === pageId);
+      let activeIndex = 0;
+      tabItems.forEach((t, i) => {
+        const isActive = t.dataset.page === pageId;
+        t.classList.toggle('active', isActive);
+        if (isActive) activeIndex = i;
       });
 
+      updateIndicator(activeIndex);
       document.getElementById('detailPage').classList.remove('show');
 
-      const activeTab = document.querySelector(`.tab-item[data-page="${pageId}"]`);
-      if (activeTab) {
-        activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      }
+      // 滚动到可见
+      tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
       if (pageId === 'pageHome') renderHomeList();
       if (pageId === 'pageSearch') renderSearchList(document.getElementById('searchInput').value);
     }
 
-    document.querySelectorAll('.tab-item').forEach(item => {
-      item.addEventListener('click', function () {
-        switchTab(this.dataset.page);
-      });
+    tabItems.forEach(item => {
+      item.addEventListener('click', () => switchTab(item.dataset.page));
     });
 
-    // ==================== 搜索 ====================
-    document.getElementById('searchInput').addEventListener('input', function () {
-      renderSearchList(this.value);
+    // 初始化指示器位置
+    setTimeout(() => updateIndicator(0), 50);
+    window.addEventListener('resize', () => {
+      const active = document.querySelector('.tab-item.active');
+      if (active) updateIndicator(+active.dataset.index);
     });
 
-    // ==================== 设置功能 ====================
+    // 搜索
+    document.getElementById('searchInput').addEventListener('input', e => renderSearchList(e.target.value));
+
+    // 设置
     const colorPicker = document.getElementById('colorPicker');
 
     function applyAccent(color) {
       document.documentElement.style.setProperty('--accent', color);
-      const r = parseInt(color.slice(1,3), 16);
-      const g = parseInt(color.slice(3,5), 16);
-      const b = parseInt(color.slice(5,7), 16);
-      document.documentElement.style.setProperty('--accent-light', `rgba(${r}, ${g}, ${b}, 0.15)`);
+      const r = parseInt(color.slice(1,3),16);
+      const g = parseInt(color.slice(3,5),16);
+      const b = parseInt(color.slice(5,7),16);
+      document.documentElement.style.setProperty('--accent-light', `rgba(${r},${g},${b},0.18)`);
       document.getElementById('colorDot').style.background = color;
       colorPicker.value = color;
     }
 
-    // 深色模式
+    // 深色模式（顶部也跟着变）
     document.getElementById('darkMode').addEventListener('change', function () {
-      document.body.classList.toggle('dark', this.checked);
+      const isDark = this.checked;
+      document.body.classList.toggle('dark', isDark);
+      document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#1c1c1e' : '#ffffff');
+      document.getElementById('statusBarStyle').setAttribute('content', isDark ? 'black' : 'default');
       const s = getSettings();
-      s.darkMode = this.checked;
+      s.darkMode = isDark;
       saveSettings(s);
     });
 
-    // 颜色主题 → 调出系统调色轮
-    document.getElementById('colorThemeBtn').addEventListener('click', function () {
-      colorPicker.click();
-    });
-
+    // 颜色主题 → 系统调色盘
+    document.getElementById('colorThemeBtn').addEventListener('click', () => colorPicker.click());
     colorPicker.addEventListener('input', function () {
       applyAccent(this.value);
       const s = getSettings();
@@ -1530,7 +1427,7 @@
       saveSettings(s);
     });
 
-    // 保存 WebClip 选项
+    // WebClip 选项
     ['allowDelete', 'fullscreen', 'ignoreScope'].forEach(id => {
       document.getElementById(id).addEventListener('change', function () {
         const s = getSettings();
@@ -1539,39 +1436,34 @@
       });
     });
 
-    // 通知开关
+    // 通知（无弹窗）
     document.getElementById('notificationToggle').addEventListener('change', function () {
       const s = getSettings();
       s.notification = this.checked;
       saveSettings(s);
-      if (this.checked) {
-        showAlert('通知已开启', '创建成功时会尝试发送通知提醒');
-      } else {
-        showAlert('通知已关闭');
-      }
     });
 
     // 关于
-    document.getElementById('aboutItem').addEventListener('click', function () {
+    document.getElementById('aboutItem').addEventListener('click', () => {
       showAlert('关于', '创建 WebClip v1.0\n一个简单好用的 iOS 网页快捷方式生成工具');
     });
 
-    // 初始化设置
+    // 初始化
     function initSettings() {
       const s = getSettings();
       if (s.darkMode) {
         document.getElementById('darkMode').checked = true;
         document.body.classList.add('dark');
+        document.getElementById('themeColorMeta').setAttribute('content', '#1c1c1e');
+        document.getElementById('statusBarStyle').setAttribute('content', 'black');
       }
       applyAccent(s.accent || '#007aff');
-      
       if (s.allowDelete !== undefined) document.getElementById('allowDelete').checked = s.allowDelete;
       if (s.fullscreen !== undefined) document.getElementById('fullscreen').checked = s.fullscreen;
       if (s.ignoreScope !== undefined) document.getElementById('ignoreScope').checked = s.ignoreScope;
       if (s.notification !== undefined) document.getElementById('notificationToggle').checked = s.notification;
     }
 
-    // ==================== 初始化 ====================
     initSettings();
     renderHomeList();
   </script>
