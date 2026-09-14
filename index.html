@@ -17,14 +17,14 @@
     }
 
     html, body {
-      background: #ffffff;
+      background: #f2f2f7;
       color: #1d1d1f;
       min-height: 100vh;
       min-height: -webkit-fill-available;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
       display: flex;
       justify-content: center;
     }
@@ -40,19 +40,31 @@
       flex-direction: column;
     }
 
-    .page-title {
-      padding: 16px 20px 8px;
+    /* ========== 顶部标题 ========== */
+    .page-header {
+      padding: 16px 20px 12px;
       font-size: 22px;
       font-weight: 700;
       color: #1d1d1f;
       letter-spacing: -0.3px;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid #f0f0f0;
     }
 
+    /* ========== 内容区 ========== */
     .content {
       flex: 1;
-      padding: 8px 20px 110px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      padding-bottom: 80px;
+    }
+
+    /* ========== 创建页面样式（保留原有） ========== */
+    .create-content {
+      padding: 8px 20px 20px;
     }
 
     .icon-upload {
@@ -201,19 +213,6 @@
       transform: translateX(20px);
     }
 
-    .footer {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 430px;
-      padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
-      background: #ffffff;
-      border-top: 1px solid #f0f0f0;
-      z-index: 50;
-    }
-
     .generate-btn {
       width: 100%;
       height: 50px;
@@ -227,13 +226,287 @@
       transition: opacity 0.2s;
       font-family: inherit;
       -webkit-appearance: none;
+      margin-top: 10px;
     }
 
     .generate-btn:active {
       opacity: 0.8;
     }
 
-    /* 苹果系统级弹窗 */
+    /* ========== 首页列表 ========== */
+    .home-list {
+      padding: 12px 16px;
+    }
+
+    .empty-tip {
+      text-align: center;
+      color: #8e8e93;
+      font-size: 15px;
+      padding: 60px 20px;
+      line-height: 1.6;
+    }
+
+    .config-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .config-card:active {
+      background: #f5f5f7;
+    }
+
+    .config-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #f0f0f0;
+      flex-shrink: 0;
+    }
+
+    .config-icon.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #c7c7cc;
+    }
+
+    .config-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .config-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .config-desc {
+      font-size: 13px;
+      color: #8e8e93;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .config-time {
+      font-size: 12px;
+      color: #aeaeb2;
+      margin-top: 4px;
+    }
+
+    .delete-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: #ff3b30;
+      font-size: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn:active {
+      background: #ffe5e5;
+    }
+
+    /* ========== 搜索页 ========== */
+    .search-box {
+      padding: 12px 16px;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 14px 0 36px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #f2f2f7;
+      color: #1d1d1f;
+      outline: none;
+      font-family: inherit;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 10px center;
+    }
+
+    /* ========== 详情/安装预览页 ========== */
+    .detail-page {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      background: #fff;
+    }
+
+    .detail-page.show {
+      display: flex;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fff;
+    }
+
+    .back-btn {
+      font-size: 17px;
+      color: #007aff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 4px 0;
+      margin-right: 12px;
+    }
+
+    .detail-title {
+      font-size: 17px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .detail-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .detail-icon {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      object-fit: cover;
+      margin: 0 auto 16px;
+      background: #f0f0f0;
+      display: block;
+    }
+
+    .detail-icon.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: #c7c7cc;
+      margin: 0 auto 16px;
+    }
+
+    .detail-name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .detail-size {
+      font-size: 14px;
+      color: #8e8e93;
+      margin-bottom: 20px;
+    }
+
+    .install-btn {
+      display: inline-block;
+      padding: 10px 36px;
+      background: #007aff;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 24px;
+    }
+
+    .install-btn:active {
+      opacity: 0.85;
+    }
+
+    .detail-tips {
+      text-align: left;
+      font-size: 13px;
+      color: #ff3b30;
+      line-height: 1.6;
+      background: #fff5f5;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .detail-desc {
+      text-align: left;
+      font-size: 14px;
+      color: #3a3a3c;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* ========== 底部导航 ========== */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: calc(56px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      background: #f9f9f9;
+      border-top: 0.5px solid rgba(0,0,0,0.15);
+      display: flex;
+      z-index: 100;
+    }
+
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      color: #8e8e93;
+      font-size: 10px;
+      font-weight: 500;
+      transition: color 0.15s;
+      user-select: none;
+    }
+
+    .tab-item.active {
+      color: #007aff;
+    }
+
+    .tab-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    /* ========== 弹窗 ========== */
     .alert-mask {
       position: fixed;
       inset: 0;
@@ -291,10 +564,11 @@
 
     .alert-buttons {
       border-top: 0.5px solid rgba(60, 60, 67, 0.29);
+      display: flex;
     }
 
     .alert-btn {
-      width: 100%;
+      flex: 1;
       height: 44px;
       border: none;
       background: transparent;
@@ -308,102 +582,348 @@
       text-align: center;
     }
 
+    .alert-btn.danger {
+      color: #ff3b30;
+    }
+
     .alert-btn:active {
       background: rgba(0, 0, 0, 0.06);
+    }
+
+    .alert-btn + .alert-btn {
+      border-left: 0.5px solid rgba(60, 60, 67, 0.29);
+    }
+
+    /* 页面切换 */
+    .page {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .page.active {
+      display: flex;
     }
   </style>
 </head>
 <body>
   <div class="phone-frame">
-    <div class="page-title">创建 WebClip</div>
 
-    <div class="content">
-      <div class="icon-upload">
-        <div class="icon-box" id="iconBox">
-          <span class="plus" id="plusIcon">+</span>
-          <img id="iconPreview" style="display:none;" alt="图标">
-          <input type="file" id="iconInput" accept="image/*">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>网页地址</label>
-        <input type="url" id="webUrl" placeholder="https://xxx.com" autocomplete="off" autocapitalize="off">
-      </div>
-
-      <div class="form-group">
-        <label>组织名称</label>
-        <input type="text" id="orgName" placeholder="自定义组织" autocomplete="off">
-      </div>
-
-      <div class="form-group">
-        <label>文件名称</label>
-        <input type="text" id="configName" placeholder="设置里显示的文件名" autocomplete="off">
-      </div>
-
-      <div class="form-group">
-        <label>桌面名称</label>
-        <input type="text" id="desktopName" placeholder="手机桌面图标下方文字" autocomplete="off">
-      </div>
-
-      <div class="form-group">
-        <label>描述说明</label>
-        <input type="text" id="description" placeholder="安装后在桌面生成网页快捷方式" autocomplete="off">
-      </div>
-
-      <!-- 开关顺序：允许删除 → 全屏模式 → 忽略范围 -->
-      <div class="switch-group">
-        <div class="switch-item">
-          <span>允许删除</span>
-          <label class="toggle">
-            <input type="checkbox" id="allowDelete" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="switch-item">
-          <span>全屏模式</span>
-          <label class="toggle">
-            <input type="checkbox" id="fullscreen" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="switch-item">
-          <span>忽略范围</span>
-          <label class="toggle">
-            <input type="checkbox" id="ignoreScope" checked>
-            <span class="slider"></span>
-          </label>
+    <!-- ========== 首页 ========== -->
+    <div class="page active" id="pageHome">
+      <div class="page-header">首页</div>
+      <div class="content">
+        <div class="home-list" id="homeList">
+          <!-- 动态渲染 -->
         </div>
       </div>
     </div>
 
-    <div class="footer">
-      <button class="generate-btn" id="generateBtn">生成配置文件</button>
+    <!-- ========== 创建页 ========== -->
+    <div class="page" id="pageCreate">
+      <div class="page-header">创建 WebClip</div>
+      <div class="content create-content">
+        <div class="icon-upload">
+          <div class="icon-box" id="iconBox">
+            <span class="plus" id="plusIcon">+</span>
+            <img id="iconPreview" style="display:none;" alt="图标">
+            <input type="file" id="iconInput" accept="image/*">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>网页地址</label>
+          <input type="url" id="webUrl" placeholder="https://xxx.com" autocomplete="off" autocapitalize="off">
+        </div>
+
+        <div class="form-group">
+          <label>组织名称</label>
+          <input type="text" id="orgName" placeholder="自定义组织" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>文件名称</label>
+          <input type="text" id="configName" placeholder="设置里显示的文件名" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>桌面名称</label>
+          <input type="text" id="desktopName" placeholder="手机桌面图标下方文字" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>描述说明</label>
+          <input type="text" id="description" placeholder="安装后在桌面生成网页快捷方式" autocomplete="off">
+        </div>
+
+        <div class="switch-group">
+          <div class="switch-item">
+            <span>允许删除</span>
+            <label class="toggle">
+              <input type="checkbox" id="allowDelete" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="switch-item">
+            <span>全屏模式</span>
+            <label class="toggle">
+              <input type="checkbox" id="fullscreen" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="switch-item">
+            <span>忽略范围</span>
+            <label class="toggle">
+              <input type="checkbox" id="ignoreScope" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">生成配置文件</button>
+      </div>
+    </div>
+
+    <!-- ========== 搜索页 ========== -->
+    <div class="page" id="pageSearch">
+      <div class="page-header">搜索</div>
+      <div class="search-box">
+        <input type="search" class="search-input" id="searchInput" placeholder="搜索已创建的配置" autocomplete="off">
+      </div>
+      <div class="content">
+        <div class="home-list" id="searchList">
+          <!-- 动态渲染 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 详情/安装预览页 ========== -->
+    <div class="detail-page" id="detailPage">
+      <div class="detail-header">
+        <button class="back-btn" id="detailBack">‹ 返回</button>
+        <div class="detail-title">安装预览</div>
+      </div>
+      <div class="detail-body" id="detailBody">
+        <!-- 动态填充 -->
+      </div>
+    </div>
+
+    <!-- ========== 底部导航 ========== -->
+    <div class="tab-bar" id="tabBar">
+      <div class="tab-item active" data-page="pageHome">
+        <div class="tab-icon">🏠</div>
+        <div>首页</div>
+      </div>
+      <div class="tab-item" data-page="pageCreate">
+        <div class="tab-icon">➕</div>
+        <div>创建</div>
+      </div>
+      <div class="tab-item" data-page="pageSearch">
+        <div class="tab-icon">🔍</div>
+        <div>搜索</div>
+      </div>
     </div>
   </div>
 
-  <!-- 苹果系统级弹窗（单按钮「关闭」） -->
+  <!-- 弹窗 -->
   <div class="alert-mask" id="alertMask">
     <div class="alert-box">
       <div class="alert-content">
-        <div class="alert-title" id="alertTitle">请填写网页地址</div>
+        <div class="alert-title" id="alertTitle">提示</div>
         <div class="alert-message" id="alertMessage" style="display:none;"></div>
       </div>
-      <div class="alert-buttons">
+      <div class="alert-buttons" id="alertButtons">
         <button class="alert-btn" id="alertClose">关闭</button>
       </div>
     </div>
   </div>
 
   <script>
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+    // ==================== 数据存储 ====================
+    const STORAGE_KEY = 'webclip_configs';
+
+    function getConfigs() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
     }
 
+    function saveConfigs(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function addConfig(config) {
+      const list = getConfigs();
+      list.unshift(config); // 最新在前
+      saveConfigs(list);
+    }
+
+    function deleteConfig(id) {
+      const list = getConfigs().filter(c => c.id !== id);
+      saveConfigs(list);
+    }
+
+    // ==================== 工具函数 ====================
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }).toUpperCase();
+    }
+
+    function escapeXml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    function formatTime(ts) {
+      const d = new Date(ts);
+      const now = new Date();
+      const diff = (now - d) / 1000;
+      if (diff < 60) return '刚刚';
+      if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+      if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+      if (diff < 86400 * 7) return Math.floor(diff / 86400) + '天前';
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    // ==================== 弹窗 ====================
+    const alertMask = document.getElementById('alertMask');
+    const alertTitle = document.getElementById('alertTitle');
+    const alertMessage = document.getElementById('alertMessage');
+    const alertButtons = document.getElementById('alertButtons');
+
+    function showAlert(title, message, buttons) {
+      alertTitle.textContent = title;
+      if (message) {
+        alertMessage.textContent = message;
+        alertMessage.style.display = 'block';
+      } else {
+        alertMessage.style.display = 'none';
+      }
+
+      alertButtons.innerHTML = '';
+      if (!buttons || buttons.length === 0) {
+        const btn = document.createElement('button');
+        btn.className = 'alert-btn';
+        btn.textContent = '关闭';
+        btn.onclick = hideAlert;
+        alertButtons.appendChild(btn);
+      } else {
+        buttons.forEach(b => {
+          const btn = document.createElement('button');
+          btn.className = 'alert-btn' + (b.danger ? ' danger' : '');
+          btn.textContent = b.text;
+          btn.onclick = () => {
+            hideAlert();
+            if (b.onClick) b.onClick();
+          };
+          alertButtons.appendChild(btn);
+        });
+      }
+      alertMask.classList.add('show');
+    }
+
+    function hideAlert() {
+      alertMask.classList.remove('show');
+    }
+
+    alertMask.addEventListener('click', function (e) {
+      if (e.target === alertMask) hideAlert();
+    });
+
+    // ==================== 生成 mobileconfig ====================
+    function buildMobileConfig(data) {
+      const uuid1 = generateUUID();
+      const uuid2 = generateUUID();
+
+      let iconPayload = '';
+      if (data.iconBase64) {
+        const pureBase64 = data.iconBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
+        iconPayload = `
+        <key>Icon</key>
+        <data>${pureBase64}</data>`;
+      }
+
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>FullScreen</key>
+      <${data.fullscreen ? 'true' : 'false'}/>
+      <key>IsRemovable</key>
+      <${data.allowDelete ? 'true' : 'false'}/>
+      <key>Label</key>
+      <string>${escapeXml(data.desktopName)}</string>
+      <key>PayloadDescription</key>
+      <string>${escapeXml(data.description)}</string>
+      <key>PayloadDisplayName</key>
+      <string>${escapeXml(data.configName)}</string>
+      <key>PayloadIdentifier</key>
+      <string>com.webclip.${uuid2}</string>
+      <key>PayloadType</key>
+      <string>com.apple.webClip.managed</string>
+      <key>PayloadUUID</key>
+      <string>${uuid2}</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>Precomposed</key>
+      <true/>
+      <key>URL</key>
+      <string>${escapeXml(data.webUrl)}</string>
+      <key>IgnoreManifestScope</key>
+      <${data.ignoreScope ? 'true' : 'false'}/>${iconPayload}
+    </dict>
+  </array>
+  <key>PayloadDescription</key>
+  <string>${escapeXml(data.description)}</string>
+  <key>PayloadDisplayName</key>
+  <string>${escapeXml(data.configName)}</string>
+  <key>PayloadIdentifier</key>
+  <string>com.webclip.${uuid1}</string>
+  <key>PayloadOrganization</key>
+  <string>${escapeXml(data.orgName)}</string>
+  <key>PayloadRemovalDisallowed</key>
+  <${data.allowDelete ? 'false' : 'true'}/>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>${uuid1}</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>`;
+    }
+
+    function downloadConfig(data) {
+      const mobileconfig = buildMobileConfig(data);
+      const blob = new Blob([mobileconfig], { type: 'application/x-apple-aspen-config' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${data.configName || 'WebClip'}.mobileconfig`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    // ==================== 图标上传 ====================
+    let iconBase64 = '';
     const iconInput = document.getElementById('iconInput');
     const iconPreview = document.getElementById('iconPreview');
     const plusIcon = document.getElementById('plusIcon');
-    let iconBase64 = '';
 
     iconInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
@@ -418,50 +938,7 @@
       reader.readAsDataURL(file);
     });
 
-    const alertMask = document.getElementById('alertMask');
-    const alertTitle = document.getElementById('alertTitle');
-    const alertMessage = document.getElementById('alertMessage');
-
-    function showAlert(title, message) {
-      alertTitle.textContent = title;
-      if (message) {
-        alertMessage.textContent = message;
-        alertMessage.style.display = 'block';
-      } else {
-        alertMessage.style.display = 'none';
-      }
-      alertMask.classList.add('show');
-    }
-
-    function hideAlert() {
-      alertMask.classList.remove('show');
-    }
-
-    document.getElementById('alertClose').addEventListener('click', hideAlert);
-    alertMask.addEventListener('click', function (e) {
-      if (e.target === alertMask) hideAlert();
-    });
-
-    function sendNotification() {
-      if (!('Notification' in window)) return;
-      if (Notification.permission === 'granted') {
-        new Notification('应用安装已就绪', {
-          body: '请打开设置完成验证',
-          tag: 'webclip-ready',
-          renotify: true
-        });
-      } else if (Notification.permission !== 'denied') {
-        Notification.requestPermission().then(function (permission) {
-          if (permission === 'granted') {
-            new Notification('应用安装已就绪', {
-              body: '请打开设置完成验证',
-              tag: 'webclip-ready'
-            });
-          }
-        });
-      }
-    }
-
+    // ==================== 生成按钮 ====================
     document.getElementById('generateBtn').addEventListener('click', function () {
       const webUrl = document.getElementById('webUrl').value.trim();
       const orgName = document.getElementById('orgName').value.trim() || '自定义组织';
@@ -477,97 +954,196 @@
         return;
       }
 
-      const uuid1 = generateUUID();
-      const uuid2 = generateUUID();
+      const config = {
+        id: generateUUID(),
+        webUrl,
+        orgName,
+        configName,
+        desktopName,
+        description,
+        fullscreen,
+        allowDelete,
+        ignoreScope,
+        iconBase64: iconBase64 || '',
+        createdAt: Date.now()
+      };
 
-      let iconPayload = '';
-      if (iconBase64) {
-        const pureBase64 = iconBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
-        iconPayload = `
-        <key>Icon</key>
-        <data>${pureBase64}</data>`;
-      }
+      // 保存到本地
+      addConfig(config);
 
-      const mobileconfig = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>PayloadContent</key>
-  <array>
-    <dict>
-      <key>FullScreen</key>
-      <${fullscreen ? 'true' : 'false'}/>
-      <key>IsRemovable</key>
-      <${allowDelete ? 'true' : 'false'}/>
-      <key>Label</key>
-      <string>${escapeXml(desktopName)}</string>
-      <key>PayloadDescription</key>
-      <string>${escapeXml(description)}</string>
-      <key>PayloadDisplayName</key>
-      <string>${escapeXml(configName)}</string>
-      <key>PayloadIdentifier</key>
-      <string>com.webclip.${uuid2}</string>
-      <key>PayloadType</key>
-      <string>com.apple.webClip.managed</string>
-      <key>PayloadUUID</key>
-      <string>${uuid2}</string>
-      <key>PayloadVersion</key>
-      <integer>1</integer>
-      <key>Precomposed</key>
-      <true/>
-      <key>URL</key>
-      <string>${escapeXml(webUrl)}</string>
-      <key>IgnoreManifestScope</key>
-      <${ignoreScope ? 'true' : 'false'}/>${iconPayload}
-    </dict>
-  </array>
-  <key>PayloadDescription</key>
-  <string>${escapeXml(description)}</string>
-  <key>PayloadDisplayName</key>
-  <string>${escapeXml(configName)}</string>
-  <key>PayloadIdentifier</key>
-  <string>com.webclip.${uuid1}</string>
-  <key>PayloadOrganization</key>
-  <string>${escapeXml(orgName)}</string>
-  <key>PayloadRemovalDisallowed</key>
-  <${allowDelete ? 'false' : 'true'}/>
-  <key>PayloadType</key>
-  <string>Configuration</string>
-  <key>PayloadUUID</key>
-  <string>${uuid1}</string>
-  <key>PayloadVersion</key>
-  <integer>1</integer>
-</dict>
-</plist>`;
+      // 立即下载
+      downloadConfig(config);
 
-      const blob = new Blob([mobileconfig], { type: 'application/x-apple-aspen-config' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${configName || 'WebClip'}.mobileconfig`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      // 提示成功
+      showAlert('创建成功', '已保存到首页，并开始下载配置文件', [
+        {
+          text: '去首页查看',
+          onClick: () => {
+            switchTab('pageHome');
+            renderHomeList();
+          }
+        },
+        { text: '继续创建' }
+      ]);
 
-      sendNotification();
+      // 清空表单（可选，如果你想保留就注释掉）
+      // document.getElementById('webUrl').value = '';
+      // document.getElementById('orgName').value = '';
+      // document.getElementById('configName').value = '';
+      // document.getElementById('desktopName').value = '';
+      // document.getElementById('description').value = '';
+      // iconBase64 = '';
+      // iconPreview.style.display = 'none';
+      // plusIcon.style.display = 'block';
+      // iconInput.value = '';
     });
 
-    function generateUUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      }).toUpperCase();
+    // ==================== 渲染列表 ====================
+    function renderList(containerId, list) {
+      const container = document.getElementById(containerId);
+      if (!list || list.length === 0) {
+        container.innerHTML = `<div class="empty-tip">还没有创建任何配置文件<br>去「创建」页面生成一个吧～</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(item => `
+        <div class="config-card" data-id="${item.id}">
+          ${item.iconBase64
+            ? `<img class="config-icon" src="${item.iconBase64}" alt="">`
+            : `<div class="config-icon placeholder">📱</div>`}
+          <div class="config-info">
+            <div class="config-name">${escapeHtml(item.desktopName || item.configName)}</div>
+            <div class="config-desc">${escapeHtml(item.webUrl)}</div>
+            <div class="config-time">${formatTime(item.createdAt)}</div>
+          </div>
+          <button class="delete-btn" data-id="${item.id}" title="删除">×</button>
+        </div>
+      `).join('');
+
+      // 点击卡片进入详情
+      container.querySelectorAll('.config-card').forEach(card => {
+        card.addEventListener('click', function (e) {
+          if (e.target.classList.contains('delete-btn')) return;
+          const id = this.dataset.id;
+          const item = getConfigs().find(c => c.id === id);
+          if (item) showDetail(item);
+        });
+      });
+
+      // 删除按钮
+      container.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const id = this.dataset.id;
+          showAlert('确认删除？', '删除后无法恢复', [
+            { text: '取消' },
+            {
+              text: '删除',
+              danger: true,
+              onClick: () => {
+                deleteConfig(id);
+                renderHomeList();
+                renderSearchList(document.getElementById('searchInput').value);
+              }
+            }
+          ]);
+        });
+      });
     }
 
-    function escapeXml(str) {
-      return str
+    function escapeHtml(str) {
+      return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderHomeList() {
+      renderList('homeList', getConfigs());
+    }
+
+    function renderSearchList(keyword = '') {
+      const list = getConfigs();
+      const kw = keyword.trim().toLowerCase();
+      const filtered = kw
+        ? list.filter(c =>
+            (c.desktopName || '').toLowerCase().includes(kw) ||
+            (c.configName || '').toLowerCase().includes(kw) ||
+            (c.webUrl || '').toLowerCase().includes(kw) ||
+            (c.description || '').toLowerCase().includes(kw)
+          )
+        : list;
+      renderList('searchList', filtered);
+    }
+
+    // ==================== 详情页 ====================
+    function showDetail(item) {
+      const body = document.getElementById('detailBody');
+      body.innerHTML = `
+        ${item.iconBase64
+          ? `<img class="detail-icon" src="${item.iconBase64}" alt="">`
+          : `<div class="detail-icon placeholder">📱</div>`}
+        <div class="detail-name">${escapeHtml(item.desktopName || item.configName)}</div>
+        <div class="detail-size">应用大小：约 2.0M</div>
+        <button class="install-btn" id="detailInstall">立即安装</button>
+        <div class="detail-tips">
+          安装之前请确认使用苹果自带的Safari浏览器打开，否则无法正常下载。如果没有自动跳转，请按照以下步骤安装：【设置-通用-设备管理-移动设备管理-移除管理】。若60s后没弹出安装APP，请【刷新页面】
+        </div>
+        <div class="detail-desc">
+          ${escapeHtml(item.description || '安装后在桌面生成网页快捷方式')}<br><br>
+          网址：${escapeHtml(item.webUrl)}
+        </div>
+      `;
+
+      document.getElementById('detailInstall').onclick = () => {
+        downloadConfig(item);
+        showAlert('开始下载', '请允许下载配置描述文件，然后到设置中安装');
+      };
+
+      document.getElementById('detailPage').classList.add('show');
+      document.getElementById('tabBar').style.display = 'none';
+    }
+
+    document.getElementById('detailBack').addEventListener('click', () => {
+      document.getElementById('detailPage').classList.remove('show');
+      document.getElementById('tabBar').style.display = 'flex';
+    });
+
+    // ==================== 底部导航切换 ====================
+    function switchTab(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+
+      document.querySelectorAll('.tab-item').forEach(t => {
+        t.classList.toggle('active', t.dataset.page === pageId);
+      });
+
+      // 隐藏详情页
+      document.getElementById('detailPage').classList.remove('show');
+      document.getElementById('tabBar').style.display = 'flex';
+
+      if (pageId === 'pageHome') renderHomeList();
+      if (pageId === 'pageSearch') renderSearchList(document.getElementById('searchInput').value);
+    }
+
+    document.querySelectorAll('.tab-item').forEach(item => {
+      item.addEventListener('click', function () {
+        switchTab(this.dataset.page);
+      });
+    });
+
+    // ==================== 搜索 ====================
+    document.getElementById('searchInput').addEventListener('input', function () {
+      renderSearchList(this.value);
+    });
+
+    // ==================== 初始化 ====================
+    renderHomeList();
+
+    // 通知权限（可选）
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
     }
   </script>
 </body>
