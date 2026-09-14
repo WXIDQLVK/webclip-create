@@ -27,6 +27,9 @@
       height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
       overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
     }
 
     body { display: flex; justify-content: center; }
@@ -111,7 +114,7 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
+      overscroll-behavior: none;
     }
 
     .app-search-box {
@@ -137,17 +140,17 @@
       background-position: 10px center;
     }
 
-    .create-content { padding: 8px 20px 40px; }
+    .create-content { padding: 4px 20px 40px; }
 
     .icon-upload {
       display: flex;
       justify-content: center;
-      margin: 12px 0 28px;
+      margin: 4px 0 16px;
     }
 
     .icon-box {
-      width: 120px;
-      height: 120px;
+      width: 110px;
+      height: 110px;
       border: 2px dashed #d1d1d6;
       border-radius: 22px;
       display: flex;
@@ -160,7 +163,7 @@
     }
 
     .icon-box .plus {
-      font-size: 36px;
+      font-size: 34px;
       color: #c7c7cc;
       font-weight: 300;
       line-height: 1;
@@ -180,7 +183,7 @@
       cursor: pointer;
     }
 
-    .form-group { margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
 
     .form-group label {
       display: block;
@@ -219,7 +222,7 @@
       cursor: pointer;
       font-family: inherit;
       -webkit-appearance: none;
-      margin-top: 24px;
+      margin-top: 20px;
       margin-bottom: 20px;
     }
 
@@ -248,13 +251,18 @@
       gap: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
+      transition: background 0.15s;
       position: relative;
       user-select: none;
     }
 
     .config-card:active { background: #f5f5f7; }
-    .config-card.dragging-source { opacity: 0.3; }
+
+    /* 拖动时原卡片完全透明，消除残影 */
+    .config-card.dragging-source {
+      opacity: 0 !important;
+      visibility: hidden;
+    }
 
     .config-card.ghost {
       position: fixed;
@@ -265,6 +273,8 @@
       margin: 0;
       background: var(--card);
       transition: none;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
 
     .config-icon {
@@ -721,7 +731,6 @@
       margin-bottom: 20px;
     }
 
-    /* 底部弹出编辑面板 - 只保留向下箭头 */
     .sheet-mask {
       position: absolute;
       inset: 0;
@@ -798,7 +807,7 @@
       color: var(--text);
     }
 
-    /* 底部导航 - 恢复默认扁平样式 */
+    /* 底部导航固定 */
     .tab-bar-wrapper {
       flex-shrink: 0;
       background: rgba(249, 249, 249, 0.94);
@@ -833,9 +842,7 @@
       transition: color 0.2s;
     }
 
-    .tab-item.active {
-      color: var(--accent);
-    }
+    .tab-item.active { color: var(--accent); }
 
     .tab-icon {
       width: 24px;
@@ -937,6 +944,7 @@
       flex-direction: column;
       overflow: hidden;
       height: 100%;
+      min-height: 0;
     }
 
     .page.active { display: flex; }
@@ -1008,7 +1016,9 @@
       <div class="page-header">
         <div class="header-top">
           <div class="header-top-left"></div>
-          <div class="header-top-right"></div>
+          <div class="header-top-right">
+            <button class="header-btn" id="clearFormBtn">清空</button>
+          </div>
         </div>
         <div class="page-title" id="createTitle">创建 WebClip</div>
       </div>
@@ -1552,6 +1562,12 @@
       reader.readAsDataURL(file);
     });
 
+    // 清空按钮
+    document.getElementById('clearFormBtn').addEventListener('click', () => {
+      clearForm();
+      showAlert('已清空');
+    });
+
     document.getElementById('generateBtn').addEventListener('click', () => {
       const webUrl = document.getElementById('webUrl').value.trim();
       if (!webUrl) { showAlert('请填写网页地址'); return; }
@@ -1717,21 +1733,18 @@
       renderList('homeList', list);
     }
 
-    // 流畅拖动：创建跟随手指的幽灵卡片，原卡片半透明，不产生空白
+    // 流畅拖动（完全消除残影）
     function setupSmoothDrag(container) {
       let sourceCard = null;
       let ghost = null;
-      let startY = 0;
       let offsetY = 0;
 
       container.querySelectorAll('.drag-handle').forEach(handle => {
-        const startDrag = (clientY, clientX) => {
+        const startDrag = (clientY) => {
           sourceCard = handle.closest('.config-card');
           const rect = sourceCard.getBoundingClientRect();
-          startY = clientY;
           offsetY = clientY - rect.top;
 
-          // 创建幽灵卡片
           ghost = sourceCard.cloneNode(true);
           ghost.classList.add('ghost');
           ghost.style.width = rect.width + 'px';
@@ -1744,10 +1757,8 @@
 
         const moveDrag = (clientY) => {
           if (!ghost || !sourceCard) return;
-          const newTop = clientY - offsetY;
-          ghost.style.top = newTop + 'px';
+          ghost.style.top = (clientY - offsetY) + 'px';
 
-          // 计算插入位置
           const cards = [...container.querySelectorAll('.config-card:not(.dragging-source)')];
           let target = null;
           for (const c of cards) {
@@ -1771,7 +1782,6 @@
           sourceCard.classList.remove('dragging-source');
           sourceCard = null;
 
-          // 保存顺序
           const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
           const list = getConfigs();
           const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
@@ -1780,7 +1790,7 @@
 
         handle.addEventListener('touchstart', e => {
           e.stopPropagation();
-          startDrag(e.touches[0].clientY, e.touches[0].clientX);
+          startDrag(e.touches[0].clientY);
         }, { passive: true });
 
         handle.addEventListener('touchmove', e => {
@@ -1793,7 +1803,7 @@
 
         handle.addEventListener('mousedown', e => {
           e.preventDefault();
-          startDrag(e.clientY, e.clientX);
+          startDrag(e.clientY);
           const onMove = ev => moveDrag(ev.clientY);
           const onUp = () => {
             endDrag();
