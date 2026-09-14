@@ -523,7 +523,10 @@
     }
 
     .sign-btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       padding: 8px 22px;
       background: var(--accent);
       color: #fff;
@@ -534,10 +537,29 @@
       cursor: pointer;
       font-family: inherit;
       -webkit-appearance: none;
+      min-width: 110px;
     }
 
     .sign-btn:active {
       opacity: 0.85;
+    }
+
+    .sign-btn.loading {
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .info-pills {
@@ -584,20 +606,10 @@
       margin-bottom: 20px;
     }
 
-    .tips-box {
-      background: #fff5f5;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 13px;
-      color: #ff3b30;
-      line-height: 1.55;
-      margin-bottom: 20px;
-    }
-
-    /* ========== 底部导航（更靠下 + 可流畅拖动） ========== */
+    /* ========== 底部导航 ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
-      padding: 4px 12px calc(4px + env(safe-area-inset-bottom));
+      padding: 2px 12px calc(2px + env(safe-area-inset-bottom));
       background: transparent;
       display: flex;
       justify-content: center;
@@ -623,7 +635,6 @@
       scroll-behavior: smooth;
       max-width: 100%;
       scrollbar-width: none;
-      /* 关键拖动手势 */
       touch-action: pan-x;
       overscroll-behavior-x: contain;
     }
@@ -663,7 +674,6 @@
       min-width: 68px;
       position: relative;
       z-index: 1;
-      /* 让拖动手势优先传给父级滚动 */
       touch-action: manipulation;
     }
 
@@ -870,7 +880,7 @@
       </div>
     </div>
 
-    <!-- 创建（已删除组织名称） -->
+    <!-- 创建（已恢复组织名称） -->
     <div class="page" id="pageCreate">
       <div class="page-header">创建 WebClip</div>
       <div class="content">
@@ -886,6 +896,11 @@
           <div class="form-group">
             <label>网页地址</label>
             <input type="url" id="webUrl" placeholder="https://xxx.com" autocomplete="off" autocapitalize="off">
+          </div>
+
+          <div class="form-group">
+            <label>组织名称</label>
+            <input type="text" id="orgName" placeholder="自定义组织" autocomplete="off">
           </div>
 
           <div class="form-group">
@@ -1009,7 +1024,7 @@
       </div>
     </div>
 
-    <!-- 详情页 -->
+    <!-- 详情页（已删除红色提示） -->
     <div class="detail-page" id="detailPage">
       <div class="detail-header">
         <button class="detail-close" id="detailBack">✕</button>
@@ -1017,7 +1032,7 @@
       <div class="detail-body" id="detailBody"></div>
     </div>
 
-    <!-- 底部导航（更靠下） -->
+    <!-- 底部导航 -->
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
         <div class="tab-indicator" id="tabIndicator"></div>
@@ -1143,7 +1158,7 @@
     function hideAlert() { alertMask.classList.remove('show'); }
     alertMask.addEventListener('click', e => { if (e.target === alertMask) hideAlert(); });
 
-    // 生成配置（组织名称固定为默认）
+    // 生成配置
     function buildMobileConfig(data) {
       const uuid1 = generateUUID(), uuid2 = generateUUID();
       let iconPayload = '';
@@ -1191,7 +1206,7 @@
   <key>PayloadIdentifier</key>
   <string>com.webclip.${uuid1}</string>
   <key>PayloadOrganization</key>
-  <string>自定义组织</string>
+  <string>${escapeXml(data.orgName)}</string>
   <key>PayloadRemovalDisallowed</key>
   <${data.allowDelete ? 'false' : 'true'}/>
   <key>PayloadType</key>
@@ -1239,7 +1254,7 @@
       const config = {
         id: generateUUID(),
         webUrl,
-        orgName: '自定义组织',
+        orgName: document.getElementById('orgName').value.trim() || '自定义组织',
         configName: document.getElementById('configName').value.trim() || 'WebClip',
         desktopName: document.getElementById('desktopName').value.trim() || '网页快捷方式',
         description: document.getElementById('description').value.trim() || '安装后在桌面生成网页快捷方式',
@@ -1252,11 +1267,6 @@
 
       addConfig(config);
       downloadConfig(config);
-
-      showAlert('创建成功', '已保存到应用，并开始下载配置文件', [
-        { text: '去应用查看', onClick: () => { switchTab('pageHome'); renderHomeList(); } },
-        { text: '继续创建' }
-      ]);
     });
 
     // 列表
@@ -1310,14 +1320,14 @@
       renderList('searchList', filtered);
     }
 
-    // 详情
+    // 详情页（已删除红色提示）
     function showDetail(item) {
       document.getElementById('detailBody').innerHTML = `
         <div class="app-header">
           ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder">📱</div>`}
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
-            <div class="app-developer">By 自定义组织</div>
+            <div class="app-developer">By ${escapeHtml(item.orgName || '自定义组织')}</div>
             <button class="sign-btn" id="detailInstall">立即安装</button>
           </div>
         </div>
@@ -1328,9 +1338,19 @@
         </div>
         <div class="section-title">Description</div>
         <div class="app-description">${escapeHtml(item.description || '安装后在桌面生成网页快捷方式')}</div>
-        <div class="tips-box">安装之前请确认使用苹果自带的 Safari 浏览器打开，否则无法正常下载。如果没有自动跳转，请按照以下步骤安装：【设置 → 通用 → VPN与设备管理】。若 60 秒后没弹出安装，请刷新页面。</div>
       `;
-      document.getElementById('detailInstall').onclick = () => downloadConfig(item);
+
+      const btn = document.getElementById('detailInstall');
+      btn.onclick = () => {
+        btn.classList.add('loading');
+        btn.innerHTML = `<div class="spinner"></div> 正在安装`;
+        downloadConfig(item);
+        setTimeout(() => {
+          btn.classList.remove('loading');
+          btn.innerHTML = '立即安装';
+        }, 3000);
+      };
+
       document.getElementById('detailPage').classList.add('show');
     }
     document.getElementById('detailBack').addEventListener('click', () => {
@@ -1376,7 +1396,7 @@
       item.addEventListener('click', () => switchTab(item.dataset.page));
     });
 
-    // 确保可以长按拖动（增强 touch 支持）
+    // 拖动支持
     let isDragging = false;
     let startX = 0;
     let scrollLeft = 0;
@@ -1390,7 +1410,7 @@
     tabBar.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
       const x = e.touches[0].pageX - tabBar.offsetLeft;
-      const walk = (x - startX) * 1.2; // 灵敏度
+      const walk = (x - startX) * 1.2;
       tabBar.scrollLeft = scrollLeft - walk;
     }, { passive: true });
 
