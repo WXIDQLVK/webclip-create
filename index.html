@@ -119,7 +119,6 @@
       overscroll-behavior: contain;
     }
 
-    /* 搜索框（应用页） */
     .app-search-box {
       padding: 0 16px 12px;
       background: var(--card);
@@ -266,11 +265,11 @@
     .config-card {
       background: var(--card);
       border-radius: 14px;
-      padding: 14px 16px;
+      padding: 14px 12px 14px 16px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       cursor: pointer;
       transition: background 0.15s, transform 0.2s;
@@ -283,7 +282,7 @@
     }
 
     .config-card.dragging {
-      opacity: 0.85;
+      opacity: 0.9;
       transform: scale(1.02);
       box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       z-index: 10;
@@ -335,7 +334,6 @@
       margin-top: 4px;
     }
 
-    /* 默认「打开」按钮 */
     .open-btn {
       flex-shrink: 0;
       height: 32px;
@@ -355,7 +353,7 @@
       opacity: 0.7;
     }
 
-    /* 编辑模式下的删除按钮（红色圆圈+横线） */
+    /* 红色删除按钮 */
     .delete-btn {
       width: 28px;
       height: 28px;
@@ -378,12 +376,100 @@
       border-radius: 2px;
     }
 
+    /* 三条横杠拖动手柄 */
+    .drag-handle {
+      width: 28px;
+      height: 36px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: grab;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+
+    .drag-handle span {
+      width: 16px;
+      height: 2px;
+      background: #c7c7cc;
+      border-radius: 1px;
+    }
+
     body.edit-mode .delete-btn {
+      display: flex;
+    }
+
+    body.edit-mode .drag-handle {
       display: flex;
     }
 
     body.edit-mode .open-btn {
       display: none;
+    }
+
+    /* ========== 工具页 ========== */
+    .tool-list {
+      padding: 12px 16px 30px;
+    }
+
+    .tool-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .tool-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 22px;
+    }
+
+    .tool-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tool-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .tool-desc {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .tool-install-btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 16px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-appearance: none;
+      flex-shrink: 0;
+    }
+
+    .tool-install-btn:active {
+      opacity: 0.8;
     }
 
     /* ========== 设置 ========== */
@@ -787,7 +873,7 @@
       top: 4px;
       bottom: 4px;
       left: 4px;
-      width: 80px;
+      width: 70px;
       border-radius: 22px;
       background: var(--accent-light);
       transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.25s ease;
@@ -802,7 +888,7 @@
       align-items: center;
       justify-content: center;
       gap: 2px;
-      padding: 8px 18px;
+      padding: 8px 14px;
       border-radius: 22px;
       cursor: pointer;
       color: var(--accent);
@@ -810,7 +896,7 @@
       font-weight: 500;
       transition: color 0.25s;
       user-select: none;
-      min-width: 80px;
+      min-width: 70px;
       position: relative;
       z-index: 1;
       touch-action: manipulation;
@@ -952,7 +1038,8 @@
       --accent-light: rgba(0, 122, 255, 0.22);
     }
 
-    body.dark .config-card {
+    body.dark .config-card,
+    body.dark .tool-card {
       box-shadow: none;
       background: #2c2c2e;
     }
@@ -1021,12 +1108,16 @@
     body.dark .open-btn {
       background: rgba(0, 122, 255, 0.2);
     }
+
+    body.dark .drag-handle span {
+      background: #8e8e93;
+    }
   </style>
 </head>
 <body>
   <div class="phone-frame">
 
-    <!-- 应用（已合并搜索 + 编辑模式） -->
+    <!-- 应用 -->
     <div class="page active" id="pageHome">
       <div class="page-header">
         <span>应用</span>
@@ -1088,6 +1179,14 @@
 
           <button class="generate-btn" id="generateBtn">生成配置文件</button>
         </div>
+      </div>
+    </div>
+
+    <!-- 工具 -->
+    <div class="page" id="pageTools">
+      <div class="page-header">工具</div>
+      <div class="content">
+        <div class="tool-list" id="toolList"></div>
       </div>
     </div>
 
@@ -1191,7 +1290,7 @@
       <div class="detail-body" id="detailBody"></div>
     </div>
 
-    <!-- 底部导航（已删除搜索） -->
+    <!-- 底部导航 -->
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
         <div class="tab-indicator" id="tabIndicator"></div>
@@ -1212,7 +1311,13 @@
           </div>
           <div>创建</div>
         </div>
-        <div class="tab-item" data-page="pageSettings" data-index="2">
+        <div class="tab-item" data-page="pageTools" data-index="2">
+          <div class="tab-icon">
+            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div>工具</div>
+        </div>
+        <div class="tab-item" data-page="pageSettings" data-index="3">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
@@ -1241,7 +1346,7 @@
     const STORAGE_KEY = 'webclip_configs';
     const SETTINGS_KEY = 'webclip_settings';
     let isEditMode = false;
-    let editingId = null; // 正在编辑的配置 id
+    let editingId = null;
 
     function getConfigs() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { return []; }
@@ -1327,7 +1432,7 @@
     function hideAlert() { alertMask.classList.remove('show'); }
     alertMask.addEventListener('click', e => { if (e.target === alertMask) hideAlert(); });
 
-    // 生成配置
+    // 生成 WebClip 配置
     function buildMobileConfig(data) {
       const uuid1 = generateUUID(), uuid2 = generateUUID();
       let iconPayload = '';
@@ -1426,6 +1531,160 @@
       }
     }
 
+    // ========== 设备限制配置生成 ==========
+    function buildRestrictionConfig(options) {
+      const uuid1 = generateUUID();
+      const uuid2 = generateUUID();
+      const restrictions = options.restrictions || {};
+
+      let restrictionXml = '';
+      for (const [key, value] of Object.entries(restrictions)) {
+        restrictionXml += `
+      <key>${key}</key>
+      <${value ? 'true' : 'false'}/>`;
+      }
+
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadDescription</key>
+      <string>${escapeXml(options.description)}</string>
+      <key>PayloadDisplayName</key>
+      <string>${escapeXml(options.name)}</string>
+      <key>PayloadIdentifier</key>
+      <string>com.restriction.${uuid2}</string>
+      <key>PayloadType</key>
+      <string>com.apple.applicationaccess</string>
+      <key>PayloadUUID</key>
+      <string>${uuid2}</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>${restrictionXml}
+    </dict>
+  </array>
+  <key>PayloadDescription</key>
+  <string>${escapeXml(options.description)}</string>
+  <key>PayloadDisplayName</key>
+  <string>${escapeXml(options.name)}</string>
+  <key>PayloadIdentifier</key>
+  <string>com.restriction.${uuid1}</string>
+  <key>PayloadOrganization</key>
+  <string>设备限制工具</string>
+  <key>PayloadRemovalDisallowed</key>
+  <false/>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>${uuid1}</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>`;
+    }
+
+    function downloadRestriction(options) {
+      const xml = buildRestrictionConfig(options);
+      const blob = new Blob([xml], { type: 'application/x-apple-aspen-config' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${options.name}.mobileconfig`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    // 预置工具列表
+    const TOOLS = [
+      {
+        id: 'disable-camera',
+        name: '禁用相机',
+        desc: '禁止使用相机功能',
+        icon: '📷',
+        restrictions: { allowCamera: false }
+      },
+      {
+        id: 'disable-screenshot',
+        name: '禁用截屏',
+        desc: '禁止截屏和屏幕录制',
+        icon: '📱',
+        restrictions: { allowScreenShot: false }
+      },
+      {
+        id: 'disable-airdrop',
+        name: '禁用 AirDrop',
+        desc: '禁止使用 AirDrop 传输',
+        icon: '✈️',
+        restrictions: { allowAirDrop: false }
+      },
+      {
+        id: 'disable-appstore',
+        name: '禁用 App Store',
+        desc: '禁止安装/更新 App',
+        icon: '🛒',
+        restrictions: { allowAppInstallation: false, allowUIAppInstallation: false }
+      },
+      {
+        id: 'disable-safari',
+        name: '禁用 Safari',
+        desc: '禁止使用 Safari 浏览器',
+        icon: '🧭',
+        restrictions: { allowSafari: false }
+      },
+      {
+        id: 'disable-icloud',
+        name: '禁用 iCloud',
+        desc: '禁止 iCloud 备份与同步',
+        icon: '☁️',
+        restrictions: { allowCloudBackup: false, allowCloudDocumentSync: false }
+      },
+      {
+        id: 'disable-siri',
+        name: '禁用 Siri',
+        desc: '禁止使用 Siri 和听写',
+        icon: '🎤',
+        restrictions: { allowAssistant: false, allowDictation: false }
+      },
+      {
+        id: 'disable-bluetooth',
+        name: '禁用蓝牙修改',
+        desc: '禁止修改蓝牙设置',
+        icon: '📶',
+        restrictions: { forceBluetoothOff: false, allowBluetoothModification: false }
+      }
+    ];
+
+    function renderTools() {
+      const container = document.getElementById('toolList');
+      container.innerHTML = TOOLS.map(t => `
+        <div class="tool-card">
+          <div class="tool-icon">${t.icon}</div>
+          <div class="tool-info">
+            <div class="tool-name">${t.name}</div>
+            <div class="tool-desc">${t.desc}</div>
+          </div>
+          <button class="tool-install-btn" data-id="${t.id}">安装</button>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.tool-install-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tool = TOOLS.find(t => t.id === btn.dataset.id);
+          if (tool) {
+            downloadRestriction({
+              name: tool.name,
+              description: tool.desc,
+              restrictions: tool.restrictions
+            });
+          }
+        });
+      });
+    }
+
     // 图标
     let iconBase64 = '';
     document.getElementById('iconInput').addEventListener('change', e => {
@@ -1441,7 +1700,7 @@
       reader.readAsDataURL(file);
     });
 
-    // 生成 / 保存编辑
+    // 生成 / 保存
     document.getElementById('generateBtn').addEventListener('click', () => {
       const webUrl = document.getElementById('webUrl').value.trim();
       if (!webUrl) { showAlert('请填写网页地址'); return; }
@@ -1460,7 +1719,6 @@
       };
 
       if (editingId) {
-        // 更新已有
         updateConfig(editingId, data);
         editingId = null;
         document.getElementById('createTitle').textContent = '创建 WebClip';
@@ -1473,7 +1731,6 @@
         downloadConfig(data);
       }
 
-      // 清空表单
       clearForm();
       switchTab('pageHome');
       renderHomeList();
@@ -1500,7 +1757,7 @@
       switchTab('pageHome');
     });
 
-    // 列表渲染
+    // 列表渲染（带三条横杠）
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
@@ -1508,7 +1765,7 @@
         return;
       }
       container.innerHTML = list.map(item => `
-        <div class="config-card" data-id="${item.id}" draggable="${isEditMode}">
+        <div class="config-card" data-id="${item.id}">
           ${item.iconBase64 ? `<img class="config-icon" src="${item.iconBase64}">` : `<div class="config-icon placeholder">📱</div>`}
           <div class="config-info">
             <div class="config-name">${escapeHtml(item.desktopName || item.configName)}</div>
@@ -1517,19 +1774,20 @@
           </div>
           <button class="open-btn" data-url="${escapeHtml(item.webUrl)}">打开</button>
           <button class="delete-btn" data-id="${item.id}"></button>
+          <div class="drag-handle" data-id="${item.id}">
+            <span></span><span></span><span></span>
+          </div>
         </div>
       `).join('');
 
-      // 点击卡片进入详情
       container.querySelectorAll('.config-card').forEach(card => {
         card.addEventListener('click', e => {
-          if (e.target.classList.contains('delete-btn') || e.target.classList.contains('open-btn') || isEditMode) return;
+          if (e.target.closest('.delete-btn') || e.target.closest('.open-btn') || e.target.closest('.drag-handle') || isEditMode) return;
           const item = getConfigs().find(c => c.id === card.dataset.id);
           if (item) showDetail(item);
         });
       });
 
-      // 打开按钮
       container.querySelectorAll('.open-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
@@ -1538,7 +1796,6 @@
         });
       });
 
-      // 删除按钮
       container.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
@@ -1552,9 +1809,8 @@
         });
       });
 
-      // 拖拽排序（编辑模式）
       if (isEditMode) {
-        setupDragSort(container);
+        setupDragWithHandle(container);
       }
     }
 
@@ -1572,32 +1828,67 @@
       renderList('homeList', list);
     }
 
-    // 简单拖拽排序
-    function setupDragSort(container) {
+    // 仅通过三条横杠拖动
+    function setupDragWithHandle(container) {
       let dragItem = null;
-      container.querySelectorAll('.config-card').forEach(card => {
-        card.addEventListener('dragstart', e => {
+      let startY = 0;
+
+      container.querySelectorAll('.drag-handle').forEach(handle => {
+        handle.addEventListener('touchstart', e => {
+          e.stopPropagation();
+          const card = handle.closest('.config-card');
           dragItem = card;
           card.classList.add('dragging');
-          e.dataTransfer.effectAllowed = 'move';
-        });
-        card.addEventListener('dragend', () => {
-          card.classList.remove('dragging');
-          dragItem = null;
-          // 保存新顺序
-          const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
-          const list = getConfigs();
-          const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
-          saveConfigs(newList);
-        });
-        card.addEventListener('dragover', e => {
+          startY = e.touches[0].clientY;
+        }, { passive: true });
+
+        handle.addEventListener('touchmove', e => {
+          if (!dragItem) return;
           e.preventDefault();
-          const after = getDragAfterElement(container, e.clientY);
+          const y = e.touches[0].clientY;
+          const after = getDragAfterElement(container, y);
           if (after == null) {
             container.appendChild(dragItem);
           } else {
             container.insertBefore(dragItem, after);
           }
+        }, { passive: false });
+
+        handle.addEventListener('touchend', () => {
+          if (!dragItem) return;
+          dragItem.classList.remove('dragging');
+          dragItem = null;
+          // 保存顺序
+          const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
+          const list = getConfigs();
+          const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
+          saveConfigs(newList);
+        });
+
+        // 桌面端支持
+        handle.addEventListener('mousedown', e => {
+          e.preventDefault();
+          const card = handle.closest('.config-card');
+          dragItem = card;
+          card.classList.add('dragging');
+
+          const onMove = (ev) => {
+            const after = getDragAfterElement(container, ev.clientY);
+            if (after == null) container.appendChild(dragItem);
+            else container.insertBefore(dragItem, after);
+          };
+          const onUp = () => {
+            dragItem.classList.remove('dragging');
+            dragItem = null;
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
+            const list = getConfigs();
+            const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
+            saveConfigs(newList);
+          };
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
         });
       });
     }
@@ -1615,7 +1906,7 @@
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    // 编辑模式切换
+    // 编辑模式
     document.getElementById('editToggleBtn').addEventListener('click', () => {
       isEditMode = !isEditMode;
       document.body.classList.toggle('edit-mode', isEditMode);
@@ -1628,7 +1919,7 @@
       renderHomeList(e.target.value);
     });
 
-    // 导入
+    // 导入（直接加入列表）
     document.getElementById('importBtn').addEventListener('click', () => {
       document.getElementById('importFileInput').click();
     });
@@ -1653,40 +1944,35 @@
         };
 
         const url = getText('URL') || '';
-        const label = getText('Label') || getText('PayloadDisplayName') || '导入的配置';
-        const org = getText('PayloadOrganization') || '自定义组织';
-        const desc = getText('PayloadDescription') || '';
+        const label = getText('Label') || getText('PayloadDisplayName') || file.name.replace('.mobileconfig', '');
+        const org = getText('PayloadOrganization') || '导入的配置';
+        const desc = getText('PayloadDescription') || '从文件导入的配置';
 
-        // 尝试提取 Icon
         let icon = '';
         const dataNodes = doc.getElementsByTagName('data');
         if (dataNodes.length) {
-          // 简单取第一个 data（通常是 Icon）
           const b64 = dataNodes[0].textContent.replace(/\s/g, '');
           if (b64) icon = 'data:image/png;base64,' + b64;
         }
 
-        // 填充到创建页
-        editingId = null;
-        document.getElementById('webUrl').value = url;
-        document.getElementById('orgName').value = org;
-        document.getElementById('configName').value = label;
-        document.getElementById('desktopName').value = label;
-        document.getElementById('description').value = desc;
-        iconBase64 = icon;
-        if (icon) {
-          document.getElementById('iconPreview').src = icon;
-          document.getElementById('iconPreview').style.display = 'block';
-          document.getElementById('plusIcon').style.display = 'none';
-        } else {
-          document.getElementById('iconPreview').style.display = 'none';
-          document.getElementById('plusIcon').style.display = 'block';
-        }
+        const config = {
+          id: generateUUID(),
+          webUrl: url || 'https://',
+          orgName: org,
+          configName: label,
+          desktopName: label,
+          description: desc,
+          fullscreen: true,
+          allowDelete: true,
+          ignoreScope: true,
+          iconBase64: icon,
+          createdAt: Date.now()
+        };
 
-        document.getElementById('createTitle').textContent = '编辑导入的配置';
-        document.getElementById('generateBtn').textContent = '保存配置';
-        document.getElementById('cancelEditBtn').style.display = 'block';
-        switchTab('pageCreate');
+        addConfig(config);
+        showAlert('导入成功', '已添加到应用列表');
+        renderHomeList();
+        switchTab('pageHome');
       } catch (err) {
         showAlert('导入失败', '无法解析该描述文件');
       }
@@ -1738,7 +2024,6 @@
       document.getElementById('detailShare').onclick = () => shareConfig(item);
 
       document.getElementById('detailEdit').onclick = () => {
-        // 填充表单进入编辑
         editingId = item.id;
         document.getElementById('webUrl').value = item.webUrl || '';
         document.getElementById('orgName').value = item.orgName || '';
@@ -1758,7 +2043,6 @@
         document.getElementById('generateBtn').textContent = '保存修改';
         document.getElementById('cancelEditBtn').style.display = 'block';
 
-        // 关闭详情页
         const page = document.getElementById('detailPage');
         page.classList.add('closing');
         setTimeout(() => {
@@ -1778,7 +2062,6 @@
       });
     }
 
-    // 返回
     document.getElementById('detailBack').addEventListener('click', () => {
       const page = document.getElementById('detailPage');
       page.classList.add('closing');
@@ -1828,13 +2111,14 @@
       tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
       if (pageId === 'pageHome') renderHomeList(document.getElementById('appSearchInput').value);
+      if (pageId === 'pageTools') renderTools();
     }
 
     tabItems.forEach(item => {
       item.addEventListener('click', () => switchTab(item.dataset.page));
     });
 
-    // 拖动支持
+    // 底部栏拖动
     let isDragging = false;
     let startX = 0;
     let scrollLeft = 0;
