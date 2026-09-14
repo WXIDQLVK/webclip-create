@@ -51,11 +51,11 @@
     }
 
     .page-header {
-      padding: 18px 20px 14px;
-      font-size: 30px;
+      padding: 20px 20px 16px;
+      font-size: 34px;
       font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.5px;
+      letter-spacing: -0.6px;
       background: var(--card);
       flex-shrink: 0;
       transition: background 0.3s, color 0.3s;
@@ -427,7 +427,7 @@
       pointer-events: none;
     }
 
-    /* ========== 详情页（纯白背景 + 返回动画） ========== */
+    /* ========== 详情页（进入/返回动画） ========== */
     .detail-page {
       display: none;
       flex-direction: column;
@@ -437,7 +437,7 @@
       inset: 0;
       z-index: 200;
       transform: translateX(100%);
-      transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     .detail-page.show {
@@ -535,12 +535,18 @@
       margin-bottom: 14px;
     }
 
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
     .sign-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 8px 22px;
+      padding: 8px 20px;
       background: var(--accent);
       color: #fff;
       font-size: 15px;
@@ -550,7 +556,7 @@
       cursor: pointer;
       font-family: inherit;
       -webkit-appearance: none;
-      min-width: 110px;
+      min-width: 100px;
     }
 
     .sign-btn:active {
@@ -560,6 +566,33 @@
     .sign-btn.loading {
       pointer-events: none;
       opacity: 0.9;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: none;
+      cursor: pointer;
+      color: var(--accent);
+    }
+
+    .share-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .share-btn:active {
+      opacity: 0.7;
     }
 
     .spinner {
@@ -619,7 +652,7 @@
       margin-bottom: 20px;
     }
 
-    /* ========== 底部导航（高度再缩小） ========== */
+    /* ========== 底部导航（再大一点点） ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
       padding: 0 12px calc(env(safe-area-inset-bottom));
@@ -633,11 +666,11 @@
       display: flex;
       align-items: center;
       position: relative;
-      background: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(28px) saturate(200%);
       -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-radius: 24px;
-      padding: 3px;
+      border-radius: 26px;
+      padding: 4px;
       margin-bottom: 8px;
       box-shadow: 
         0 6px 24px rgba(0, 0, 0, 0.1),
@@ -659,11 +692,11 @@
 
     .tab-indicator {
       position: absolute;
-      top: 3px;
-      bottom: 3px;
-      left: 3px;
-      width: 64px;
-      border-radius: 20px;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: 70px;
+      border-radius: 22px;
       background: var(--accent-light);
       transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.25s ease;
       z-index: 0;
@@ -676,16 +709,16 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1px;
-      padding: 6px 12px;
-      border-radius: 20px;
+      gap: 2px;
+      padding: 8px 14px;
+      border-radius: 22px;
       cursor: pointer;
       color: var(--accent);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 500;
       transition: color 0.25s;
       user-select: none;
-      min-width: 64px;
+      min-width: 70px;
       position: relative;
       z-index: 1;
       touch-action: manipulation;
@@ -696,8 +729,8 @@
     }
 
     .tab-icon {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -705,12 +738,12 @@
     }
 
     .tab-item.active .tab-icon {
-      transform: scale(1.06);
+      transform: scale(1.08);
     }
 
     .tab-icon svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.8;
@@ -833,7 +866,7 @@
     }
 
     body.dark .tab-bar {
-      background: rgba(44, 44, 46, 0.82);
+      background: rgba(44, 44, 46, 0.85);
       border: 0.5px solid rgba(255, 255, 255, 0.1);
       box-shadow: 
         0 6px 24px rgba(0, 0, 0, 0.35),
@@ -887,6 +920,10 @@
 
     body.dark .detail-close svg {
       stroke: #f5f5f7;
+    }
+
+    body.dark .share-btn {
+      background: rgba(0, 122, 255, 0.2);
     }
   </style>
 </head>
@@ -1254,6 +1291,33 @@
       setTimeout(() => URL.revokeObjectURL(url), 2000);
     }
 
+    // 分享 .mobileconfig 文件
+    async function shareConfig(data) {
+      const blob = new Blob([buildMobileConfig(data)], { type: 'application/x-apple-aspen-config' });
+      const file = new File([blob], `${data.configName || 'WebClip'}.mobileconfig`, {
+        type: 'application/x-apple-aspen-config'
+      });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: data.configName || 'WebClip',
+            text: data.description || 'WebClip 配置文件'
+          });
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            // 分享失败时降级为下载
+            downloadConfig(data);
+          }
+        }
+      } else {
+        // 不支持文件分享时直接下载
+        downloadConfig(data);
+        showAlert('提示', '当前浏览器不支持直接分享文件，已为你下载配置文件');
+      }
+    }
+
     // 图标
     let iconBase64 = '';
     document.getElementById('iconInput').addEventListener('change', e => {
@@ -1343,7 +1407,7 @@
       renderList('searchList', filtered);
     }
 
-    // 详情页
+    // 详情页（进入动画 + 分享）
     function showDetail(item) {
       document.getElementById('detailBody').innerHTML = `
         <div class="app-header">
@@ -1351,7 +1415,12 @@
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="app-developer">${escapeHtml(item.orgName || '自定义组织')}</div>
-            <button class="sign-btn" id="detailInstall">立即下载</button>
+            <div class="btn-row">
+              <button class="sign-btn" id="detailInstall">立即下载</button>
+              <button class="share-btn" id="detailShare" title="分享">
+                <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </button>
+            </div>
           </div>
         </div>
         <div class="info-pills">
@@ -1374,9 +1443,17 @@
         }, 2500);
       };
 
+      document.getElementById('detailShare').onclick = () => shareConfig(item);
+
       const page = document.getElementById('detailPage');
       page.classList.remove('closing');
-      page.classList.add('show');
+      // 强制回流后再添加 show，保证动画触发
+      page.style.display = 'flex';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          page.classList.add('show');
+        });
+      });
     }
 
     // 返回带动画
@@ -1385,7 +1462,8 @@
       page.classList.add('closing');
       setTimeout(() => {
         page.classList.remove('show', 'closing');
-      }, 320);
+        page.style.display = 'none';
+      }, 350);
     });
 
     // 底部导航
@@ -1400,7 +1478,7 @@
       const itemRect = item.getBoundingClientRect();
       const offset = itemRect.left - barRect.left + tabBar.scrollLeft;
       indicator.style.width = itemRect.width + 'px';
-      indicator.style.transform = `translateX(${offset - 3}px)`;
+      indicator.style.transform = `translateX(${offset - 4}px)`;
     }
 
     function switchTab(pageId) {
@@ -1420,7 +1498,10 @@
       const detail = document.getElementById('detailPage');
       if (detail.classList.contains('show')) {
         detail.classList.add('closing');
-        setTimeout(() => detail.classList.remove('show', 'closing'), 320);
+        setTimeout(() => {
+          detail.classList.remove('show', 'closing');
+          detail.style.display = 'none';
+        }, 350);
       }
 
       tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
