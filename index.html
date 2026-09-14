@@ -50,7 +50,6 @@
       overflow: hidden;
     }
 
-    /* ========== 顶部标题 ========== */
     .page-header {
       padding: 16px 20px 12px;
       font-size: 26px;
@@ -62,7 +61,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* ========== 内容区 ========== */
     .content {
       flex: 1;
       overflow-y: auto;
@@ -272,7 +270,7 @@
       background: #ffe5e5;
     }
 
-    /* ========== 搜索页 ========== */
+    /* ========== 搜索 ========== */
     .search-box {
       padding: 12px 16px;
       background: var(--card);
@@ -296,7 +294,7 @@
       background-position: 10px center;
     }
 
-    /* ========== 设置页 ========== */
+    /* ========== 设置 ========== */
     .settings-content {
       padding: 8px 16px 40px;
     }
@@ -328,7 +326,6 @@
       gap: 12px;
       cursor: pointer;
       transition: background 0.15s;
-      position: relative;
     }
 
     .settings-item:active {
@@ -370,7 +367,6 @@
       opacity: 0.6;
     }
 
-    /* 开关 */
     .toggle {
       position: relative;
       width: 51px;
@@ -598,10 +594,10 @@
       margin-bottom: 20px;
     }
 
-    /* ========== 底部导航（更圆润 + 流畅滑动） ========== */
+    /* ========== 底部导航（更靠下 + 可流畅拖动） ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
-      padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+      padding: 4px 12px calc(4px + env(safe-area-inset-bottom));
       background: transparent;
       display: flex;
       justify-content: center;
@@ -627,14 +623,15 @@
       scroll-behavior: smooth;
       max-width: 100%;
       scrollbar-width: none;
-      gap: 0;
+      /* 关键拖动手势 */
+      touch-action: pan-x;
+      overscroll-behavior-x: contain;
     }
 
     .tab-bar::-webkit-scrollbar {
       display: none;
     }
 
-    /* 滑动高亮指示器 */
     .tab-indicator {
       position: absolute;
       top: 4px;
@@ -666,6 +663,8 @@
       min-width: 68px;
       position: relative;
       z-index: 1;
+      /* 让拖动手势优先传给父级滚动 */
+      touch-action: manipulation;
     }
 
     .tab-item.active {
@@ -740,7 +739,6 @@
       font-weight: 600;
       color: #000;
       line-height: 1.35;
-      letter-spacing: -0.2px;
       margin-bottom: 4px;
     }
 
@@ -872,7 +870,7 @@
       </div>
     </div>
 
-    <!-- 创建 -->
+    <!-- 创建（已删除组织名称） -->
     <div class="page" id="pageCreate">
       <div class="page-header">创建 WebClip</div>
       <div class="content">
@@ -888,11 +886,6 @@
           <div class="form-group">
             <label>网页地址</label>
             <input type="url" id="webUrl" placeholder="https://xxx.com" autocomplete="off" autocapitalize="off">
-          </div>
-
-          <div class="form-group">
-            <label>组织名称</label>
-            <input type="text" id="orgName" placeholder="自定义组织" autocomplete="off">
           </div>
 
           <div class="form-group">
@@ -1024,7 +1017,7 @@
       <div class="detail-body" id="detailBody"></div>
     </div>
 
-    <!-- 底部导航 -->
+    <!-- 底部导航（更靠下） -->
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
         <div class="tab-indicator" id="tabIndicator"></div>
@@ -1150,7 +1143,7 @@
     function hideAlert() { alertMask.classList.remove('show'); }
     alertMask.addEventListener('click', e => { if (e.target === alertMask) hideAlert(); });
 
-    // 生成配置
+    // 生成配置（组织名称固定为默认）
     function buildMobileConfig(data) {
       const uuid1 = generateUUID(), uuid2 = generateUUID();
       let iconPayload = '';
@@ -1198,7 +1191,7 @@
   <key>PayloadIdentifier</key>
   <string>com.webclip.${uuid1}</string>
   <key>PayloadOrganization</key>
-  <string>${escapeXml(data.orgName)}</string>
+  <string>自定义组织</string>
   <key>PayloadRemovalDisallowed</key>
   <${data.allowDelete ? 'false' : 'true'}/>
   <key>PayloadType</key>
@@ -1246,7 +1239,7 @@
       const config = {
         id: generateUUID(),
         webUrl,
-        orgName: document.getElementById('orgName').value.trim() || '自定义组织',
+        orgName: '自定义组织',
         configName: document.getElementById('configName').value.trim() || 'WebClip',
         desktopName: document.getElementById('desktopName').value.trim() || '网页快捷方式',
         description: document.getElementById('description').value.trim() || '安装后在桌面生成网页快捷方式',
@@ -1266,7 +1259,7 @@
       ]);
     });
 
-    // 列表渲染
+    // 列表
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
@@ -1324,7 +1317,7 @@
           ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder">📱</div>`}
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
-            <div class="app-developer">By ${escapeHtml(item.orgName || '自定义组织')}</div>
+            <div class="app-developer">By 自定义组织</div>
             <button class="sign-btn" id="detailInstall">立即安装</button>
           </div>
         </div>
@@ -1344,7 +1337,7 @@
       document.getElementById('detailPage').classList.remove('show');
     });
 
-    // 底部导航 + 指示器动画
+    // 底部导航
     const tabBar = document.getElementById('tabBar');
     const indicator = document.getElementById('tabIndicator');
     const tabItems = document.querySelectorAll('.tab-item');
@@ -1373,7 +1366,6 @@
       updateIndicator(activeIndex);
       document.getElementById('detailPage').classList.remove('show');
 
-      // 滚动到可见
       tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
       if (pageId === 'pageHome') renderHomeList();
@@ -1384,7 +1376,28 @@
       item.addEventListener('click', () => switchTab(item.dataset.page));
     });
 
-    // 初始化指示器位置
+    // 确保可以长按拖动（增强 touch 支持）
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    tabBar.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      startX = e.touches[0].pageX - tabBar.offsetLeft;
+      scrollLeft = tabBar.scrollLeft;
+    }, { passive: true });
+
+    tabBar.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const x = e.touches[0].pageX - tabBar.offsetLeft;
+      const walk = (x - startX) * 1.2; // 灵敏度
+      tabBar.scrollLeft = scrollLeft - walk;
+    }, { passive: true });
+
+    tabBar.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
     setTimeout(() => updateIndicator(0), 50);
     window.addEventListener('resize', () => {
       const active = document.querySelector('.tab-item.active');
@@ -1407,7 +1420,6 @@
       colorPicker.value = color;
     }
 
-    // 深色模式（顶部也跟着变）
     document.getElementById('darkMode').addEventListener('change', function () {
       const isDark = this.checked;
       document.body.classList.toggle('dark', isDark);
@@ -1418,7 +1430,6 @@
       saveSettings(s);
     });
 
-    // 颜色主题 → 系统调色盘
     document.getElementById('colorThemeBtn').addEventListener('click', () => colorPicker.click());
     colorPicker.addEventListener('input', function () {
       applyAccent(this.value);
@@ -1427,7 +1438,6 @@
       saveSettings(s);
     });
 
-    // WebClip 选项
     ['allowDelete', 'fullscreen', 'ignoreScope'].forEach(id => {
       document.getElementById(id).addEventListener('change', function () {
         const s = getSettings();
@@ -1436,19 +1446,16 @@
       });
     });
 
-    // 通知（无弹窗）
     document.getElementById('notificationToggle').addEventListener('change', function () {
       const s = getSettings();
       s.notification = this.checked;
       saveSettings(s);
     });
 
-    // 关于
     document.getElementById('aboutItem').addEventListener('click', () => {
       showAlert('关于', '创建 WebClip v1.0\n一个简单好用的 iOS 网页快捷方式生成工具');
     });
 
-    // 初始化
     function initSettings() {
       const s = getSettings();
       if (s.darkMode) {
