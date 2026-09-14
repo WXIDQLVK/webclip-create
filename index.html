@@ -427,26 +427,33 @@
       pointer-events: none;
     }
 
-    /* ========== 详情页 ========== */
+    /* ========== 详情页（纯白背景 + 返回动画） ========== */
     .detail-page {
       display: none;
       flex-direction: column;
       height: 100%;
-      background: #f5f5f7;
+      background: #ffffff;
       position: absolute;
       inset: 0;
       z-index: 200;
+      transform: translateX(100%);
+      transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     .detail-page.show {
       display: flex;
+      transform: translateX(0);
+    }
+
+    .detail-page.closing {
+      transform: translateX(100%);
     }
 
     .detail-header {
       display: flex;
       align-items: center;
       padding: 12px 16px;
-      background: #f5f5f7;
+      background: #ffffff;
       position: relative;
       flex-shrink: 0;
     }
@@ -455,13 +462,13 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #ffffff;
+      background: #f2f2f7;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       padding: 0;
     }
 
@@ -480,6 +487,7 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       padding: 0 20px 40px;
+      background: #ffffff;
     }
 
     .app-header {
@@ -611,7 +619,7 @@
       margin-bottom: 20px;
     }
 
-    /* ========== 底部导航（再往下 + 固定不动） ========== */
+    /* ========== 底部导航（高度再缩小） ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
       padding: 0 12px calc(env(safe-area-inset-bottom));
@@ -628,12 +636,12 @@
       background: rgba(255, 255, 255, 0.78);
       backdrop-filter: blur(28px) saturate(200%);
       -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-radius: 28px;
-      padding: 4px;
-      margin-bottom: 6px;
+      border-radius: 24px;
+      padding: 3px;
+      margin-bottom: 8px;
       box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.12),
-        0 2px 8px rgba(0, 0, 0, 0.06),
+        0 6px 24px rgba(0, 0, 0, 0.1),
+        0 2px 6px rgba(0, 0, 0, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.7);
       border: 0.5px solid rgba(255, 255, 255, 0.5);
       overflow-x: auto;
@@ -651,11 +659,11 @@
 
     .tab-indicator {
       position: absolute;
-      top: 4px;
-      bottom: 4px;
-      left: 4px;
-      width: 68px;
-      border-radius: 24px;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: 64px;
+      border-radius: 20px;
       background: var(--accent-light);
       transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.25s ease;
       z-index: 0;
@@ -668,16 +676,16 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      padding: 8px 14px;
-      border-radius: 24px;
+      gap: 1px;
+      padding: 6px 12px;
+      border-radius: 20px;
       cursor: pointer;
       color: var(--accent);
       font-size: 10px;
       font-weight: 500;
       transition: color 0.25s;
       user-select: none;
-      min-width: 68px;
+      min-width: 64px;
       position: relative;
       z-index: 1;
       touch-action: manipulation;
@@ -688,8 +696,8 @@
     }
 
     .tab-icon {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -697,12 +705,12 @@
     }
 
     .tab-item.active .tab-icon {
-      transform: scale(1.08);
+      transform: scale(1.06);
     }
 
     .tab-icon svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.8;
@@ -828,7 +836,7 @@
       background: rgba(44, 44, 46, 0.82);
       border: 0.5px solid rgba(255, 255, 255, 0.1);
       box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 6px 24px rgba(0, 0, 0, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
@@ -852,6 +860,10 @@
       background: #1c1c1e;
     }
 
+    body.dark .detail-body {
+      background: #1c1c1e;
+    }
+
     body.dark .app-name,
     body.dark .section-title {
       color: #f5f5f7;
@@ -870,7 +882,7 @@
     }
 
     body.dark .detail-close {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.12);
     }
 
     body.dark .detail-close svg {
@@ -1339,7 +1351,7 @@
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="app-developer">${escapeHtml(item.orgName || '自定义组织')}</div>
-            <button class="sign-btn" id="detailInstall">立即安装</button>
+            <button class="sign-btn" id="detailInstall">立即下载</button>
           </div>
         </div>
         <div class="info-pills">
@@ -1354,18 +1366,26 @@
       const btn = document.getElementById('detailInstall');
       btn.onclick = () => {
         btn.classList.add('loading');
-        btn.innerHTML = `<div class="spinner"></div> 正在安装`;
+        btn.innerHTML = `<div class="spinner"></div> 下载中`;
         downloadConfig(item);
         setTimeout(() => {
           btn.classList.remove('loading');
-          btn.innerHTML = '立即安装';
-        }, 3000);
+          btn.innerHTML = '立即下载';
+        }, 2500);
       };
 
-      document.getElementById('detailPage').classList.add('show');
+      const page = document.getElementById('detailPage');
+      page.classList.remove('closing');
+      page.classList.add('show');
     }
+
+    // 返回带动画
     document.getElementById('detailBack').addEventListener('click', () => {
-      document.getElementById('detailPage').classList.remove('show');
+      const page = document.getElementById('detailPage');
+      page.classList.add('closing');
+      setTimeout(() => {
+        page.classList.remove('show', 'closing');
+      }, 320);
     });
 
     // 底部导航
@@ -1380,7 +1400,7 @@
       const itemRect = item.getBoundingClientRect();
       const offset = itemRect.left - barRect.left + tabBar.scrollLeft;
       indicator.style.width = itemRect.width + 'px';
-      indicator.style.transform = `translateX(${offset - 4}px)`;
+      indicator.style.transform = `translateX(${offset - 3}px)`;
     }
 
     function switchTab(pageId) {
@@ -1395,7 +1415,13 @@
       });
 
       updateIndicator(activeIndex);
-      document.getElementById('detailPage').classList.remove('show');
+
+      // 关闭详情页
+      const detail = document.getElementById('detailPage');
+      if (detail.classList.contains('show')) {
+        detail.classList.add('closing');
+        setTimeout(() => detail.classList.remove('show', 'closing'), 320);
+      }
 
       tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
