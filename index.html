@@ -50,24 +50,29 @@
       overflow: hidden;
     }
 
+    /* 统一标题区域高度 */
     .page-header {
-      padding: 16px 16px 12px;
+      padding: 12px 16px 10px;
+      background: var(--card);
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      min-height: 36px;
+      margin-bottom: 4px;
+    }
+
+    .page-title {
       font-size: 34px;
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.6px;
-      background: var(--card);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      line-height: 1.2;
     }
 
     .header-btn {
@@ -82,11 +87,6 @@
       cursor: pointer;
       font-family: inherit;
       -webkit-appearance: none;
-    }
-
-    .header-btn.primary {
-      background: var(--accent);
-      color: #fff;
     }
 
     .header-icon-btn {
@@ -265,14 +265,14 @@
     .config-card {
       background: var(--card);
       border-radius: 14px;
-      padding: 14px 12px 14px 16px;
+      padding: 14px 12px 14px 12px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       cursor: pointer;
-      transition: background 0.15s, transform 0.2s;
+      transition: background 0.15s, transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.25s;
       position: relative;
       user-select: none;
     }
@@ -282,10 +282,11 @@
     }
 
     .config-card.dragging {
-      opacity: 0.9;
-      transform: scale(1.02);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-      z-index: 10;
+      opacity: 0.95;
+      transform: scale(1.03);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+      z-index: 20;
+      background: var(--card);
     }
 
     .config-icon {
@@ -376,10 +377,10 @@
       border-radius: 2px;
     }
 
-    /* 三条横杠拖动手柄 */
+    /* 三条横杠（最左边） */
     .drag-handle {
       width: 28px;
-      height: 36px;
+      height: 40px;
       display: none;
       flex-direction: column;
       align-items: center;
@@ -388,6 +389,7 @@
       cursor: grab;
       flex-shrink: 0;
       touch-action: none;
+      margin-right: 2px;
     }
 
     .drag-handle span {
@@ -395,6 +397,7 @@
       height: 2px;
       background: #c7c7cc;
       border-radius: 1px;
+      transition: background 0.2s;
     }
 
     body.edit-mode .delete-btn {
@@ -1120,13 +1123,13 @@
     <!-- 应用 -->
     <div class="page active" id="pageHome">
       <div class="page-header">
-        <span>应用</span>
-        <div class="header-actions">
+        <div class="header-top">
           <button class="header-btn" id="editToggleBtn">编辑</button>
           <button class="header-icon-btn" id="importBtn" title="导入">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
         </div>
+        <div class="page-title">应用</div>
       </div>
       <div class="app-search-box">
         <input type="search" class="app-search-input" id="appSearchInput" placeholder="搜索应用" autocomplete="off">
@@ -1139,8 +1142,10 @@
     <!-- 创建 -->
     <div class="page" id="pageCreate">
       <div class="page-header">
-        <span id="createTitle">创建 WebClip</span>
-        <button class="header-btn" id="cancelEditBtn" style="display:none;">取消</button>
+        <div class="header-top">
+          <button class="header-btn" id="cancelEditBtn" style="display:none;">取消</button>
+        </div>
+        <div class="page-title" id="createTitle">创建 WebClip</div>
       </div>
       <div class="content">
         <div class="create-content">
@@ -1184,7 +1189,10 @@
 
     <!-- 工具 -->
     <div class="page" id="pageTools">
-      <div class="page-header">工具</div>
+      <div class="page-header">
+        <div class="header-top"></div>
+        <div class="page-title">工具</div>
+      </div>
       <div class="content">
         <div class="tool-list" id="toolList"></div>
       </div>
@@ -1192,7 +1200,10 @@
 
     <!-- 设置 -->
     <div class="page" id="pageSettings">
-      <div class="page-header">设置</div>
+      <div class="page-header">
+        <div class="header-top"></div>
+        <div class="page-title">设置</div>
+      </div>
       <div class="content">
         <div class="settings-content">
           <div class="settings-section">
@@ -1531,7 +1542,7 @@
       }
     }
 
-    // ========== 设备限制配置生成 ==========
+    // ========== 设备限制配置 ==========
     function buildRestrictionConfig(options) {
       const uuid1 = generateUUID();
       const uuid2 = generateUUID();
@@ -1598,64 +1609,15 @@
       setTimeout(() => URL.revokeObjectURL(url), 2000);
     }
 
-    // 预置工具列表
     const TOOLS = [
-      {
-        id: 'disable-camera',
-        name: '禁用相机',
-        desc: '禁止使用相机功能',
-        icon: '📷',
-        restrictions: { allowCamera: false }
-      },
-      {
-        id: 'disable-screenshot',
-        name: '禁用截屏',
-        desc: '禁止截屏和屏幕录制',
-        icon: '📱',
-        restrictions: { allowScreenShot: false }
-      },
-      {
-        id: 'disable-airdrop',
-        name: '禁用 AirDrop',
-        desc: '禁止使用 AirDrop 传输',
-        icon: '✈️',
-        restrictions: { allowAirDrop: false }
-      },
-      {
-        id: 'disable-appstore',
-        name: '禁用 App Store',
-        desc: '禁止安装/更新 App',
-        icon: '🛒',
-        restrictions: { allowAppInstallation: false, allowUIAppInstallation: false }
-      },
-      {
-        id: 'disable-safari',
-        name: '禁用 Safari',
-        desc: '禁止使用 Safari 浏览器',
-        icon: '🧭',
-        restrictions: { allowSafari: false }
-      },
-      {
-        id: 'disable-icloud',
-        name: '禁用 iCloud',
-        desc: '禁止 iCloud 备份与同步',
-        icon: '☁️',
-        restrictions: { allowCloudBackup: false, allowCloudDocumentSync: false }
-      },
-      {
-        id: 'disable-siri',
-        name: '禁用 Siri',
-        desc: '禁止使用 Siri 和听写',
-        icon: '🎤',
-        restrictions: { allowAssistant: false, allowDictation: false }
-      },
-      {
-        id: 'disable-bluetooth',
-        name: '禁用蓝牙修改',
-        desc: '禁止修改蓝牙设置',
-        icon: '📶',
-        restrictions: { forceBluetoothOff: false, allowBluetoothModification: false }
-      }
+      { id: 'disable-camera', name: '禁用相机', desc: '禁止使用相机功能', icon: '📷', restrictions: { allowCamera: false } },
+      { id: 'disable-screenshot', name: '禁用截屏', desc: '禁止截屏和屏幕录制', icon: '📱', restrictions: { allowScreenShot: false } },
+      { id: 'disable-airdrop', name: '禁用 AirDrop', desc: '禁止使用 AirDrop 传输', icon: '✈️', restrictions: { allowAirDrop: false } },
+      { id: 'disable-appstore', name: '禁用 App Store', desc: '禁止安装/更新 App', icon: '🛒', restrictions: { allowAppInstallation: false, allowUIAppInstallation: false } },
+      { id: 'disable-safari', name: '禁用 Safari', desc: '禁止使用 Safari 浏览器', icon: '🧭', restrictions: { allowSafari: false } },
+      { id: 'disable-icloud', name: '禁用 iCloud', desc: '禁止 iCloud 备份与同步', icon: '☁️', restrictions: { allowCloudBackup: false, allowCloudDocumentSync: false } },
+      { id: 'disable-siri', name: '禁用 Siri', desc: '禁止使用 Siri 和听写', icon: '🎤', restrictions: { allowAssistant: false, allowDictation: false } },
+      { id: 'disable-bluetooth', name: '禁用蓝牙修改', desc: '禁止修改蓝牙设置', icon: '📶', restrictions: { allowBluetoothModification: false } }
     ];
 
     function renderTools() {
@@ -1757,7 +1719,7 @@
       switchTab('pageHome');
     });
 
-    // 列表渲染（带三条横杠）
+    // 列表渲染（三条横线在左边）
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
@@ -1766,6 +1728,9 @@
       }
       container.innerHTML = list.map(item => `
         <div class="config-card" data-id="${item.id}">
+          <div class="drag-handle" data-id="${item.id}">
+            <span></span><span></span><span></span>
+          </div>
           ${item.iconBase64 ? `<img class="config-icon" src="${item.iconBase64}">` : `<div class="config-icon placeholder">📱</div>`}
           <div class="config-info">
             <div class="config-name">${escapeHtml(item.desktopName || item.configName)}</div>
@@ -1774,9 +1739,6 @@
           </div>
           <button class="open-btn" data-url="${escapeHtml(item.webUrl)}">打开</button>
           <button class="delete-btn" data-id="${item.id}"></button>
-          <div class="drag-handle" data-id="${item.id}">
-            <span></span><span></span><span></span>
-          </div>
         </div>
       `).join('');
 
@@ -1828,18 +1790,17 @@
       renderList('homeList', list);
     }
 
-    // 仅通过三条横杠拖动
+    // 仅通过左边三条横杠拖动 + 平滑动画
     function setupDragWithHandle(container) {
       let dragItem = null;
-      let startY = 0;
 
       container.querySelectorAll('.drag-handle').forEach(handle => {
+        // 触摸
         handle.addEventListener('touchstart', e => {
           e.stopPropagation();
           const card = handle.closest('.config-card');
           dragItem = card;
           card.classList.add('dragging');
-          startY = e.touches[0].clientY;
         }, { passive: true });
 
         handle.addEventListener('touchmove', e => {
@@ -1858,14 +1819,13 @@
           if (!dragItem) return;
           dragItem.classList.remove('dragging');
           dragItem = null;
-          // 保存顺序
           const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
           const list = getConfigs();
           const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
           saveConfigs(newList);
         });
 
-        // 桌面端支持
+        // 鼠标
         handle.addEventListener('mousedown', e => {
           e.preventDefault();
           const card = handle.closest('.config-card');
