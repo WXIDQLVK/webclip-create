@@ -51,14 +51,65 @@
     }
 
     .page-header {
-      padding: 20px 20px 16px;
+      padding: 16px 16px 12px;
       font-size: 34px;
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.6px;
       background: var(--card);
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       transition: background 0.3s, color 0.3s;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 16px;
+      border: none;
+      font-size: 15px;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-appearance: none;
+    }
+
+    .header-btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .header-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .header-icon-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .content {
@@ -66,6 +117,30 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
+    }
+
+    /* 搜索框（应用页） */
+    .app-search-box {
+      padding: 0 16px 12px;
+      background: var(--card);
+      flex-shrink: 0;
+    }
+
+    .app-search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 14px 0 36px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 10px center;
     }
 
     /* ========== 创建页面 ========== */
@@ -177,7 +252,7 @@
 
     /* ========== 列表 ========== */
     .home-list {
-      padding: 12px 16px 30px;
+      padding: 4px 16px 30px;
     }
 
     .empty-tip {
@@ -198,11 +273,20 @@
       gap: 14px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s, transform 0.2s;
+      position: relative;
+      user-select: none;
     }
 
     .config-card:active {
       background: #f5f5f7;
+    }
+
+    .config-card.dragging {
+      opacity: 0.85;
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      z-index: 10;
     }
 
     .config-icon {
@@ -251,47 +335,55 @@
       margin-top: 4px;
     }
 
-    .delete-btn {
-      width: 36px;
-      height: 36px;
+    /* 默认「打开」按钮 */
+    .open-btn {
+      flex-shrink: 0;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 16px;
       border: none;
-      background: transparent;
-      color: #ff3b30;
-      font-size: 22px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 500;
       cursor: pointer;
-      flex-shrink: 0;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .delete-btn:active {
-      background: #ffe5e5;
-    }
-
-    /* ========== 搜索 ========== */
-    .search-box {
-      padding: 12px 16px;
-      background: var(--card);
-      flex-shrink: 0;
-    }
-
-    .search-input {
-      width: 100%;
-      height: 40px;
-      padding: 0 14px 0 36px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
       font-family: inherit;
       -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: 10px center;
+    }
+
+    .open-btn:active {
+      opacity: 0.7;
+    }
+
+    /* 编辑模式下的删除按钮（红色圆圈+横线） */
+    .delete-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: #ff3b30;
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .delete-btn::after {
+      content: '';
+      width: 12px;
+      height: 2.5px;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    body.edit-mode .delete-btn {
+      display: flex;
+    }
+
+    body.edit-mode .open-btn {
+      display: none;
     }
 
     /* ========== 设置 ========== */
@@ -427,7 +519,7 @@
       pointer-events: none;
     }
 
-    /* ========== 详情页（进入/返回动画） ========== */
+    /* ========== 详情页 ========== */
     .detail-page {
       display: none;
       flex-direction: column;
@@ -452,7 +544,7 @@
     .detail-header {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
+      padding: 20px 16px 12px;
       background: #ffffff;
       position: relative;
       flex-shrink: 0;
@@ -546,7 +638,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 8px 20px;
+      padding: 8px 18px;
       background: var(--accent);
       color: #fff;
       font-size: 15px;
@@ -556,7 +648,7 @@
       cursor: pointer;
       font-family: inherit;
       -webkit-appearance: none;
-      min-width: 100px;
+      min-width: 90px;
     }
 
     .sign-btn:active {
@@ -568,7 +660,7 @@
       opacity: 0.9;
     }
 
-    .share-btn {
+    .action-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -581,7 +673,7 @@
       color: var(--accent);
     }
 
-    .share-btn svg {
+    .action-btn svg {
       width: 18px;
       height: 18px;
       stroke: currentColor;
@@ -591,7 +683,7 @@
       stroke-linejoin: round;
     }
 
-    .share-btn:active {
+    .action-btn:active {
       opacity: 0.7;
     }
 
@@ -652,7 +744,7 @@
       margin-bottom: 20px;
     }
 
-    /* ========== 底部导航（再大一点点） ========== */
+    /* ========== 底部导航 ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
       padding: 0 12px calc(env(safe-area-inset-bottom));
@@ -695,7 +787,7 @@
       top: 4px;
       bottom: 4px;
       left: 4px;
-      width: 70px;
+      width: 80px;
       border-radius: 22px;
       background: var(--accent-light);
       transition: transform 0.32s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.25s ease;
@@ -710,7 +802,7 @@
       align-items: center;
       justify-content: center;
       gap: 2px;
-      padding: 8px 14px;
+      padding: 8px 18px;
       border-radius: 22px;
       cursor: pointer;
       color: var(--accent);
@@ -718,7 +810,7 @@
       font-weight: 500;
       transition: color 0.25s;
       user-select: none;
-      min-width: 70px;
+      min-width: 80px;
       position: relative;
       z-index: 1;
       touch-action: manipulation;
@@ -881,7 +973,7 @@
       background: var(--card);
     }
 
-    body.dark .search-box {
+    body.dark .app-search-box {
       background: var(--card);
     }
 
@@ -922,7 +1014,11 @@
       stroke: #f5f5f7;
     }
 
-    body.dark .share-btn {
+    body.dark .action-btn {
+      background: rgba(0, 122, 255, 0.2);
+    }
+
+    body.dark .open-btn {
       background: rgba(0, 122, 255, 0.2);
     }
   </style>
@@ -930,9 +1026,20 @@
 <body>
   <div class="phone-frame">
 
-    <!-- 应用 -->
+    <!-- 应用（已合并搜索 + 编辑模式） -->
     <div class="page active" id="pageHome">
-      <div class="page-header">应用</div>
+      <div class="page-header">
+        <span>应用</span>
+        <div class="header-actions">
+          <button class="header-btn" id="editToggleBtn">编辑</button>
+          <button class="header-icon-btn" id="importBtn" title="导入">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="app-search-box">
+        <input type="search" class="app-search-input" id="appSearchInput" placeholder="搜索应用" autocomplete="off">
+      </div>
       <div class="content">
         <div class="home-list" id="homeList"></div>
       </div>
@@ -940,7 +1047,10 @@
 
     <!-- 创建 -->
     <div class="page" id="pageCreate">
-      <div class="page-header">创建 WebClip</div>
+      <div class="page-header">
+        <span id="createTitle">创建 WebClip</span>
+        <button class="header-btn" id="cancelEditBtn" style="display:none;">取消</button>
+      </div>
       <div class="content">
         <div class="create-content">
           <div class="icon-upload">
@@ -978,17 +1088,6 @@
 
           <button class="generate-btn" id="generateBtn">生成配置文件</button>
         </div>
-      </div>
-    </div>
-
-    <!-- 搜索 -->
-    <div class="page" id="pageSearch">
-      <div class="page-header">搜索</div>
-      <div class="search-box">
-        <input type="search" class="search-input" id="searchInput" placeholder="搜索已创建的配置" autocomplete="off">
-      </div>
-      <div class="content">
-        <div class="home-list" id="searchList"></div>
       </div>
     </div>
 
@@ -1092,7 +1191,7 @@
       <div class="detail-body" id="detailBody"></div>
     </div>
 
-    <!-- 底部导航 -->
+    <!-- 底部导航（已删除搜索） -->
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
         <div class="tab-indicator" id="tabIndicator"></div>
@@ -1113,13 +1212,7 @@
           </div>
           <div>创建</div>
         </div>
-        <div class="tab-item" data-page="pageSearch" data-index="2">
-          <div class="tab-icon">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </div>
-          <div>搜索</div>
-        </div>
-        <div class="tab-item" data-page="pageSettings" data-index="3">
+        <div class="tab-item" data-page="pageSettings" data-index="2">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
@@ -1130,6 +1223,7 @@
   </div>
 
   <input type="color" id="colorPicker" value="#007aff">
+  <input type="file" id="importFileInput" accept=".mobileconfig,application/x-apple-aspen-config" style="display:none;">
 
   <div class="alert-mask" id="alertMask">
     <div class="alert-box">
@@ -1146,6 +1240,8 @@
   <script>
     const STORAGE_KEY = 'webclip_configs';
     const SETTINGS_KEY = 'webclip_settings';
+    let isEditMode = false;
+    let editingId = null; // 正在编辑的配置 id
 
     function getConfigs() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { return []; }
@@ -1155,6 +1251,14 @@
       const list = getConfigs();
       list.unshift(config);
       saveConfigs(list);
+    }
+    function updateConfig(id, data) {
+      const list = getConfigs();
+      const idx = list.findIndex(c => c.id === id);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...data };
+        saveConfigs(list);
+      }
     }
     function deleteConfig(id) {
       saveConfigs(getConfigs().filter(c => c.id !== id));
@@ -1187,6 +1291,11 @@
     function formatDate(ts) {
       const d = new Date(ts);
       return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+    }
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
     // 弹窗
@@ -1279,8 +1388,12 @@
 </plist>`;
     }
 
+    function getConfigBlob(data) {
+      return new Blob([buildMobileConfig(data)], { type: 'application/x-apple-aspen-config' });
+    }
+
     function downloadConfig(data) {
-      const blob = new Blob([buildMobileConfig(data)], { type: 'application/x-apple-aspen-config' });
+      const blob = getConfigBlob(data);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -1291,9 +1404,8 @@
       setTimeout(() => URL.revokeObjectURL(url), 2000);
     }
 
-    // 分享 .mobileconfig 文件
     async function shareConfig(data) {
-      const blob = new Blob([buildMobileConfig(data)], { type: 'application/x-apple-aspen-config' });
+      const blob = getConfigBlob(data);
       const file = new File([blob], `${data.configName || 'WebClip'}.mobileconfig`, {
         type: 'application/x-apple-aspen-config'
       });
@@ -1306,13 +1418,9 @@
             text: data.description || 'WebClip 配置文件'
           });
         } catch (err) {
-          if (err.name !== 'AbortError') {
-            // 分享失败时降级为下载
-            downloadConfig(data);
-          }
+          if (err.name !== 'AbortError') downloadConfig(data);
         }
       } else {
-        // 不支持文件分享时直接下载
         downloadConfig(data);
         showAlert('提示', '当前浏览器不支持直接分享文件，已为你下载配置文件');
       }
@@ -1333,13 +1441,12 @@
       reader.readAsDataURL(file);
     });
 
-    // 生成
+    // 生成 / 保存编辑
     document.getElementById('generateBtn').addEventListener('click', () => {
       const webUrl = document.getElementById('webUrl').value.trim();
       if (!webUrl) { showAlert('请填写网页地址'); return; }
 
-      const config = {
-        id: generateUUID(),
+      const data = {
         webUrl,
         orgName: document.getElementById('orgName').value.trim() || '自定义组织',
         configName: document.getElementById('configName').value.trim() || 'WebClip',
@@ -1352,11 +1459,48 @@
         createdAt: Date.now()
       };
 
-      addConfig(config);
-      downloadConfig(config);
+      if (editingId) {
+        // 更新已有
+        updateConfig(editingId, data);
+        editingId = null;
+        document.getElementById('createTitle').textContent = '创建 WebClip';
+        document.getElementById('generateBtn').textContent = '生成配置文件';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+        showAlert('保存成功');
+      } else {
+        data.id = generateUUID();
+        addConfig(data);
+        downloadConfig(data);
+      }
+
+      // 清空表单
+      clearForm();
+      switchTab('pageHome');
+      renderHomeList();
     });
 
-    // 列表
+    function clearForm() {
+      document.getElementById('webUrl').value = '';
+      document.getElementById('orgName').value = '';
+      document.getElementById('configName').value = '';
+      document.getElementById('desktopName').value = '';
+      document.getElementById('description').value = '';
+      iconBase64 = '';
+      document.getElementById('iconPreview').style.display = 'none';
+      document.getElementById('plusIcon').style.display = 'block';
+      document.getElementById('iconInput').value = '';
+    }
+
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+      editingId = null;
+      clearForm();
+      document.getElementById('createTitle').textContent = '创建 WebClip';
+      document.getElementById('generateBtn').textContent = '生成配置文件';
+      document.getElementById('cancelEditBtn').style.display = 'none';
+      switchTab('pageHome');
+    });
+
+    // 列表渲染
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
@@ -1364,24 +1508,37 @@
         return;
       }
       container.innerHTML = list.map(item => `
-        <div class="config-card" data-id="${item.id}">
+        <div class="config-card" data-id="${item.id}" draggable="${isEditMode}">
           ${item.iconBase64 ? `<img class="config-icon" src="${item.iconBase64}">` : `<div class="config-icon placeholder">📱</div>`}
           <div class="config-info">
             <div class="config-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="config-desc">${escapeHtml(item.webUrl)}</div>
             <div class="config-time">${formatTime(item.createdAt)}</div>
           </div>
-          <button class="delete-btn" data-id="${item.id}">×</button>
+          <button class="open-btn" data-url="${escapeHtml(item.webUrl)}">打开</button>
+          <button class="delete-btn" data-id="${item.id}"></button>
         </div>
       `).join('');
 
+      // 点击卡片进入详情
       container.querySelectorAll('.config-card').forEach(card => {
         card.addEventListener('click', e => {
-          if (e.target.classList.contains('delete-btn')) return;
+          if (e.target.classList.contains('delete-btn') || e.target.classList.contains('open-btn') || isEditMode) return;
           const item = getConfigs().find(c => c.id === card.dataset.id);
           if (item) showDetail(item);
         });
       });
+
+      // 打开按钮
+      container.querySelectorAll('.open-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const url = btn.dataset.url;
+          if (url) window.open(url, '_blank');
+        });
+      });
+
+      // 删除按钮
       container.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
@@ -1390,25 +1547,157 @@
             { text: '删除', danger: true, onClick: () => {
               deleteConfig(btn.dataset.id);
               renderHomeList();
-              renderSearchList(document.getElementById('searchInput').value);
             }}
           ]);
         });
       });
-    }
-    function renderHomeList() { renderList('homeList', getConfigs()); }
-    function renderSearchList(kw = '') {
-      const list = getConfigs();
-      const filtered = kw.trim() ? list.filter(c =>
-        (c.desktopName||'').toLowerCase().includes(kw.toLowerCase()) ||
-        (c.configName||'').toLowerCase().includes(kw.toLowerCase()) ||
-        (c.webUrl||'').toLowerCase().includes(kw.toLowerCase())
-      ) : list;
-      renderList('searchList', filtered);
+
+      // 拖拽排序（编辑模式）
+      if (isEditMode) {
+        setupDragSort(container);
+      }
     }
 
-    // 详情页（进入动画 + 分享）
+    function renderHomeList(keyword = '') {
+      let list = getConfigs();
+      if (keyword.trim()) {
+        const kw = keyword.toLowerCase();
+        list = list.filter(c =>
+          (c.desktopName||'').toLowerCase().includes(kw) ||
+          (c.configName||'').toLowerCase().includes(kw) ||
+          (c.webUrl||'').toLowerCase().includes(kw) ||
+          (c.orgName||'').toLowerCase().includes(kw)
+        );
+      }
+      renderList('homeList', list);
+    }
+
+    // 简单拖拽排序
+    function setupDragSort(container) {
+      let dragItem = null;
+      container.querySelectorAll('.config-card').forEach(card => {
+        card.addEventListener('dragstart', e => {
+          dragItem = card;
+          card.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          dragItem = null;
+          // 保存新顺序
+          const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
+          const list = getConfigs();
+          const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
+          saveConfigs(newList);
+        });
+        card.addEventListener('dragover', e => {
+          e.preventDefault();
+          const after = getDragAfterElement(container, e.clientY);
+          if (after == null) {
+            container.appendChild(dragItem);
+          } else {
+            container.insertBefore(dragItem, after);
+          }
+        });
+      });
+    }
+
+    function getDragAfterElement(container, y) {
+      const els = [...container.querySelectorAll('.config-card:not(.dragging)')];
+      return els.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // 编辑模式切换
+    document.getElementById('editToggleBtn').addEventListener('click', () => {
+      isEditMode = !isEditMode;
+      document.body.classList.toggle('edit-mode', isEditMode);
+      document.getElementById('editToggleBtn').textContent = isEditMode ? '完成' : '编辑';
+      renderHomeList(document.getElementById('appSearchInput').value);
+    });
+
+    // 搜索
+    document.getElementById('appSearchInput').addEventListener('input', e => {
+      renderHomeList(e.target.value);
+    });
+
+    // 导入
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('importFileInput').click();
+    });
+
+    document.getElementById('importFileInput').addEventListener('change', async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/xml');
+
+        const getText = (key) => {
+          const nodes = doc.getElementsByTagName('key');
+          for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].textContent === key) {
+              const next = nodes[i].nextElementSibling;
+              if (next) return next.textContent || '';
+            }
+          }
+          return '';
+        };
+
+        const url = getText('URL') || '';
+        const label = getText('Label') || getText('PayloadDisplayName') || '导入的配置';
+        const org = getText('PayloadOrganization') || '自定义组织';
+        const desc = getText('PayloadDescription') || '';
+
+        // 尝试提取 Icon
+        let icon = '';
+        const dataNodes = doc.getElementsByTagName('data');
+        if (dataNodes.length) {
+          // 简单取第一个 data（通常是 Icon）
+          const b64 = dataNodes[0].textContent.replace(/\s/g, '');
+          if (b64) icon = 'data:image/png;base64,' + b64;
+        }
+
+        // 填充到创建页
+        editingId = null;
+        document.getElementById('webUrl').value = url;
+        document.getElementById('orgName').value = org;
+        document.getElementById('configName').value = label;
+        document.getElementById('desktopName').value = label;
+        document.getElementById('description').value = desc;
+        iconBase64 = icon;
+        if (icon) {
+          document.getElementById('iconPreview').src = icon;
+          document.getElementById('iconPreview').style.display = 'block';
+          document.getElementById('plusIcon').style.display = 'none';
+        } else {
+          document.getElementById('iconPreview').style.display = 'none';
+          document.getElementById('plusIcon').style.display = 'block';
+        }
+
+        document.getElementById('createTitle').textContent = '编辑导入的配置';
+        document.getElementById('generateBtn').textContent = '保存配置';
+        document.getElementById('cancelEditBtn').style.display = 'block';
+        switchTab('pageCreate');
+      } catch (err) {
+        showAlert('导入失败', '无法解析该描述文件');
+      }
+      e.target.value = '';
+    });
+
+    // 详情页
     function showDetail(item) {
+      const blob = getConfigBlob(item);
+      const sizeStr = formatSize(blob.size);
+
       document.getElementById('detailBody').innerHTML = `
         <div class="app-header">
           ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder">📱</div>`}
@@ -1417,15 +1706,18 @@
             <div class="app-developer">${escapeHtml(item.orgName || '自定义组织')}</div>
             <div class="btn-row">
               <button class="sign-btn" id="detailInstall">立即下载</button>
-              <button class="share-btn" id="detailShare" title="分享">
+              <button class="action-btn" id="detailShare" title="分享">
                 <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </button>
+              <button class="action-btn" id="detailEdit" title="编辑">
+                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               </button>
             </div>
           </div>
         </div>
         <div class="info-pills">
-          <div class="info-pill"><div class="value">1.0.0</div><div class="label">Version</div></div>
-          <div class="info-pill"><div class="value">2.0 MB</div><div class="label">Size</div></div>
+          <div class="info-pill"><div class="value">15.0</div><div class="label">Version</div></div>
+          <div class="info-pill"><div class="value">${sizeStr}</div><div class="label">Size</div></div>
           <div class="info-pill"><div class="value">${formatDate(item.createdAt)}</div><div class="label">Updated</div></div>
         </div>
         <div class="section-title">描述</div>
@@ -1445,9 +1737,39 @@
 
       document.getElementById('detailShare').onclick = () => shareConfig(item);
 
+      document.getElementById('detailEdit').onclick = () => {
+        // 填充表单进入编辑
+        editingId = item.id;
+        document.getElementById('webUrl').value = item.webUrl || '';
+        document.getElementById('orgName').value = item.orgName || '';
+        document.getElementById('configName').value = item.configName || '';
+        document.getElementById('desktopName').value = item.desktopName || '';
+        document.getElementById('description').value = item.description || '';
+        iconBase64 = item.iconBase64 || '';
+        if (iconBase64) {
+          document.getElementById('iconPreview').src = iconBase64;
+          document.getElementById('iconPreview').style.display = 'block';
+          document.getElementById('plusIcon').style.display = 'none';
+        } else {
+          document.getElementById('iconPreview').style.display = 'none';
+          document.getElementById('plusIcon').style.display = 'block';
+        }
+        document.getElementById('createTitle').textContent = '编辑配置';
+        document.getElementById('generateBtn').textContent = '保存修改';
+        document.getElementById('cancelEditBtn').style.display = 'block';
+
+        // 关闭详情页
+        const page = document.getElementById('detailPage');
+        page.classList.add('closing');
+        setTimeout(() => {
+          page.classList.remove('show', 'closing');
+          page.style.display = 'none';
+          switchTab('pageCreate');
+        }, 350);
+      };
+
       const page = document.getElementById('detailPage');
       page.classList.remove('closing');
-      // 强制回流后再添加 show，保证动画触发
       page.style.display = 'flex';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -1456,7 +1778,7 @@
       });
     }
 
-    // 返回带动画
+    // 返回
     document.getElementById('detailBack').addEventListener('click', () => {
       const page = document.getElementById('detailPage');
       page.classList.add('closing');
@@ -1494,7 +1816,6 @@
 
       updateIndicator(activeIndex);
 
-      // 关闭详情页
       const detail = document.getElementById('detailPage');
       if (detail.classList.contains('show')) {
         detail.classList.add('closing');
@@ -1506,8 +1827,7 @@
 
       tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
-      if (pageId === 'pageHome') renderHomeList();
-      if (pageId === 'pageSearch') renderSearchList(document.getElementById('searchInput').value);
+      if (pageId === 'pageHome') renderHomeList(document.getElementById('appSearchInput').value);
     }
 
     tabItems.forEach(item => {
@@ -1541,9 +1861,6 @@
       const active = document.querySelector('.tab-item.active');
       if (active) updateIndicator(+active.dataset.index);
     });
-
-    // 搜索
-    document.getElementById('searchInput').addEventListener('input', e => renderSearchList(e.target.value));
 
     // 设置
     const colorPicker = document.getElementById('colorPicker');
