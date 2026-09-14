@@ -51,11 +51,11 @@
     }
 
     .page-header {
-      padding: 16px 20px 12px;
-      font-size: 26px;
+      padding: 18px 20px 14px;
+      font-size: 30px;
       font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.4px;
+      letter-spacing: -0.5px;
       background: var(--card);
       flex-shrink: 0;
       transition: background 0.3s, color 0.3s;
@@ -445,7 +445,6 @@
     .detail-header {
       display: flex;
       align-items: center;
-      justify-content: center;
       padding: 12px 16px;
       background: #f5f5f7;
       position: relative;
@@ -453,21 +452,27 @@
     }
 
     .detail-close {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.08);
+      background: #ffffff;
       border: none;
-      font-size: 16px;
-      color: #1d1d1f;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      padding: 0;
+    }
+
+    .detail-close svg {
+      width: 18px;
+      height: 18px;
+      stroke: #3a3a3c;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
     }
 
     .detail-body {
@@ -606,10 +611,10 @@
       margin-bottom: 20px;
     }
 
-    /* ========== 底部导航 ========== */
+    /* ========== 底部导航（再往下 + 固定不动） ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
-      padding: 2px 12px calc(2px + env(safe-area-inset-bottom));
+      padding: 0 12px calc(env(safe-area-inset-bottom));
       background: transparent;
       display: flex;
       justify-content: center;
@@ -625,6 +630,7 @@
       -webkit-backdrop-filter: blur(28px) saturate(200%);
       border-radius: 28px;
       padding: 4px;
+      margin-bottom: 6px;
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.12),
         0 2px 8px rgba(0, 0, 0, 0.06),
@@ -864,8 +870,11 @@
     }
 
     body.dark .detail-close {
-      background: rgba(255,255,255,0.12);
-      color: #f5f5f7;
+      background: rgba(255,255,255,0.15);
+    }
+
+    body.dark .detail-close svg {
+      stroke: #f5f5f7;
     }
   </style>
 </head>
@@ -880,7 +889,7 @@
       </div>
     </div>
 
-    <!-- 创建（已恢复组织名称） -->
+    <!-- 创建 -->
     <div class="page" id="pageCreate">
       <div class="page-header">创建 WebClip</div>
       <div class="content">
@@ -1024,10 +1033,12 @@
       </div>
     </div>
 
-    <!-- 详情页（已删除红色提示） -->
+    <!-- 详情页 -->
     <div class="detail-page" id="detailPage">
       <div class="detail-header">
-        <button class="detail-close" id="detailBack">✕</button>
+        <button class="detail-close" id="detailBack">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
       </div>
       <div class="detail-body" id="detailBody"></div>
     </div>
@@ -1320,14 +1331,14 @@
       renderList('searchList', filtered);
     }
 
-    // 详情页（已删除红色提示）
+    // 详情页
     function showDetail(item) {
       document.getElementById('detailBody').innerHTML = `
         <div class="app-header">
           ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder">📱</div>`}
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
-            <div class="app-developer">By ${escapeHtml(item.orgName || '自定义组织')}</div>
+            <div class="app-developer">${escapeHtml(item.orgName || '自定义组织')}</div>
             <button class="sign-btn" id="detailInstall">立即安装</button>
           </div>
         </div>
@@ -1336,7 +1347,7 @@
           <div class="info-pill"><div class="value">2.0 MB</div><div class="label">Size</div></div>
           <div class="info-pill"><div class="value">${formatDate(item.createdAt)}</div><div class="label">Updated</div></div>
         </div>
-        <div class="section-title">Description</div>
+        <div class="section-title">描述</div>
         <div class="app-description">${escapeHtml(item.description || '安装后在桌面生成网页快捷方式')}</div>
       `;
 
