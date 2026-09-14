@@ -50,7 +50,6 @@
       overflow: hidden;
     }
 
-    /* 统一标题区域高度 */
     .page-header {
       padding: 12px 16px 10px;
       background: var(--card);
@@ -61,10 +60,16 @@
     .header-top {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
+      justify-content: space-between;
       min-height: 36px;
       margin-bottom: 4px;
+    }
+
+    .header-top-left,
+    .header-top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .page-title {
@@ -252,6 +257,7 @@
     /* ========== 列表 ========== */
     .home-list {
       padding: 4px 16px 30px;
+      position: relative;
     }
 
     .empty-tip {
@@ -265,16 +271,17 @@
     .config-card {
       background: var(--card);
       border-radius: 14px;
-      padding: 14px 12px 14px 12px;
+      padding: 14px 12px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       cursor: pointer;
-      transition: background 0.15s, transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.25s;
+      transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.2s, background 0.15s;
       position: relative;
       user-select: none;
+      will-change: transform;
     }
 
     .config-card:active {
@@ -282,11 +289,17 @@
     }
 
     .config-card.dragging {
-      opacity: 0.95;
-      transform: scale(1.03);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.18);
-      z-index: 20;
+      opacity: 0.98;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+      z-index: 50;
       background: var(--card);
+      transition: none;
+      pointer-events: none;
+    }
+
+    .config-card.placeholder-card {
+      opacity: 0.3;
+      background: var(--accent-light);
     }
 
     .config-icon {
@@ -354,7 +367,6 @@
       opacity: 0.7;
     }
 
-    /* 红色删除按钮 */
     .delete-btn {
       width: 28px;
       height: 28px;
@@ -377,7 +389,6 @@
       border-radius: 2px;
     }
 
-    /* 三条横杠（最左边） */
     .drag-handle {
       width: 28px;
       height: 40px;
@@ -397,7 +408,6 @@
       height: 2px;
       background: #c7c7cc;
       border-radius: 1px;
-      transition: background 0.2s;
     }
 
     body.edit-mode .delete-btn {
@@ -833,6 +843,100 @@
       margin-bottom: 20px;
     }
 
+    /* ========== 底部弹出编辑面板 ========== */
+    .sheet-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 300;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .sheet-mask.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .bottom-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-height: 92%;
+      background: var(--card);
+      border-radius: 20px 20px 0 0;
+      z-index: 310;
+      transform: translateY(100%);
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .bottom-sheet.show {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0 8px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .sheet-handle-bar {
+      width: 36px;
+      height: 5px;
+      background: #d1d1d6;
+      border-radius: 3px;
+    }
+
+    .sheet-close-btn {
+      display: flex;
+      justify-content: center;
+      padding: 4px 0 12px;
+      flex-shrink: 0;
+    }
+
+    .sheet-close-btn button {
+      width: 40px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sheet-close-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: #8e8e93;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 20px 40px;
+    }
+
+    .sheet-title {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
     /* ========== 底部导航 ========== */
     .tab-bar-wrapper {
       flex-shrink: 0;
@@ -1115,6 +1219,14 @@
     body.dark .drag-handle span {
       background: #8e8e93;
     }
+
+    body.dark .bottom-sheet {
+      background: #2c2c2e;
+    }
+
+    body.dark .sheet-handle-bar {
+      background: #636366;
+    }
   </style>
 </head>
 <body>
@@ -1124,10 +1236,14 @@
     <div class="page active" id="pageHome">
       <div class="page-header">
         <div class="header-top">
-          <button class="header-btn" id="editToggleBtn">编辑</button>
-          <button class="header-icon-btn" id="importBtn" title="导入">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
+          <div class="header-top-left">
+            <button class="header-btn" id="editToggleBtn">编辑</button>
+          </div>
+          <div class="header-top-right">
+            <button class="header-icon-btn" id="importBtn" title="导入">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
         </div>
         <div class="page-title">应用</div>
       </div>
@@ -1143,7 +1259,8 @@
     <div class="page" id="pageCreate">
       <div class="page-header">
         <div class="header-top">
-          <button class="header-btn" id="cancelEditBtn" style="display:none;">取消</button>
+          <div class="header-top-left"></div>
+          <div class="header-top-right"></div>
         </div>
         <div class="page-title" id="createTitle">创建 WebClip</div>
       </div>
@@ -1190,7 +1307,10 @@
     <!-- 工具 -->
     <div class="page" id="pageTools">
       <div class="page-header">
-        <div class="header-top"></div>
+        <div class="header-top">
+          <div class="header-top-left"></div>
+          <div class="header-top-right"></div>
+        </div>
         <div class="page-title">工具</div>
       </div>
       <div class="content">
@@ -1201,7 +1321,10 @@
     <!-- 设置 -->
     <div class="page" id="pageSettings">
       <div class="page-header">
-        <div class="header-top"></div>
+        <div class="header-top">
+          <div class="header-top-left"></div>
+          <div class="header-top-right"></div>
+        </div>
         <div class="page-title">设置</div>
       </div>
       <div class="content">
@@ -1301,6 +1424,50 @@
       <div class="detail-body" id="detailBody"></div>
     </div>
 
+    <!-- 底部弹出编辑面板 -->
+    <div class="sheet-mask" id="sheetMask"></div>
+    <div class="bottom-sheet" id="bottomSheet">
+      <div class="sheet-handle" id="sheetHandle">
+        <div class="sheet-handle-bar"></div>
+      </div>
+      <div class="sheet-close-btn">
+        <button id="sheetCloseBtn">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="sheet-body">
+        <div class="sheet-title" id="sheetTitle">编辑配置</div>
+        <div class="icon-upload">
+          <div class="icon-box" id="sheetIconBox">
+            <span class="plus" id="sheetPlusIcon">+</span>
+            <img id="sheetIconPreview" style="display:none;" alt="图标">
+            <input type="file" id="sheetIconInput" accept="image/*">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>网页地址</label>
+          <input type="url" id="sheetWebUrl" placeholder="https://xxx.com" autocomplete="off" autocapitalize="off">
+        </div>
+        <div class="form-group">
+          <label>组织名称</label>
+          <input type="text" id="sheetOrgName" placeholder="自定义组织" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>文件名称</label>
+          <input type="text" id="sheetConfigName" placeholder="设置里显示的文件名" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>桌面名称</label>
+          <input type="text" id="sheetDesktopName" placeholder="手机桌面图标下方文字" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>描述说明</label>
+          <input type="text" id="sheetDescription" placeholder="安装后在桌面生成网页快捷方式" autocomplete="off">
+        </div>
+        <button class="generate-btn" id="sheetSaveBtn">保存修改</button>
+      </div>
+    </div>
+
     <!-- 底部导航 -->
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
@@ -1358,6 +1525,7 @@
     const SETTINGS_KEY = 'webclip_settings';
     let isEditMode = false;
     let editingId = null;
+    let sheetIconBase64 = '';
 
     function getConfigs() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { return []; }
@@ -1443,7 +1611,7 @@
     function hideAlert() { alertMask.classList.remove('show'); }
     alertMask.addEventListener('click', e => { if (e.target === alertMask) hideAlert(); });
 
-    // 生成 WebClip 配置
+    // 生成 WebClip
     function buildMobileConfig(data) {
       const uuid1 = generateUUID(), uuid2 = generateUUID();
       let iconPayload = '';
@@ -1542,19 +1710,17 @@
       }
     }
 
-    // ========== 设备限制配置 ==========
+    // 限制配置
     function buildRestrictionConfig(options) {
       const uuid1 = generateUUID();
       const uuid2 = generateUUID();
       const restrictions = options.restrictions || {};
-
       let restrictionXml = '';
       for (const [key, value] of Object.entries(restrictions)) {
         restrictionXml += `
       <key>${key}</key>
       <${value ? 'true' : 'false'}/>`;
       }
-
       return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -1647,7 +1813,7 @@
       });
     }
 
-    // 图标
+    // 创建页图标
     let iconBase64 = '';
     document.getElementById('iconInput').addEventListener('change', e => {
       const file = e.target.files[0];
@@ -1662,12 +1828,27 @@
       reader.readAsDataURL(file);
     });
 
-    // 生成 / 保存
+    // 底部面板图标
+    document.getElementById('sheetIconInput').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        sheetIconBase64 = ev.target.result;
+        document.getElementById('sheetIconPreview').src = sheetIconBase64;
+        document.getElementById('sheetIconPreview').style.display = 'block';
+        document.getElementById('sheetPlusIcon').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 创建页生成
     document.getElementById('generateBtn').addEventListener('click', () => {
       const webUrl = document.getElementById('webUrl').value.trim();
       if (!webUrl) { showAlert('请填写网页地址'); return; }
 
       const data = {
+        id: generateUUID(),
         webUrl,
         orgName: document.getElementById('orgName').value.trim() || '自定义组织',
         configName: document.getElementById('configName').value.trim() || 'WebClip',
@@ -1680,19 +1861,8 @@
         createdAt: Date.now()
       };
 
-      if (editingId) {
-        updateConfig(editingId, data);
-        editingId = null;
-        document.getElementById('createTitle').textContent = '创建 WebClip';
-        document.getElementById('generateBtn').textContent = '生成配置文件';
-        document.getElementById('cancelEditBtn').style.display = 'none';
-        showAlert('保存成功');
-      } else {
-        data.id = generateUUID();
-        addConfig(data);
-        downloadConfig(data);
-      }
-
+      addConfig(data);
+      downloadConfig(data);
       clearForm();
       switchTab('pageHome');
       renderHomeList();
@@ -1710,16 +1880,78 @@
       document.getElementById('iconInput').value = '';
     }
 
-    document.getElementById('cancelEditBtn').addEventListener('click', () => {
-      editingId = null;
-      clearForm();
-      document.getElementById('createTitle').textContent = '创建 WebClip';
-      document.getElementById('generateBtn').textContent = '生成配置文件';
-      document.getElementById('cancelEditBtn').style.display = 'none';
-      switchTab('pageHome');
+    // 底部面板保存
+    document.getElementById('sheetSaveBtn').addEventListener('click', () => {
+      const webUrl = document.getElementById('sheetWebUrl').value.trim();
+      if (!webUrl) { showAlert('请填写网页地址'); return; }
+
+      const data = {
+        webUrl,
+        orgName: document.getElementById('sheetOrgName').value.trim() || '自定义组织',
+        configName: document.getElementById('sheetConfigName').value.trim() || 'WebClip',
+        desktopName: document.getElementById('sheetDesktopName').value.trim() || '网页快捷方式',
+        description: document.getElementById('sheetDescription').value.trim() || '安装后在桌面生成网页快捷方式',
+        fullscreen: document.getElementById('fullscreen').checked,
+        allowDelete: document.getElementById('allowDelete').checked,
+        ignoreScope: document.getElementById('ignoreScope').checked,
+        iconBase64: sheetIconBase64 || ''
+      };
+
+      if (editingId) {
+        updateConfig(editingId, data);
+        editingId = null;
+        showAlert('保存成功');
+        closeSheet();
+        renderHomeList();
+        // 如果详情页还开着，刷新它
+        const detail = document.getElementById('detailPage');
+        if (detail.classList.contains('show')) {
+          const item = getConfigs().find(c => c.id === data.id || true);
+          // 简单关闭后重新打开会更好，这里先关闭详情
+          detail.classList.add('closing');
+          setTimeout(() => {
+            detail.classList.remove('show', 'closing');
+            detail.style.display = 'none';
+          }, 350);
+        }
+      }
     });
 
-    // 列表渲染（三条横线在左边）
+    // 打开底部编辑面板
+    function openEditSheet(item) {
+      editingId = item.id;
+      document.getElementById('sheetTitle').textContent = '编辑配置';
+      document.getElementById('sheetWebUrl').value = item.webUrl || '';
+      document.getElementById('sheetOrgName').value = item.orgName || '';
+      document.getElementById('sheetConfigName').value = item.configName || '';
+      document.getElementById('sheetDesktopName').value = item.desktopName || '';
+      document.getElementById('sheetDescription').value = item.description || '';
+      sheetIconBase64 = item.iconBase64 || '';
+      if (sheetIconBase64) {
+        document.getElementById('sheetIconPreview').src = sheetIconBase64;
+        document.getElementById('sheetIconPreview').style.display = 'block';
+        document.getElementById('sheetPlusIcon').style.display = 'none';
+      } else {
+        document.getElementById('sheetIconPreview').style.display = 'none';
+        document.getElementById('sheetPlusIcon').style.display = 'block';
+      }
+      document.getElementById('sheetIconInput').value = '';
+
+      document.getElementById('sheetMask').classList.add('show');
+      document.getElementById('bottomSheet').classList.add('show');
+    }
+
+    function closeSheet() {
+      document.getElementById('sheetMask').classList.remove('show');
+      document.getElementById('bottomSheet').classList.remove('show');
+      editingId = null;
+    }
+
+    document.getElementById('sheetMask').addEventListener('click', closeSheet);
+    document.getElementById('sheetCloseBtn').addEventListener('click', closeSheet);
+    document.getElementById('sheetHandle').addEventListener('click', closeSheet);
+
+    // 列表渲染
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
@@ -1772,7 +2004,7 @@
       });
 
       if (isEditMode) {
-        setupDragWithHandle(container);
+        setupSmoothDrag(container);
       }
     }
 
@@ -1790,80 +2022,118 @@
       renderList('homeList', list);
     }
 
-    // 仅通过左边三条横杠拖动 + 平滑动画
-    function setupDragWithHandle(container) {
+    // 流畅拖动（拿起来跟随手指）
+    function setupSmoothDrag(container) {
       let dragItem = null;
+      let startY = 0;
+      let currentY = 0;
+      let offsetY = 0;
+      let placeholder = null;
+      let originalIndex = -1;
 
       container.querySelectorAll('.drag-handle').forEach(handle => {
+        const onStart = (clientY) => {
+          const card = handle.closest('.config-card');
+          dragItem = card;
+          startY = clientY;
+          currentY = clientY;
+          offsetY = 0;
+          originalIndex = [...container.children].indexOf(card);
+
+          // 创建占位
+          placeholder = document.createElement('div');
+          placeholder.className = 'config-card placeholder-card';
+          placeholder.style.height = card.offsetHeight + 'px';
+          placeholder.style.marginBottom = '12px';
+
+          card.classList.add('dragging');
+          card.style.position = 'relative';
+          card.style.zIndex = '50';
+          card.style.transition = 'none';
+
+          container.insertBefore(placeholder, card.nextSibling);
+        };
+
+        const onMove = (clientY) => {
+          if (!dragItem) return;
+          currentY = clientY;
+          offsetY = currentY - startY;
+          dragItem.style.transform = `translateY(${offsetY}px) scale(1.03)`;
+
+          // 计算应该插入的位置
+          const cards = [...container.querySelectorAll('.config-card:not(.dragging):not(.placeholder-card)')];
+          let insertBefore = null;
+          for (const c of cards) {
+            const rect = c.getBoundingClientRect();
+            const mid = rect.top + rect.height / 2;
+            if (clientY < mid) {
+              insertBefore = c;
+              break;
+            }
+          }
+
+          if (insertBefore) {
+            container.insertBefore(placeholder, insertBefore);
+          } else {
+            container.appendChild(placeholder);
+          }
+        };
+
+        const onEnd = () => {
+          if (!dragItem) return;
+
+          // 把真实卡片放到占位位置
+          container.insertBefore(dragItem, placeholder);
+          placeholder.remove();
+          placeholder = null;
+
+          dragItem.style.transform = '';
+          dragItem.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)';
+          dragItem.classList.remove('dragging');
+          dragItem.style.zIndex = '';
+          dragItem.style.position = '';
+
+          setTimeout(() => {
+            if (dragItem) dragItem.style.transition = '';
+            dragItem = null;
+          }, 250);
+
+          // 保存顺序
+          const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
+          const list = getConfigs();
+          const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
+          saveConfigs(newList);
+        };
+
         // 触摸
         handle.addEventListener('touchstart', e => {
           e.stopPropagation();
-          const card = handle.closest('.config-card');
-          dragItem = card;
-          card.classList.add('dragging');
+          onStart(e.touches[0].clientY);
         }, { passive: true });
 
         handle.addEventListener('touchmove', e => {
           if (!dragItem) return;
           e.preventDefault();
-          const y = e.touches[0].clientY;
-          const after = getDragAfterElement(container, y);
-          if (after == null) {
-            container.appendChild(dragItem);
-          } else {
-            container.insertBefore(dragItem, after);
-          }
+          onMove(e.touches[0].clientY);
         }, { passive: false });
 
-        handle.addEventListener('touchend', () => {
-          if (!dragItem) return;
-          dragItem.classList.remove('dragging');
-          dragItem = null;
-          const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
-          const list = getConfigs();
-          const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
-          saveConfigs(newList);
-        });
+        handle.addEventListener('touchend', onEnd);
 
         // 鼠标
         handle.addEventListener('mousedown', e => {
           e.preventDefault();
-          const card = handle.closest('.config-card');
-          dragItem = card;
-          card.classList.add('dragging');
+          onStart(e.clientY);
 
-          const onMove = (ev) => {
-            const after = getDragAfterElement(container, ev.clientY);
-            if (after == null) container.appendChild(dragItem);
-            else container.insertBefore(dragItem, after);
+          const moveHandler = (ev) => onMove(ev.clientY);
+          const upHandler = () => {
+            onEnd();
+            document.removeEventListener('mousemove', moveHandler);
+            document.removeEventListener('mouseup', upHandler);
           };
-          const onUp = () => {
-            dragItem.classList.remove('dragging');
-            dragItem = null;
-            document.removeEventListener('mousemove', onMove);
-            document.removeEventListener('mouseup', onUp);
-            const ids = [...container.querySelectorAll('.config-card')].map(c => c.dataset.id);
-            const list = getConfigs();
-            const newList = ids.map(id => list.find(c => c.id === id)).filter(Boolean);
-            saveConfigs(newList);
-          };
-          document.addEventListener('mousemove', onMove);
-          document.addEventListener('mouseup', onUp);
+          document.addEventListener('mousemove', moveHandler);
+          document.addEventListener('mouseup', upHandler);
         });
       });
-    }
-
-    function getDragAfterElement(container, y) {
-      const els = [...container.querySelectorAll('.config-card:not(.dragging)')];
-      return els.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-          return { offset, element: child };
-        } else {
-          return closest;
-        }
-      }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
     // 编辑模式
@@ -1879,7 +2149,7 @@
       renderHomeList(e.target.value);
     });
 
-    // 导入（直接加入列表）
+    // 导入
     document.getElementById('importBtn').addEventListener('click', () => {
       document.getElementById('importFileInput').click();
     });
@@ -1983,33 +2253,9 @@
 
       document.getElementById('detailShare').onclick = () => shareConfig(item);
 
+      // 编辑 → 底部弹出
       document.getElementById('detailEdit').onclick = () => {
-        editingId = item.id;
-        document.getElementById('webUrl').value = item.webUrl || '';
-        document.getElementById('orgName').value = item.orgName || '';
-        document.getElementById('configName').value = item.configName || '';
-        document.getElementById('desktopName').value = item.desktopName || '';
-        document.getElementById('description').value = item.description || '';
-        iconBase64 = item.iconBase64 || '';
-        if (iconBase64) {
-          document.getElementById('iconPreview').src = iconBase64;
-          document.getElementById('iconPreview').style.display = 'block';
-          document.getElementById('plusIcon').style.display = 'none';
-        } else {
-          document.getElementById('iconPreview').style.display = 'none';
-          document.getElementById('plusIcon').style.display = 'block';
-        }
-        document.getElementById('createTitle').textContent = '编辑配置';
-        document.getElementById('generateBtn').textContent = '保存修改';
-        document.getElementById('cancelEditBtn').style.display = 'block';
-
-        const page = document.getElementById('detailPage');
-        page.classList.add('closing');
-        setTimeout(() => {
-          page.classList.remove('show', 'closing');
-          page.style.display = 'none';
-          switchTab('pageCreate');
-        }, 350);
+        openEditSheet(item);
       };
 
       const page = document.getElementById('detailPage');
@@ -2067,6 +2313,8 @@
           detail.style.display = 'none';
         }, 350);
       }
+
+      closeSheet();
 
       tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
