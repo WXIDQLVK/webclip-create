@@ -8,6 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" id="statusBarStyle">
   <meta name="apple-mobile-web-app-title" content="创建 WebClip">
   <title>创建 WebClip</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
   <style>
     :root {
       --accent: #007aff;
@@ -985,6 +987,45 @@
     body.dark .open-btn { background: rgba(0, 122, 255, 0.2); }
     body.dark .drag-handle span { background: #8e8e93; }
     body.dark .bottom-sheet { background: #2c2c2e; }
+
+    /* iOS 风格液态玻璃底部导航 */
+    .tab-bar-wrapper {
+      margin: 0 12px calc(10px + env(safe-area-inset-bottom));
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.72), rgba(235,245,255,0.48));
+      box-shadow: 0 10px 32px rgba(31,79,130,0.16), inset 0 1px 0 rgba(255,255,255,0.8);
+      backdrop-filter: blur(26px) saturate(180%);
+      -webkit-backdrop-filter: blur(26px) saturate(180%);
+      overflow: hidden;
+    }
+    .tab-bar { height: 58px; padding: 5px; gap: 2px; touch-action: none; }
+    .tab-item {
+      position: relative; z-index: 1; height: 48px; border-radius: 18px;
+      transition: color .2s ease, transform .2s ease, background .2s ease;
+    }
+    .tab-item.active {
+      color: var(--accent); background: rgba(255,255,255,0.58);
+      box-shadow: 0 3px 12px rgba(0,75,160,0.12), inset 0 1px rgba(255,255,255,0.9);
+    }
+    .tab-item:active { transform: scale(.92); }
+    .tab-bar.is-dragging .tab-item { transition: color .12s ease, background .12s ease; }
+    .tab-bar.is-dragging .tab-item.active { transform: scale(.96); }
+    body.dark .tab-bar-wrapper {
+      background: linear-gradient(135deg, rgba(48,48,54,.78), rgba(28,34,48,.62));
+      border-color: rgba(255,255,255,.14);
+    }
+    body.dark .tab-item.active { background: rgba(255,255,255,.13); }
+    .generate-btn {
+      box-shadow: 0 8px 20px rgba(0,122,255,.26);
+      background: linear-gradient(135deg, #0a84ff, var(--accent));
+    }
+    .icon-box {
+      box-shadow: 0 10px 24px rgba(0,122,255,.12);
+      background: linear-gradient(145deg, #fff, #f1f7ff);
+    }
+
   </style>
 </head>
 <body>
@@ -1179,7 +1220,6 @@
         </button>
       </div>
       <div class="sheet-body">
-        <div class="sheet-title" id="sheetTitle">编辑配置</div>
         <div class="icon-upload">
           <div class="icon-box" id="sheetIconBox">
             <span class="plus" id="sheetPlusIcon">+</span>
@@ -1586,9 +1626,8 @@
       };
       addConfig(data);
       downloadConfig(data);
-      clearForm();
-      switchTab('pageHome');
       renderHomeList();
+      showAlert('配置已生成', '已开始下载配置文件，当前页面保持不变');
     });
 
     function clearForm() {
@@ -1636,7 +1675,6 @@
 
     function openEditSheet(item) {
       editingId = item.id;
-      document.getElementById('sheetTitle').textContent = '编辑配置';
       document.getElementById('sheetWebUrl').value = item.webUrl || '';
       document.getElementById('sheetOrgName').value = item.orgName || '';
       document.getElementById('sheetConfigName').value = item.configName || '';
@@ -2025,8 +2063,48 @@
       if (s.notification !== undefined) document.getElementById('notificationToggle').checked = s.notification;
     }
 
+    function hapticFeedback() {
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+
+    function setupLiquidTabDrag() {
+      const tabBar = document.getElementById('tabBar');
+      let dragging = false;
+      let activePage = '';
+
+      const selectAt = (clientX) => {
+        const target = document.elementFromPoint(clientX, tabBar.getBoundingClientRect().top + 24)?.closest('.tab-item');
+        if (!target || target.dataset.page === activePage) return;
+        activePage = target.dataset.page;
+        tabItems.forEach(item => item.classList.toggle('active', item === target));
+        hapticFeedback();
+      };
+
+      tabBar.addEventListener('pointerdown', event => {
+        dragging = true;
+        activePage = event.target.closest('.tab-item')?.dataset.page || '';
+        tabBar.setPointerCapture?.(event.pointerId);
+        tabBar.classList.add('is-dragging');
+      });
+      tabBar.addEventListener('pointermove', event => {
+        if (dragging) selectAt(event.clientX);
+      });
+      const finish = () => {
+        if (!dragging) return;
+        dragging = false;
+        tabBar.classList.remove('is-dragging');
+        if (activePage) switchTab(activePage);
+      };
+      tabBar.addEventListener('pointerup', finish);
+      tabBar.addEventListener('pointercancel', finish);
+    }
+
     initSettings();
     renderHomeList();
+    setupLiquidTabDrag();
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
   </script>
 </body>
 </html>

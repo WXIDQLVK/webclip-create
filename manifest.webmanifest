@@ -1,0 +1,9 @@
+{
+  "name": "创建 WebClip",
+  "short_name": "WebClip",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#ffffff",
+  "lang": "zh-CN"
+}
