@@ -1596,7 +1596,7 @@
                 </div>
                 <div class="settings-label">通知</div>
                 <label class="toggle">
-                  <input type="checkbox" id="notificationToggle" checked>
+                  <input type="checkbox" id="notificationToggle">
                   <span class="slider"></span>
                 </label>
               </div>
@@ -2635,10 +2635,56 @@
       });
     });
 
-    document.getElementById('notificationToggle').addEventListener('change', function () {
-      const s = getSettings();
-      s.notification = this.checked;
-      saveSettings(s);
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) {
+        showAlert('通知不可用', '当前运行环境不支持 Web 通知，请将此网页添加到主屏幕后再尝试。');
+        return false;
+      }
+
+      if (Notification.permission === 'granted') {
+        return true;
+      }
+
+      if (Notification.permission === 'denied') {
+        showAlert('通知已关闭', '系统已经拒绝通知权限，请前往系统设置开启通知权限。');
+        return false;
+      }
+
+      try {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+      } catch (e) {
+        console.error('Notification permission request failed:', e);
+        showAlert('通知权限失败', '当前环境无法请求通知权限，请确认网页已添加到主屏幕。');
+        return false;
+      }
+    }
+
+    document.getElementById('notificationToggle').addEventListener('change', async function () {
+      const toggle = this;
+
+      if (toggle.checked) {
+        // 用户手动打开开关的瞬间，立即弹出系统通知授权。
+        const granted = await requestNotificationPermission();
+
+        if (granted) {
+          toggle.checked = true;
+          const s = getSettings();
+          s.notification = true;
+          saveSettings(s);
+        } else {
+          // 用户拒绝或当前环境不支持时，自动恢复关闭。
+          toggle.checked = false;
+          const s = getSettings();
+          s.notification = false;
+          saveSettings(s);
+        }
+      } else {
+        // 这里只关闭本项目自己的通知开关，不撤销系统已有权限。
+        const s = getSettings();
+        s.notification = false;
+        saveSettings(s);
+      }
     });
 
     document.getElementById('languageItem').addEventListener('click', openLanguageSheet);
@@ -3156,7 +3202,14 @@
       if (s.allowDelete !== undefined) document.getElementById('allowDelete').checked = s.allowDelete;
       if (s.fullscreen !== undefined) document.getElementById('fullscreen').checked = s.fullscreen;
       if (s.ignoreScope !== undefined) document.getElementById('ignoreScope').checked = s.ignoreScope;
-      if (s.notification !== undefined) document.getElementById('notificationToggle').checked = s.notification;
+      if (s.notification !== undefined) {
+        document.getElementById('notificationToggle').checked = s.notification;
+      } else {
+        // 首次使用默认关闭，必须由用户手动开启。
+        s.notification = false;
+        saveSettings(s);
+        document.getElementById('notificationToggle').checked = false;
+      }
       applyI18n();
     }
 
