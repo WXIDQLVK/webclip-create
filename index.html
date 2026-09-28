@@ -658,27 +658,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #ffffff;
-      border: 0.5px solid rgba(0,0,0,0.08);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-      color: #c7c7cc;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      box-shadow: none;
+      color: var(--accent);
       font-size: 0;
     }
     .app-icon.placeholder svg {
       width: 48px;
       height: 48px;
-      stroke: #c7c7cc;
+      stroke: var(--accent);
       fill: none;
       stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      opacity: 0.85;
+      opacity: 0.55;
     }
     body.dark .app-icon.placeholder {
-      background: #3a3a3c;
-      border-color: rgba(255,255,255,0.08);
+      background: var(--accent-light);
+      border-color: var(--accent-border);
     }
-    body.dark .app-icon.placeholder svg { stroke: #8e8e93; }
+    body.dark .app-icon.placeholder svg { stroke: var(--accent); }
 
     .app-meta { flex: 1; min-width: 0; padding-top: 4px; }
 
@@ -2037,19 +2037,21 @@
 
     function renderTools() {
       const container = document.getElementById('toolList');
-      container.innerHTML = TOOLS.map(t => `
+      if (!container) return;
+      const installLabel = t('install');
+      container.innerHTML = TOOLS.map(tool => `
         <div class="tool-card">
-          <div class="tool-icon">${t.icon}</div>
+          <div class="tool-icon">${tool.icon}</div>
           <div class="tool-info">
-            <div class="tool-name">${t.name}</div>
-            <div class="tool-desc">${t.desc}</div>
+            <div class="tool-name">${tool.name}</div>
+            <div class="tool-desc">${tool.desc}</div>
           </div>
-          <button class="tool-install-btn" data-id="${t.id}">${t('install')}</button>
+          <button class="tool-install-btn" data-id="${tool.id}">${installLabel}</button>
         </div>
       `).join('');
       container.querySelectorAll('.tool-install-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const tool = TOOLS.find(t => t.id === btn.dataset.id);
+          const tool = TOOLS.find(x => x.id === btn.dataset.id);
           if (tool) downloadRestriction({ name: tool.name, description: tool.desc, restrictions: tool.restrictions });
         });
       });
