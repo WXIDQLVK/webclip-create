@@ -1399,6 +1399,140 @@
     .action-sheet-cancel:active { opacity: 0.7; }
     .settings-value { flex-shrink: 0; }
 
+
+    /* iOS 玻璃质感 */
+    .config-card,
+    .tool-card,
+    .monitor-stat,
+    .monitor-card,
+    .settings-group,
+    .info-pill {
+      background: color-mix(in srgb, var(--accent) 14%, rgba(255,255,255,0.55)) !important;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 0.5px solid color-mix(in srgb, var(--accent) 25%, rgba(255,255,255,0.5));
+      box-shadow:
+        0 6px 24px color-mix(in srgb, var(--accent) 12%, transparent),
+        inset 0 0.5px 0 rgba(255, 255, 255, 0.65);
+    }
+    body.dark .config-card,
+    body.dark .tool-card,
+    body.dark .monitor-stat,
+    body.dark .monitor-card,
+    body.dark .settings-group,
+    body.dark .info-pill {
+      background: color-mix(in srgb, var(--accent) 18%, rgba(30,30,32,0.6)) !important;
+      border-color: color-mix(in srgb, var(--accent) 30%, rgba(255,255,255,0.12));
+      box-shadow:
+        0 6px 24px rgba(0,0,0,0.28),
+        inset 0 0.5px 0 rgba(255,255,255,0.08);
+    }
+    .page-header,
+    .app-search-box {
+      background: rgba(255,255,255,0.72) !important;
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+    }
+    body.dark .page-header,
+    body.dark .app-search-box {
+      background: rgba(28,28,30,0.72) !important;
+    }
+    .app-search-input {
+      background: rgba(120,120,128,0.12) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(255,255,255,0.35) !important;
+    }
+    body.dark .app-search-input {
+      background: rgba(120,120,128,0.24) !important;
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+    .header-btn,
+    .header-icon-btn,
+    .open-btn,
+    .action-btn {
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+    }
+    .tab-bar-wrapper {
+      background: rgba(255, 255, 255, 0.62) !important;
+      backdrop-filter: blur(40px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+      border: 0.5px solid rgba(255,255,255,0.55) !important;
+      box-shadow:
+        0 10px 40px rgba(0,0,0,0.08),
+        inset 0 0.5px 0 rgba(255,255,255,0.85) !important;
+    }
+    body.dark .tab-bar-wrapper {
+      background: rgba(40, 40, 42, 0.62) !important;
+      border-color: rgba(255,255,255,0.12) !important;
+      box-shadow:
+        0 10px 40px rgba(0,0,0,0.35),
+        inset 0 0.5px 0 rgba(255,255,255,0.1) !important;
+    }
+    .tab-indicator {
+      background: rgba(255,255,255,0.55) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04) !important;
+    }
+    body.dark .tab-indicator {
+      background: rgba(255,255,255,0.12) !important;
+    }
+    .bottom-sheet,
+    .action-sheet-group,
+    .action-sheet-cancel,
+    .alert-box {
+      background: rgba(255,255,255,0.82) !important;
+      backdrop-filter: blur(40px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+      border: 0.5px solid rgba(255,255,255,0.5);
+    }
+    body.dark .bottom-sheet,
+    body.dark .action-sheet-group,
+    body.dark .action-sheet-cancel,
+    body.dark .alert-box {
+      background: rgba(44,44,46,0.82) !important;
+      border-color: rgba(255,255,255,0.12);
+    }
+    .detail-page {
+      background: rgba(255,255,255,0.92) !important;
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+    }
+    body.dark .detail-page {
+      background: rgba(28,28,30,0.92) !important;
+    }
+    .detail-close {
+      background: rgba(120,120,128,0.16) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .form-group input {
+      background: rgba(255,255,255,0.65) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(255,255,255,0.5) !important;
+    }
+    body.dark .form-group input {
+      background: rgba(44,44,46,0.65) !important;
+      border-color: rgba(255,255,255,0.12) !important;
+    }
+    .icon-box {
+      background: rgba(255,255,255,0.5) !important;
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1.5px dashed color-mix(in srgb, var(--accent) 35%, transparent) !important;
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--accent) 12%, transparent) !important;
+    }
+    body.dark .icon-box {
+      background: rgba(44,44,46,0.5) !important;
+    }
+    .generate-btn, .sign-btn, .tool-install-btn {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
   </style>
 </head>
 <body>
@@ -1581,7 +1715,7 @@
               </div>
               <div class="settings-item">
                 <div class="settings-icon">
-                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
                 </div>
                 <div class="settings-label">忽略范围</div>
                 <label class="toggle">
@@ -2778,9 +2912,6 @@
       });
       const blank = `<div class="config-icon placeholder"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/></svg></div>`;
       box.innerHTML = `
-        <div class="monitor-toolbar">
-          <div class="monitor-hint">${t('monitorHint')}</div>
-        </div>
         <div class="monitor-stats">
           <div class="monitor-stat"><div class="num warn">${updated}</div><div class="lbl">${t('updated')}</div></div>
           <div class="monitor-stat"><div class="num ok">${ok}</div><div class="lbl">${t('unchanged')}</div></div>
