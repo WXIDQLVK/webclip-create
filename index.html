@@ -560,11 +560,16 @@
     }
 
     #colorPicker {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-      pointer-events: none;
+      position: fixed;
+      left: 50%;
+      top: 40%;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+      border: none;
+      padding: 0;
+      margin: 0;
+      z-index: 2000;
     }
 
     .detail-page {
@@ -1310,8 +1315,16 @@
     <div class="page" id="pageMonitor">
       <div class="page-header">
         <div class="header-top">
-          <div class="header-top-left"></div>
-          <div class="header-top-right"></div>
+          <div class="header-top-left">
+            <button class="header-icon-btn" id="monitorAddBtn" title="添加监控">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <div class="header-top-right">
+            <button class="header-icon-btn" id="monitorRefreshBtn" title="全部检测">
+              <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+          </div>
         </div>
         <div class="page-title">监控</div>
       </div>
@@ -1320,15 +1333,36 @@
       </div>
     </div>
 
+    <!-- 添加监控弹层 -->
+    <div class="sheet-mask" id="monitorAddMask"></div>
+    <div class="bottom-sheet" id="monitorAddSheet">
+      <div class="sheet-close-btn">
+        <button type="button" id="monitorAddClose">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="sheet-body">
+        <div class="sheet-title">添加监控</div>
+        <div class="form-group">
+          <label>网站地址</label>
+          <input type="url" id="monitorAddUrl" placeholder="https://example.com" autocomplete="off" autocapitalize="off">
+        </div>
+        <div id="monitorAddStatus" style="font-size:13px;color:var(--text2);min-height:20px;margin:-6px 0 10px;"></div>
+        <button class="generate-btn" id="monitorAddConfirm">开始监控</button>
+      </div>
+    </div>
+
     <div class="page active" id="pageHome">
       <div class="page-header">
         <div class="header-top">
           <div class="header-top-left">
-            <button class="header-btn" id="editToggleBtn">编辑</button>
-          </div>
-          <div class="header-top-right">
             <button class="header-icon-btn" id="importBtn" title="导入">
               <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <div class="header-top-right">
+            <button class="header-icon-btn" id="editToggleBtn" title="编辑">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
           </div>
         </div>
@@ -1346,9 +1380,7 @@
       <div class="page-header">
         <div class="header-top">
           <div class="header-top-left"></div>
-          <div class="header-top-right">
-            <button class="header-btn" id="clearFormBtn">清空</button>
-          </div>
+          <div class="header-top-right"></div>
         </div>
         <div class="page-title" id="createTitle">创建 WebClip</div>
       </div>
@@ -1937,11 +1969,6 @@
       reader.readAsDataURL(file);
     });
 
-    // 清空按钮
-    document.getElementById('clearFormBtn').addEventListener('click', () => {
-      clearForm();
-      showAlert('已清空');
-    });
 
     document.getElementById('generateBtn').addEventListener('click', () => {
       const webUrl = document.getElementById('webUrl').value.trim();
@@ -2194,7 +2221,14 @@
     document.getElementById('editToggleBtn').addEventListener('click', () => {
       isEditMode = !isEditMode;
       document.body.classList.toggle('edit-mode', isEditMode);
-      document.getElementById('editToggleBtn').textContent = isEditMode ? '完成' : '编辑';
+      const btn = document.getElementById('editToggleBtn');
+      if (isEditMode) {
+        btn.title = '完成';
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+      } else {
+        btn.title = '编辑';
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+      }
       renderHomeList(document.getElementById('appSearchInput').value);
     });
 
@@ -2388,8 +2422,26 @@
       saveSettings(s);
     });
 
-    document.getElementById('colorThemeBtn').addEventListener('click', () => colorPicker.click());
+    function openColorPicker() {
+      try {
+        colorPicker.value = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#007aff';
+      } catch (e) {}
+      // iOS 需要在用户手势里同步触发
+      colorPicker.focus();
+      colorPicker.click();
+    }
+    document.getElementById('colorThemeBtn').addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openColorPicker();
+    });
     colorPicker.addEventListener('input', function () {
+      applyAccent(this.value);
+      const s = getSettings();
+      s.accent = this.value;
+      saveSettings(s);
+    });
+    colorPicker.addEventListener('change', function () {
       applyAccent(this.value);
       const s = getSettings();
       s.accent = this.value;
@@ -2579,8 +2631,7 @@
       const blank = `<div class="config-icon placeholder"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/></svg></div>`;
       box.innerHTML = `
         <div class="monitor-toolbar">
-          <div class="monitor-hint">检测应用列表中的网站是否有变化。部分站点可能因跨域无法直接读取。</div>
-          <button class="monitor-check-btn" id="monitorCheckAll">全部检测</button>
+          <div class="monitor-hint">可监控应用列表中的网站，也可点左上角 + 单独添加网址。部分站点可能因跨域无法完整检测。</div>
         </div>
         <div class="monitor-stats">
           <div class="monitor-stat"><div class="num warn">${updated}</div><div class="lbl">有更新</div></div>
@@ -2618,16 +2669,6 @@
         }).join('')}
       `;
 
-      const allBtn = document.getElementById('monitorCheckAll');
-      if (allBtn) {
-        allBtn.onclick = async () => {
-          allBtn.disabled = true;
-          allBtn.innerHTML = '<div class="spin"></div>检测中';
-          await checkAllConfigs();
-          allBtn.disabled = false;
-          allBtn.textContent = '全部检测';
-        };
-      }
       box.querySelectorAll('[data-check]').forEach(btn => {
         btn.addEventListener('click', async () => {
           btn.disabled = true;
@@ -2643,6 +2684,132 @@
         });
       });
     }
+
+
+    async function fetchSiteMeta(url) {
+      const normalized = normalizeUrl(url);
+      let title = '';
+      let iconBase64 = '';
+      try {
+        const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(normalized);
+        const res = await fetch(proxy, { cache: 'no-store' });
+        if (!res.ok) throw new Error('无法获取页面');
+        const htmlText = await res.text();
+        const titleMatch = htmlText.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+        if (titleMatch) {
+          title = titleMatch[1].replace(/\s+/g, ' ').trim();
+          title = title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+        }
+        const iconMatch =
+          htmlText.match(/<link[^>]+rel=["'](?:apple-touch-icon(?:-precomposed)?|icon|shortcut icon)["'][^>]*>/i) ||
+          htmlText.match(/<link[^>]+href=["'][^"']+["'][^>]+rel=["'](?:apple-touch-icon(?:-precomposed)?|icon|shortcut icon)["'][^>]*>/i);
+        let iconHref = '';
+        if (iconMatch) {
+          const hrefM = iconMatch[0].match(/href=["']([^"']+)["']/i);
+          if (hrefM) iconHref = hrefM[1];
+        }
+        if (!iconHref) {
+          try {
+            const u = new URL(normalized);
+            iconHref = u.origin + '/favicon.ico';
+          } catch (e) {}
+        }
+        if (iconHref) {
+          try {
+            const abs = new URL(iconHref, normalized).href;
+            const iconRes = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(abs), { cache: 'no-store' });
+            if (iconRes.ok) {
+              const blob = await iconRes.blob();
+              if (blob && blob.size > 0 && blob.size < 800000) {
+                iconBase64 = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+                  reader.onload = () => resolve(reader.result);
+                  reader.onerror = reject;
+                  reader.readAsDataURL(blob);
+                });
+              }
+            }
+          } catch (e) {}
+        }
+      } catch (e) {
+        // ignore, still allow manual add
+      }
+      if (!title) {
+        try { title = new URL(normalized).hostname; } catch (e) { title = '监控站点'; }
+      }
+      return { title, iconBase64, webUrl: normalized };
+    }
+
+    function openMonitorAddSheet() {
+      document.getElementById('monitorAddUrl').value = '';
+      document.getElementById('monitorAddStatus').textContent = '';
+      document.getElementById('monitorAddMask').classList.add('show');
+      document.getElementById('monitorAddSheet').classList.add('show');
+      setTimeout(() => document.getElementById('monitorAddUrl').focus(), 300);
+    }
+    function closeMonitorAddSheet() {
+      document.getElementById('monitorAddMask').classList.remove('show');
+      document.getElementById('monitorAddSheet').classList.remove('show');
+    }
+
+    document.getElementById('monitorAddBtn').addEventListener('click', openMonitorAddSheet);
+    document.getElementById('monitorAddMask').addEventListener('click', closeMonitorAddSheet);
+    document.getElementById('monitorAddClose').addEventListener('click', closeMonitorAddSheet);
+
+    document.getElementById('monitorAddConfirm').addEventListener('click', async () => {
+      const input = document.getElementById('monitorAddUrl');
+      let url = input.value.trim();
+      if (!url) { showAlert('请输入网址'); return; }
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+      const status = document.getElementById('monitorAddStatus');
+      const btn = document.getElementById('monitorAddConfirm');
+      btn.disabled = true;
+      status.textContent = '正在获取网站名称和图标…';
+      try {
+        const meta = await fetchSiteMeta(url);
+        const data = {
+          id: generateUUID(),
+          webUrl: meta.webUrl,
+          orgName: '监控添加',
+          configName: meta.title || '监控站点',
+          desktopName: meta.title || '监控站点',
+          description: '通过监控页添加的网站',
+          fullscreen: true,
+          allowDelete: true,
+          ignoreScope: true,
+          iconBase64: meta.iconBase64 || '',
+          createdAt: Date.now()
+        };
+        const result = addConfig(data);
+        closeMonitorAddSheet();
+        renderMonitor();
+        renderHomeList();
+        // 立刻检测一次
+        await checkOneConfig(result.config.id);
+        renderMonitor();
+        if (result.overwritten) {
+          status.textContent = '';
+        }
+      } catch (e) {
+        status.textContent = '获取失败，请检查网址后重试';
+      }
+      btn.disabled = false;
+      btn.textContent = '开始监控';
+    });
+
+    document.getElementById('monitorRefreshBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('monitorRefreshBtn');
+      btn.style.opacity = '0.5';
+      btn.style.pointerEvents = 'none';
+      try {
+        await checkAllConfigs();
+      } finally {
+        btn.style.opacity = '';
+        btn.style.pointerEvents = '';
+        renderMonitor();
+      }
+    });
+
 
     function initSettings() {
       const s = getSettings();
