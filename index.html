@@ -48,7 +48,7 @@
     }
 
     .page-header {
-      padding: 12px 16px 10px;
+      padding: 4px 16px 6px;
       background: var(--card);
       flex-shrink: 0;
     }
@@ -57,8 +57,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 36px;
-      margin-bottom: 4px;
+      min-height: 32px;
+      margin-bottom: 2px;
     }
 
     .header-top-left, .header-top-right {
@@ -72,7 +72,8 @@
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.6px;
-      line-height: 1.2;
+      line-height: 1.15;
+      margin-top: -2px;
     }
 
     .header-btn {
@@ -112,7 +113,7 @@
       stroke-linejoin: round;
     }
 
-    .content {
+    .content aaaaaaaa{
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -120,26 +121,34 @@
     }
 
     .app-search-box {
-      padding: 0 16px 12px;
+      padding: 0 16px 10px;
       background: var(--card);
       flex-shrink: 0;
     }
 
     .app-search-input {
       width: 100%;
-      height: 40px;
-      padding: 0 14px 0 36px;
-      font-size: 16px;
+      height: 44px;
+      padding: 0 16px 0 40px;
+      font-size: 17px;
       border: none;
-      border-radius: 10px;
-      background: var(--bg);
+      border-radius: 999px;
+      background: #e8e8ed;
       color: var(--text);
       outline: none;
       font-family: inherit;
       -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+      box-shadow: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: 10px center;
+      background-position: 14px center;
+    }
+    .app-search-input::placeholder {
+      color: #8e8e93;
+      opacity: 1;
+    }
+    body.dark .app-search-input {
+      background: #3a3a3c;
     }
 
     .create-content { padding: 4px 20px 40px; }
@@ -260,6 +269,7 @@
 
     .config-card:active { background: #f5f5f7; }
 
+    /* 拖动时原卡片完全透明，消除残影 */
     .config-card.dragging-source {
       opacity: 0 !important;
       visibility: hidden;
@@ -996,7 +1006,7 @@
 
     /* 椭圆形底部导航 + 滑动指示器 */
     .tab-bar-wrapper {
-      margin: 0 16px calc(12px + env(safe-area-inset-bottom));
+      margin: 0 16px calc(22px + env(safe-area-inset-bottom));
       padding: 0;
       border: none;
       border-radius: 999px;
@@ -1101,7 +1111,7 @@
         <div class="page-title">应用</div>
       </div>
       <div class="app-search-box">
-        <input type="search" class="app-search-input" id="appSearchInput" placeholder="搜索应用" autocomplete="off">
+        <input type="search" class="app-search-input" id="appSearchInput" placeholder="搜索" autocomplete="off">
       </div>
       <div class="content">
         <div class="home-list" id="homeList"></div>
@@ -1247,7 +1257,7 @@
               </div>
               <div class="settings-item" id="aboutItem">
                 <div class="settings-icon">
-                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                 </div>
                 <div class="settings-label">关于</div>
                 <div class="settings-arrow">›</div>
@@ -1663,6 +1673,7 @@
       reader.readAsDataURL(file);
     });
 
+    // 清空按钮
     document.getElementById('clearFormBtn').addEventListener('click', () => {
       clearForm();
       showAlert('已清空');
@@ -1687,7 +1698,6 @@
       addConfig(data);
       downloadConfig(data);
       renderHomeList();
-      showAlert('配置已生成', '已开始下载配置文件，当前页面保持不变');
     });
 
     function clearForm() {
@@ -1831,6 +1841,7 @@
       renderList('homeList', list);
     }
 
+    // 流畅拖动（完全消除残影）
     function setupSmoothDrag(container) {
       let sourceCard = null;
       let ghost = null;
@@ -2049,6 +2060,7 @@
         tabIndicator.style.transition = 'none';
         tabIndicator.style.width = width + 'px';
         tabIndicator.style.transform = 'translateX(' + left + 'px)';
+        // force reflow then restore transition
         void tabIndicator.offsetWidth;
         tabIndicator.style.transition = '';
       } else {
@@ -2189,6 +2201,7 @@
     initSettings();
     renderHomeList();
     setupLiquidTabDrag();
+    // 初始化指示器位置（等布局完成）
     requestAnimationFrame(() => updateTabIndicator('pageHome', true));
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
