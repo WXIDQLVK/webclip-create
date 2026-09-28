@@ -2124,8 +2124,11 @@
       const webUrl = document.getElementById('webUrl').value.trim();
       if (!webUrl) { showAlert('请填写网页地址'); return; }
 
-      // 先请求通知权限；用户允许后显示“应用安装准备中”
-      await requestInstallPreparationNotification();
+      // 只有设置里的“通知”开关开启时，生成配置文件才发送通知。
+      const settings = getSettings();
+      if (settings.notification === true) {
+        await requestInstallPreparationNotification();
+      }
 
       const data = {
         id: generateUUID(),
