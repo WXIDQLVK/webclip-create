@@ -258,15 +258,15 @@
     }
 
     .config-card {
-      background: var(--accent-card);
+      background: var(--accent-light);
       border-radius: 14px;
       padding: 14px 12px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 12px;
-      border: 1px solid var(--accent-border);
-      box-shadow: 0 2px 8px var(--accent-soft);
+      border: none;
+      box-shadow: none;
       cursor: pointer;
       transition: background 0.15s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
@@ -419,16 +419,16 @@
     .tool-list { padding: 12px 16px 48px; }
 
     .tool-card {
-      background: var(--accent-card);
+      background: var(--accent-light);
       border-radius: 14px;
       padding: 16px;
       margin-bottom: 12px;
-      border: 1px solid var(--accent-border);
-      box-shadow: 0 2px 8px var(--accent-soft);
+      border: none;
+      box-shadow: none;
       display: flex;
       align-items: center;
       gap: 14px;
-      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      transition: background 0.2s;
     }
 
     .tool-icon {
@@ -1030,9 +1030,9 @@
 
     body.dark .config-card,
     body.dark .tool-card {
-      box-shadow: 0 2px 8px var(--accent-soft);
-      background: var(--accent-card);
-      border-color: var(--accent-border);
+      box-shadow: none;
+      background: var(--accent-light);
+      border: none;
     }
 
     body.dark .tab-bar-wrapper {
@@ -1040,7 +1040,7 @@
       border-top-color: rgba(255,255,255,0.1);
     }
 
-    body.dark .settings-group { background: rgba(0, 122, 255, 0.15); }
+    body.dark .settings-group { background: var(--accent-light); }
     body.dark .page-header { background: var(--card); }
     body.dark .app-search-box { background: var(--card); }
     body.dark .detail-page { background: #1c1c1e; }
@@ -1191,14 +1191,14 @@
       margin-bottom: 16px;
     }
     .monitor-stat {
-      background: var(--accent-card);
+      background: var(--accent-light);
       border-radius: 14px;
       padding: 14px 10px;
       text-align: center;
-      border: 1px solid var(--accent-border);
-      box-shadow: 0 2px 8px var(--accent-soft);
+      border: none;
+      box-shadow: none;
     }
-    body.dark .monitor-stat { box-shadow: 0 2px 8px var(--accent-soft); background: var(--accent-card); }
+    body.dark .monitor-stat { box-shadow: none; background: var(--accent-light); }
     .monitor-stat .num {
       font-size: 22px;
       font-weight: 700;
@@ -1214,14 +1214,14 @@
       margin-top: 4px;
     }
     .monitor-card {
-      background: var(--accent-card);
+      background: var(--accent-light);
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 12px;
-      border: 1px solid var(--accent-border);
-      box-shadow: 0 2px 8px var(--accent-soft);
+      border: none;
+      box-shadow: none;
     }
-    body.dark .monitor-card { box-shadow: 0 2px 8px var(--accent-soft); background: var(--accent-card); }
+    body.dark .monitor-card { box-shadow: none; background: var(--accent-light); }
     .monitor-card-top {
       display: flex;
       align-items: flex-start;
@@ -1310,6 +1310,94 @@
       padding: 50px 20px;
       line-height: 1.6;
     }
+
+
+    /* 系统级语言菜单 */
+    .action-sheet-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 400;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+    }
+    .action-sheet-mask.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .action-sheet {
+      width: 100%;
+      max-width: 430px;
+      transform: translateY(110%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .action-sheet-mask.show .action-sheet { transform: translateY(0); }
+    .action-sheet-group {
+      background: rgba(242,242,247,0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    body.dark .action-sheet-group { background: rgba(44,44,46,0.94); }
+    .action-sheet-title {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text2);
+      padding: 12px 16px 8px;
+      line-height: 1.35;
+    }
+    .action-sheet-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      font-size: 20px;
+      color: var(--accent);
+      border-top: 0.5px solid rgba(60,60,67,0.29);
+      cursor: pointer;
+      background: transparent;
+      width: 100%;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      font-family: inherit;
+      -webkit-appearance: none;
+    }
+    body.dark .action-sheet-option { border-top-color: rgba(84,84,88,0.65); }
+    .action-sheet-option:active { background: rgba(0,0,0,0.06); }
+    .action-sheet-option.selected { font-weight: 600; }
+    .action-sheet-option .check {
+      position: absolute;
+      left: 16px;
+      font-size: 18px;
+      color: var(--accent);
+      display: none;
+    }
+    .action-sheet-option.selected .check { display: block; }
+    .action-sheet-cancel {
+      background: rgba(255,255,255,0.95);
+      border-radius: 14px;
+      height: 56px;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent);
+      border: none;
+      width: 100%;
+      font-family: inherit;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+    body.dark .action-sheet-cancel { background: rgba(44,44,46,0.95); }
+    .action-sheet-cancel:active { opacity: 0.7; }
+    .settings-value { flex-shrink: 0; }
 
   </style>
 </head>
@@ -1516,11 +1604,12 @@
                   <span class="slider"></span>
                 </label>
               </div>
-              <div class="settings-item" id="aboutItem">
+              <div class="settings-item" id="languageItem">
                 <div class="settings-icon">
-                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 </div>
-                <div class="settings-label">关于</div>
+                <div class="settings-label" data-i18n="language">语言</div>
+                <div class="settings-value" id="languageValue" style="font-size:15px;color:var(--text2);margin-right:4px;">跟随系统</div>
                 <div class="settings-arrow">›</div>
               </div>
             </div>
@@ -1632,6 +1721,20 @@
 
   <input type="color" id="colorPicker" value="#007aff">
   <input type="file" id="importFileInput" accept=".mobileconfig,application/x-apple-aspen-config" style="display:none;">
+
+  
+    <div class="action-sheet-mask" id="languageSheetMask">
+      <div class="action-sheet">
+        <div class="action-sheet-group">
+          <div class="action-sheet-title" data-i18n="languageSheetTitle">选择语言</div>
+          <button type="button" class="action-sheet-option" data-lang="system"><span class="check">✓</span><span data-i18n="langSystem">跟随系统</span></button>
+          <button type="button" class="action-sheet-option" data-lang="zh-Hans"><span class="check">✓</span><span data-i18n="langZhHans">简体中文</span></button>
+          <button type="button" class="action-sheet-option" data-lang="zh-Hant"><span class="check">✓</span><span data-i18n="langZhHant">繁體中文</span></button>
+          <button type="button" class="action-sheet-option" data-lang="en"><span class="check">✓</span><span data-i18n="langEn">English</span></button>
+        </div>
+        <button type="button" class="action-sheet-cancel" id="languageSheetCancel" data-i18n="cancel">取消</button>
+      </div>
+    </div>
 
   <div class="alert-mask" id="alertMask">
     <div class="alert-box">
@@ -1941,7 +2044,7 @@
             <div class="tool-name">${t.name}</div>
             <div class="tool-desc">${t.desc}</div>
           </div>
-          <button class="tool-install-btn" data-id="${t.id}">安装</button>
+          <button class="tool-install-btn" data-id="${t.id}">${t('install')}</button>
         </div>
       `).join('');
       container.querySelectorAll('.tool-install-btn').forEach(btn => {
@@ -2079,7 +2182,7 @@
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
-        container.innerHTML = `<div class="empty-tip">还没有创建任何配置文件<br>去「创建」页生成一个吧～</div>`;
+        container.innerHTML = `<div class="empty-tip">${t('emptyApps')}</div>`;
         return;
       }
       container.innerHTML = list.map(item => `
@@ -2093,7 +2196,7 @@
             <div class="config-desc">${escapeHtml(item.webUrl)}</div>
             <div class="config-time">${formatTime(item.createdAt)}</div>
           </div>
-          <button class="open-btn" data-url="${escapeHtml(item.webUrl)}">打开</button>
+          <button class="open-btn" data-url="${escapeHtml(item.webUrl)}">${t('open')}</button>
           <button class="delete-btn" data-id="${item.id}"></button>
         </div>
       `).join('');
@@ -2493,8 +2596,20 @@
       saveSettings(s);
     });
 
-    document.getElementById('aboutItem').addEventListener('click', () => {
-      showAlert('关于', '创建 WebClip v1.0\n一个简单好用的 iOS 网页快捷方式生成工具');
+    document.getElementById('languageItem').addEventListener('click', openLanguageSheet);
+    document.getElementById('languageSheetMask').addEventListener('click', e => {
+      if (e.target.id === 'languageSheetMask') closeLanguageSheet();
+    });
+    document.getElementById('languageSheetCancel').addEventListener('click', closeLanguageSheet);
+    document.querySelectorAll('.action-sheet-option[data-lang]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.getAttribute('data-lang');
+        const s = getSettings();
+        s.language = lang;
+        saveSettings(s);
+        closeLanguageSheet();
+        applyI18n();
+      });
     });
 
 
@@ -2510,11 +2625,11 @@
     }
 
     function statusLabel(status) {
-      if (status === 'updated') return { text: '有更新', cls: 'warn' };
-      if (status === 'unchanged') return { text: '无变化', cls: 'ok' };
-      if (status === 'error') return { text: '无法检测', cls: 'err' };
-      if (status === 'checking') return { text: '检测中', cls: 'pending' };
-      return { text: '未检测', cls: '' };
+      if (status === 'updated') return { text: t('updated'), cls: 'warn' };
+      if (status === 'unchanged') return { text: t('unchanged'), cls: 'ok' };
+      if (status === 'error') return { text: t('failed'), cls: 'err' };
+      if (status === 'checking') return { text: '…', cls: 'pending' };
+      return { text: t('unchecked'), cls: '' };
     }
 
     async function probeUrl(url) {
@@ -2648,7 +2763,7 @@
       if (!box) return;
       const list = getConfigs();
       if (!list.length) {
-        box.innerHTML = `<div class="monitor-empty">还没有可检测的网站<br>先去「创建」页创建，或点左上角 + 添加网址</div>`;
+        box.innerHTML = `<div class="monitor-empty">${t('emptyMonitor')}</div>`;
         return;
       }
       let updated = 0, ok = 0, err = 0, pending = 0;
@@ -2662,12 +2777,12 @@
       const blank = `<div class="config-icon placeholder"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/></svg></div>`;
       box.innerHTML = `
         <div class="monitor-toolbar">
-          <div class="monitor-hint">检测应用列表中的网站是否有更新，也可点左上角 + 单独添加网址。部分站点可能因跨域无法完整检测。</div>
+          <div class="monitor-hint">${t('monitorHint')}</div>
         </div>
         <div class="monitor-stats">
-          <div class="monitor-stat"><div class="num warn">${updated}</div><div class="lbl">有更新</div></div>
-          <div class="monitor-stat"><div class="num ok">${ok}</div><div class="lbl">无变化</div></div>
-          <div class="monitor-stat"><div class="num ${err ? 'err' : ''}">${err || pending}</div><div class="lbl">${err ? '失败' : '未检测'}</div></div>
+          <div class="monitor-stat"><div class="num warn">${updated}</div><div class="lbl">${t('updated')}</div></div>
+          <div class="monitor-stat"><div class="num ok">${ok}</div><div class="lbl">${t('unchanged')}</div></div>
+          <div class="monitor-stat"><div class="num ${err ? 'err' : ''}">${err || pending}</div><div class="lbl">${err ? t('failed') : t('unchecked')}</div></div>
         </div>
         ${list.map(item => {
           const m = item.monitor || {};
@@ -2824,6 +2939,169 @@
     });
 
 
+
+    const I18N = {
+      'zh-Hans': {
+        update: '更新', apps: '应用', create: '创建', plugins: '插件', settings: '设置',
+        search: '搜索', open: '打开', install: '安装', edit: '编辑', done: '完成',
+        appearance: '外观', darkMode: '深色模式', colorTheme: '颜色主题',
+        webclipOpts: 'WebClip 选项', allowDelete: '允许删除', fullscreen: '全屏模式', ignoreScope: '忽略范围',
+        general: '通用', notification: '通知', language: '语言',
+        langSystem: '跟随系统', langZhHans: '简体中文', langZhHant: '繁體中文', langEn: 'English',
+        languageSheetTitle: '选择语言', cancel: '取消',
+        generate: '生成配置文件', webUrl: '网页地址', orgName: '组织名称', fileName: '文件名称',
+        desktopName: '桌面名称', description: '描述说明',
+        monitorHint: '检测应用列表中的网站是否有更新，也可点左上角 + 单独添加网址。部分站点可能因跨域无法完整检测。',
+        updated: '有更新', unchanged: '无变化', unchecked: '未检测', failed: '失败',
+        emptyApps: '还没有创建任何配置文件<br>去「创建」页生成一个吧～',
+        emptyMonitor: '还没有可检测的网站<br>先去「创建」页创建，或点左上角 + 添加网址',
+        addUpdate: '添加更新', startAdd: '开始添加', saveEdit: '保存修改'
+      },
+      'zh-Hant': {
+        update: '更新', apps: '應用', create: '創建', plugins: '插件', settings: '設置',
+        search: '搜索', open: '打開', install: '安裝', edit: '編輯', done: '完成',
+        appearance: '外觀', darkMode: '深色模式', colorTheme: '顏色主題',
+        webclipOpts: 'WebClip 選項', allowDelete: '允許刪除', fullscreen: '全屏模式', ignoreScope: '忽略範圍',
+        general: '通用', notification: '通知', language: '語言',
+        langSystem: '跟隨系統', langZhHans: '简体中文', langZhHant: '繁體中文', langEn: 'English',
+        languageSheetTitle: '選擇語言', cancel: '取消',
+        generate: '生成配置文件', webUrl: '網頁地址', orgName: '組織名稱', fileName: '文件名稱',
+        desktopName: '桌面名稱', description: '描述說明',
+        monitorHint: '檢測應用列表中的網站是否有更新，也可點左上角 + 單獨添加網址。部分站點可能因跨域無法完整檢測。',
+        updated: '有更新', unchanged: '無變化', unchecked: '未檢測', failed: '失敗',
+        emptyApps: '還沒有創建任何配置文件<br>去「創建」頁生成一個吧～',
+        emptyMonitor: '還沒有可檢測的網站<br>先去「創建」頁創建，或點左上角 + 添加網址',
+        addUpdate: '添加更新', startAdd: '開始添加', saveEdit: '保存修改'
+      },
+      en: {
+        update: 'Updates', apps: 'Apps', create: 'Create', plugins: 'Plugins', settings: 'Settings',
+        search: 'Search', open: 'Open', install: 'Install', edit: 'Edit', done: 'Done',
+        appearance: 'Appearance', darkMode: 'Dark Mode', colorTheme: 'Accent Color',
+        webclipOpts: 'WebClip Options', allowDelete: 'Allow Removal', fullscreen: 'Fullscreen', ignoreScope: 'Ignore Scope',
+        general: 'General', notification: 'Notifications', language: 'Language',
+        langSystem: 'System', langZhHans: '简体中文', langZhHant: '繁體中文', langEn: 'English',
+        languageSheetTitle: 'Language', cancel: 'Cancel',
+        generate: 'Generate Config', webUrl: 'URL', orgName: 'Organization', fileName: 'File Name',
+        desktopName: 'Home Screen Name', description: 'Description',
+        monitorHint: 'Check sites in your app list for updates, or tap + to add a URL. Some sites may fail due to CORS.',
+        updated: 'Updated', unchanged: 'No Change', unchecked: 'Pending', failed: 'Failed',
+        emptyApps: 'No configs yet<br>Create one in Create tab',
+        emptyMonitor: 'Nothing to monitor<br>Create an app or tap + to add a URL',
+        addUpdate: 'Add Site', startAdd: 'Add', saveEdit: 'Save'
+      }
+    };
+
+    function resolveLang(pref) {
+      if (!pref || pref === 'system') {
+        const nav = (navigator.language || 'zh-CN').toLowerCase();
+        if (nav.startsWith('zh')) {
+          if (nav.includes('hant') || nav.includes('tw') || nav.includes('hk') || nav.includes('mo')) return 'zh-Hant';
+          return 'zh-Hans';
+        }
+        return 'en';
+      }
+      return pref;
+    }
+
+    function t(key) {
+      const pref = (getSettings().language) || 'system';
+      const lang = resolveLang(pref);
+      const pack = I18N[lang] || I18N['zh-Hans'];
+      return pack[key] || I18N['zh-Hans'][key] || key;
+    }
+
+    function languageDisplayName(pref) {
+      const p = pref || 'system';
+      if (p === 'system') return t('langSystem');
+      if (p === 'zh-Hans') return t('langZhHans');
+      if (p === 'zh-Hant') return t('langZhHant');
+      if (p === 'en') return t('langEn');
+      return t('langSystem');
+    }
+
+    function applyI18n() {
+      document.documentElement.lang = resolveLang(getSettings().language || 'system');
+      // tabs
+      const tabMap = { pageMonitor: 'update', pageHome: 'apps', pageCreate: 'create', pageTools: 'plugins', pageSettings: 'settings' };
+      document.querySelectorAll('.tab-item').forEach(item => {
+        const key = tabMap[item.dataset.page];
+        if (!key) return;
+        const label = item.querySelector('div:not(.tab-icon)');
+        if (label) label.textContent = t(key);
+      });
+      // page titles
+      const titles = {
+        pageMonitor: 'update', pageHome: 'apps', pageCreate: 'create', pageTools: 'plugins', pageSettings: 'settings'
+      };
+      Object.keys(titles).forEach(id => {
+        const page = document.getElementById(id);
+        if (!page) return;
+        const titleEl = page.querySelector('.page-title');
+        if (titleEl) titleEl.textContent = t(titles[id]);
+      });
+      const search = document.getElementById('appSearchInput');
+      if (search) search.placeholder = t('search');
+      // settings labels by structure
+      const sections = document.querySelectorAll('.settings-section');
+      if (sections[0]) {
+        const st = sections[0].querySelector('.settings-section-title');
+        if (st) st.textContent = t('appearance');
+        const labels = sections[0].querySelectorAll('.settings-label');
+        if (labels[0]) labels[0].textContent = t('darkMode');
+        if (labels[1]) labels[1].textContent = t('colorTheme');
+      }
+      if (sections[1]) {
+        const st = sections[1].querySelector('.settings-section-title');
+        if (st) st.textContent = t('webclipOpts');
+        const labels = sections[1].querySelectorAll('.settings-label');
+        if (labels[0]) labels[0].textContent = t('allowDelete');
+        if (labels[1]) labels[1].textContent = t('fullscreen');
+        if (labels[2]) labels[2].textContent = t('ignoreScope');
+      }
+      if (sections[2]) {
+        const st = sections[2].querySelector('.settings-section-title');
+        if (st) st.textContent = t('general');
+        const labels = sections[2].querySelectorAll('.settings-label');
+        if (labels[0]) labels[0].textContent = t('notification');
+        if (labels[1]) labels[1].textContent = t('language');
+      }
+      const lv = document.getElementById('languageValue');
+      if (lv) lv.textContent = languageDisplayName(getSettings().language || 'system');
+      // create form
+      const genBtn = document.getElementById('generateBtn');
+      if (genBtn) genBtn.textContent = t('generate');
+      const createLabels = document.querySelectorAll('#pageCreate .form-group label');
+      const createKeys = ['webUrl', 'orgName', 'fileName', 'desktopName', 'description'];
+      createLabels.forEach((el, i) => { if (createKeys[i]) el.textContent = t(createKeys[i]); });
+      const saveBtn = document.getElementById('sheetSaveBtn');
+      if (saveBtn) saveBtn.textContent = t('saveEdit');
+      const addTitle = document.querySelector('#monitorAddSheet .sheet-title');
+      if (addTitle) addTitle.textContent = t('addUpdate');
+      const addConfirm = document.getElementById('monitorAddConfirm');
+      if (addConfirm) addConfirm.textContent = t('startAdd');
+      // language sheet
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (k) el.textContent = t(k);
+      });
+      // refresh dynamic lists
+      try { renderHomeList(document.getElementById('appSearchInput')?.value || ''); } catch (e) {}
+      try { renderTools(); } catch (e) {}
+      try { renderMonitor(); } catch (e) {}
+    }
+
+    function openLanguageSheet() {
+      const pref = getSettings().language || 'system';
+      document.querySelectorAll('.action-sheet-option[data-lang]').forEach(btn => {
+        btn.classList.toggle('selected', btn.getAttribute('data-lang') === pref);
+      });
+      document.getElementById('languageSheetMask').classList.add('show');
+    }
+    function closeLanguageSheet() {
+      document.getElementById('languageSheetMask').classList.remove('show');
+    }
+
+
     function initSettings() {
       const s = getSettings();
       if (s.darkMode) {
@@ -2837,6 +3115,7 @@
       if (s.fullscreen !== undefined) document.getElementById('fullscreen').checked = s.fullscreen;
       if (s.ignoreScope !== undefined) document.getElementById('ignoreScope').checked = s.ignoreScope;
       if (s.notification !== undefined) document.getElementById('notificationToggle').checked = s.notification;
+      applyI18n();
     }
 
     function hapticFeedback() {
