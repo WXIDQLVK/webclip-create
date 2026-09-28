@@ -302,9 +302,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      background: #ffffff;
+      border: 0.5px solid rgba(0,0,0,0.08);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02);
       color: #c7c7cc;
+      font-size: 0;
     }
+    .config-icon.placeholder svg {
+      width: 28px;
+      height: 28px;
+      stroke: #c7c7cc;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.85;
+    }
+    body.dark .config-icon.placeholder {
+      background: #3a3a3c;
+      border-color: rgba(255,255,255,0.08);
+    }
+    body.dark .config-icon.placeholder svg { stroke: #8e8e93; }
 
     .config-info { flex: 1; min-width: 0; }
 
@@ -415,7 +433,15 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 22px;
+    }
+    .tool-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .tool-info { flex: 1; min-width: 0; }
@@ -620,9 +646,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 42px;
+      background: #ffffff;
+      border: 0.5px solid rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       color: #c7c7cc;
+      font-size: 0;
     }
+    .app-icon.placeholder svg {
+      width: 48px;
+      height: 48px;
+      stroke: #c7c7cc;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.85;
+    }
+    body.dark .app-icon.placeholder {
+      background: #3a3a3c;
+      border-color: rgba(255,255,255,0.08);
+    }
+    body.dark .app-icon.placeholder svg { stroke: #8e8e93; }
 
     .app-meta { flex: 1; min-width: 0; padding-top: 4px; }
 
@@ -1092,10 +1136,189 @@
       background: linear-gradient(145deg, #fff, #f1f7ff);
     }
 
+    /* 监控页 */
+    .monitor-content { padding: 8px 16px 48px; }
+    .monitor-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .monitor-hint {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.4;
+      flex: 1;
+    }
+    .monitor-check-btn {
+      flex-shrink: 0;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 17px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      -webkit-appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .monitor-check-btn:disabled { opacity: 0.55; }
+    .monitor-check-btn .spin {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .monitor-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .monitor-stat {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    body.dark .monitor-stat { box-shadow: none; background: #2c2c2e; }
+    .monitor-stat .num {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .monitor-stat .num.warn { color: #ff9f0a; }
+    .monitor-stat .num.ok { color: #34c759; }
+    .monitor-stat .num.err { color: #ff3b30; }
+    .monitor-stat .lbl {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+    .monitor-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    body.dark .monitor-card { box-shadow: none; background: #2c2c2e; }
+    .monitor-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .monitor-card .config-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 11px;
+    }
+    .monitor-card-info { flex: 1; min-width: 0; }
+    .monitor-card-name {
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .monitor-card-url {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .monitor-badge {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f2f2f7;
+      color: #8e8e93;
+    }
+    .monitor-badge.ok { background: rgba(52,199,89,0.15); color: #248a3d; }
+    .monitor-badge.warn { background: rgba(255,159,10,0.18); color: #c77700; }
+    .monitor-badge.err { background: rgba(255,59,48,0.15); color: #d70015; }
+    .monitor-badge.pending { background: var(--accent-light); color: var(--accent); }
+    body.dark .monitor-badge { background: rgba(255,255,255,0.08); color: #98989f; }
+    body.dark .monitor-badge.ok { background: rgba(52,199,89,0.2); color: #30d158; }
+    body.dark .monitor-badge.warn { background: rgba(255,159,10,0.2); color: #ff9f0a; }
+    body.dark .monitor-badge.err { background: rgba(255,59,48,0.2); color: #ff453a; }
+    .monitor-card-meta {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 0.5px solid rgba(0,0,0,0.06);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+    }
+    body.dark .monitor-card-meta { border-top-color: rgba(255,255,255,0.08); }
+    .monitor-meta-item .k {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 2px;
+    }
+    .monitor-meta-item .v {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .monitor-card-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+    }
+    .monitor-mini-btn {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 16px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .monitor-empty {
+      text-align: center;
+      color: var(--text2);
+      font-size: 15px;
+      padding: 50px 20px;
+      line-height: 1.6;
+    }
+
   </style>
 </head>
 <body>
   <div class="phone-frame">
+
+
+    <div class="page" id="pageMonitor">
+      <div class="page-header">
+        <div class="header-top">
+          <div class="header-top-left"></div>
+          <div class="header-top-right"></div>
+        </div>
+        <div class="page-title">监控</div>
+      </div>
+      <div class="content">
+        <div class="monitor-content" id="monitorContent"></div>
+      </div>
+    </div>
 
     <div class="page active" id="pageHome">
       <div class="page-header">
@@ -1320,6 +1543,14 @@
     <div class="tab-bar-wrapper">
       <div class="tab-bar" id="tabBar">
         <div class="tab-indicator" id="tabIndicator"></div>
+        <div class="tab-item" data-page="pageMonitor">
+          <div class="tab-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 12h3l3-8 4 16 3-8h5"/>
+            </svg>
+          </div>
+          <div>监控</div>
+        </div>
         <div class="tab-item active" data-page="pageHome">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24">
@@ -1385,10 +1616,42 @@
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { return []; }
     }
     function saveConfigs(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+    function normalizeUrl(url) {
+      try {
+        const u = new URL(url.trim());
+        u.hash = '';
+        let path = u.pathname || '/';
+        if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+        u.pathname = path;
+        return u.href;
+      } catch (e) {
+        return String(url || '').trim().replace(/\/$/, '');
+      }
+    }
+    function findConfigByUrl(url) {
+      const n = normalizeUrl(url);
+      return getConfigs().find(c => normalizeUrl(c.webUrl || '') === n);
+    }
     function addConfig(config) {
       const list = getConfigs();
+      const n = normalizeUrl(config.webUrl || '');
+      const idx = list.findIndex(c => normalizeUrl(c.webUrl || '') === n);
+      if (idx !== -1) {
+        const old = list[idx];
+        list[idx] = {
+          ...old,
+          ...config,
+          id: old.id,
+          createdAt: old.createdAt,
+          updatedAt: Date.now(),
+          monitor: old.monitor || null
+        };
+        saveConfigs(list);
+        return { overwritten: true, config: list[idx] };
+      }
       list.unshift(config);
       saveConfigs(list);
+      return { overwritten: false, config };
     }
     function updateConfig(id, data) {
       const list = getConfigs();
@@ -1618,14 +1881,14 @@
     }
 
     const TOOLS = [
-      { id: 'disable-camera', name: '禁用相机', desc: '禁止使用相机功能', icon: '📷', restrictions: { allowCamera: false } },
-      { id: 'disable-screenshot', name: '禁用截屏', desc: '禁止截屏和屏幕录制', icon: '📱', restrictions: { allowScreenShot: false } },
-      { id: 'disable-airdrop', name: '禁用 AirDrop', desc: '禁止使用 AirDrop 传输', icon: '✈️', restrictions: { allowAirDrop: false } },
-      { id: 'disable-appstore', name: '禁用 App Store', desc: '禁止安装/更新 App', icon: '🛒', restrictions: { allowAppInstallation: false, allowUIAppInstallation: false } },
-      { id: 'disable-safari', name: '禁用 Safari', desc: '禁止使用 Safari 浏览器', icon: '🧭', restrictions: { allowSafari: false } },
-      { id: 'disable-icloud', name: '禁用 iCloud', desc: '禁止 iCloud 备份与同步', icon: '☁️', restrictions: { allowCloudBackup: false, allowCloudDocumentSync: false } },
-      { id: 'disable-siri', name: '禁用 Siri', desc: '禁止使用 Siri 和听写', icon: '🎤', restrictions: { allowAssistant: false, allowDictation: false } },
-      { id: 'disable-bluetooth', name: '禁用蓝牙修改', desc: '禁止修改蓝牙设置', icon: '📶', restrictions: { allowBluetoothModification: false } }
+      { id: 'disable-camera', name: '禁用相机', desc: '禁止使用相机功能', icon: '<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>', restrictions: { allowCamera: false } },
+      { id: 'disable-screenshot', name: '禁用截屏', desc: '禁止截屏和屏幕录制', icon: '<svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg>', restrictions: { allowScreenShot: false } },
+      { id: 'disable-airdrop', name: '禁用 AirDrop', desc: '禁止使用 AirDrop 传输', icon: '<svg viewBox="0 0 24 24"><path d="M12 2L4 14h5v8h6v-8h5L12 2z"/></svg>', restrictions: { allowAirDrop: false } },
+      { id: 'disable-appstore', name: '禁用 App Store', desc: '禁止安装/更新 App', icon: '<svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>', restrictions: { allowAppInstallation: false, allowUIAppInstallation: false } },
+      { id: 'disable-safari', name: '禁用 Safari', desc: '禁止使用 Safari 浏览器', icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>', restrictions: { allowSafari: false } },
+      { id: 'disable-icloud', name: '禁用 iCloud', desc: '禁止 iCloud 备份与同步', icon: '<svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>', restrictions: { allowCloudBackup: false, allowCloudDocumentSync: false } },
+      { id: 'disable-siri', name: '禁用 Siri', desc: '禁止使用 Siri 和听写', icon: '<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>', restrictions: { allowAssistant: false, allowDictation: false } },
+      { id: 'disable-bluetooth', name: '禁用蓝牙修改', desc: '禁止修改蓝牙设置', icon: '<svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11L12 22V2l5.5 4.5-11 11"/><line x1="6.5" y1="17.5" x2="12" y2="12"/></svg>', restrictions: { allowBluetoothModification: false } }
     ];
 
     function renderTools() {
@@ -1696,9 +1959,12 @@
         iconBase64: iconBase64 || '',
         createdAt: Date.now()
       };
-      addConfig(data);
+      const result = addConfig(data);
       downloadConfig(data);
       renderHomeList();
+      if (result.overwritten) {
+        /* 同网址已覆盖，不弹窗 */
+      }
     });
 
     function clearForm() {
@@ -1785,7 +2051,7 @@
           <div class="drag-handle" data-id="${item.id}">
             <span></span><span></span><span></span>
           </div>
-          ${item.iconBase64 ? `<img class="config-icon" src="${item.iconBase64}">` : `<div class="config-icon placeholder">📱</div>`}
+          ${item.iconBase64 ? `<img class="config-icon" src="${item.iconBase64}">` : `<div class="config-icon placeholder"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/></svg></div>`}
           <div class="config-info">
             <div class="config-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="config-desc">${escapeHtml(item.webUrl)}</div>
@@ -1980,8 +2246,8 @@
           iconBase64: icon,
           createdAt: Date.now()
         };
-        addConfig(config);
-        showAlert('导入成功', '已添加到应用列表');
+        const ir = addConfig(config);
+        showAlert(ir.overwritten ? '已覆盖同网址配置' : '导入成功', ir.overwritten ? '列表中已有相同网址，已用新文件覆盖' : '已添加到应用列表');
         renderHomeList();
         switchTab('pageHome');
       } catch (err) {
@@ -1995,7 +2261,7 @@
       const sizeStr = formatSize(blob.size);
       document.getElementById('detailBody').innerHTML = `
         <div class="app-header">
-          ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder">📱</div>`}
+          ${item.iconBase64 ? `<img class="app-icon" src="${item.iconBase64}">` : `<div class="app-icon placeholder"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/></svg></div>`}
           <div class="app-meta">
             <div class="app-name">${escapeHtml(item.desktopName || item.configName)}</div>
             <div class="app-developer">${escapeHtml(item.orgName || '自定义组织')}</div>
@@ -2088,6 +2354,7 @@
 
       if (pageId === 'pageHome') renderHomeList(document.getElementById('appSearchInput').value);
       if (pageId === 'pageTools') renderTools();
+      if (pageId === 'pageMonitor') renderMonitor();
     }
 
     tabItems.forEach(item => {
@@ -2146,6 +2413,236 @@
     document.getElementById('aboutItem').addEventListener('click', () => {
       showAlert('关于', '创建 WebClip v1.0\n一个简单好用的 iOS 网页快捷方式生成工具');
     });
+
+
+    function formatMonitorTime(ts) {
+      if (!ts) return '尚未检测';
+      const d = new Date(ts);
+      const now = new Date();
+      const diff = (now - d) / 1000;
+      if (diff < 60) return '刚刚';
+      if (diff < 3600) return Math.floor(diff / 60) + ' 分钟前';
+      if (diff < 86400) return Math.floor(diff / 3600) + ' 小时前';
+      return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    function statusLabel(status) {
+      if (status === 'updated') return { text: '有更新', cls: 'warn' };
+      if (status === 'unchanged') return { text: '无变化', cls: 'ok' };
+      if (status === 'error') return { text: '无法检测', cls: 'err' };
+      if (status === 'checking') return { text: '检测中', cls: 'pending' };
+      return { text: '未检测', cls: '' };
+    }
+
+    async function probeUrl(url) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 12000);
+      try {
+        // 先尝试直接请求（多数站点会因 CORS 失败）
+        let res = await fetch(url, {
+          method: 'HEAD',
+          mode: 'cors',
+          cache: 'no-store',
+          signal: controller.signal
+        }).catch(() => null);
+
+        if (!res || !res.ok) {
+          res = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-store',
+            signal: controller.signal
+          }).catch(() => null);
+        }
+
+        // CORS 失败时走公共代理做轻量检测（仅元信息）
+        if (!res) {
+          const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+          res = await fetch(proxy, {
+            method: 'GET',
+            cache: 'no-store',
+            signal: controller.signal
+          }).catch(() => null);
+          if (res && res.ok) {
+            const text = await res.text();
+            const hash = String(text.length) + ':' + (text.slice(0, 200).length);
+            clearTimeout(timer);
+            return {
+              ok: true,
+              via: 'proxy',
+              etag: '',
+              lastModified: '',
+              contentType: res.headers.get('content-type') || '',
+              contentLength: text.length,
+              fingerprint: hash
+            };
+          }
+          clearTimeout(timer);
+          return { ok: false, error: '无法访问或跨域限制' };
+        }
+
+        clearTimeout(timer);
+        const etag = res.headers.get('etag') || '';
+        const lastModified = res.headers.get('last-modified') || '';
+        const contentType = res.headers.get('content-type') || '';
+        const contentLength = res.headers.get('content-length') || '';
+        let fingerprint = etag || lastModified || contentLength || ('status:' + res.status);
+        return {
+          ok: true,
+          via: 'direct',
+          etag,
+          lastModified,
+          contentType,
+          contentLength: contentLength ? Number(contentLength) : null,
+          fingerprint,
+          status: res.status
+        };
+      } catch (e) {
+        clearTimeout(timer);
+        return { ok: false, error: e.name === 'AbortError' ? '超时' : (e.message || '检测失败') };
+      }
+    }
+
+    async function checkOneConfig(id) {
+      const list = getConfigs();
+      const idx = list.findIndex(c => c.id === id);
+      if (idx === -1) return;
+      const item = list[idx];
+      const prev = item.monitor || {};
+      const result = await probeUrl(item.webUrl);
+      let status = 'error';
+      let detail = result.error || '检测失败';
+      if (result.ok) {
+        if (prev.fingerprint && prev.fingerprint !== result.fingerprint) {
+          status = 'updated';
+          detail = '相对上次检测，页面指纹已变化';
+        } else if (prev.fingerprint && prev.fingerprint === result.fingerprint) {
+          status = 'unchanged';
+          detail = '与上次记录一致';
+        } else {
+          status = 'unchanged';
+          detail = '已记录当前快照，下次可对比';
+        }
+        item.monitor = {
+          status,
+          detail,
+          checkedAt: Date.now(),
+          fingerprint: result.fingerprint,
+          etag: result.etag || '',
+          lastModified: result.lastModified || '',
+          contentType: result.contentType || '',
+          contentLength: result.contentLength,
+          via: result.via || ''
+        };
+      } else {
+        item.monitor = {
+          status: 'error',
+          detail,
+          checkedAt: Date.now(),
+          fingerprint: prev.fingerprint || '',
+          etag: prev.etag || '',
+          lastModified: prev.lastModified || '',
+          contentType: prev.contentType || '',
+          contentLength: prev.contentLength,
+          via: ''
+        };
+      }
+      list[idx] = item;
+      saveConfigs(list);
+      return item.monitor;
+    }
+
+    async function checkAllConfigs() {
+      const list = getConfigs();
+      for (const item of list) {
+        await checkOneConfig(item.id);
+        renderMonitor();
+      }
+    }
+
+    function renderMonitor() {
+      const box = document.getElementById('monitorContent');
+      if (!box) return;
+      const list = getConfigs();
+      if (!list.length) {
+        box.innerHTML = `<div class="monitor-empty">应用列表还是空的<br>先去「安装包」创建或「应用」导入后再来监控</div>`;
+        return;
+      }
+      let updated = 0, ok = 0, err = 0, pending = 0;
+      list.forEach(c => {
+        const s = (c.monitor && c.monitor.status) || '';
+        if (s === 'updated') updated++;
+        else if (s === 'unchanged') ok++;
+        else if (s === 'error') err++;
+        else pending++;
+      });
+      const blank = `<div class="config-icon placeholder"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/></svg></div>`;
+      box.innerHTML = `
+        <div class="monitor-toolbar">
+          <div class="monitor-hint">检测应用列表中的网站是否有变化。部分站点可能因跨域无法直接读取。</div>
+          <button class="monitor-check-btn" id="monitorCheckAll">全部检测</button>
+        </div>
+        <div class="monitor-stats">
+          <div class="monitor-stat"><div class="num warn">${updated}</div><div class="lbl">有更新</div></div>
+          <div class="monitor-stat"><div class="num ok">${ok}</div><div class="lbl">无变化</div></div>
+          <div class="monitor-stat"><div class="num ${err ? 'err' : ''}">${err || pending}</div><div class="lbl">${err ? '失败' : '未检测'}</div></div>
+        </div>
+        ${list.map(item => {
+          const m = item.monitor || {};
+          const badge = statusLabel(m.status);
+          const icon = item.iconBase64
+            ? `<img class="config-icon" src="${item.iconBase64}">`
+            : blank;
+          return `
+            <div class="monitor-card" data-id="${item.id}">
+              <div class="monitor-card-top">
+                ${icon}
+                <div class="monitor-card-info">
+                  <div class="monitor-card-name">${escapeHtml(item.desktopName || item.configName || '未命名')}</div>
+                  <div class="monitor-card-url">${escapeHtml(item.webUrl || '')}</div>
+                </div>
+                <div class="monitor-badge ${badge.cls}">${badge.text}</div>
+              </div>
+              <div class="monitor-card-meta">
+                <div class="monitor-meta-item"><div class="k">上次检测</div><div class="v">${formatMonitorTime(m.checkedAt)}</div></div>
+                <div class="monitor-meta-item"><div class="k">内容指纹</div><div class="v">${escapeHtml(m.fingerprint ? String(m.fingerprint).slice(0, 28) : '—')}</div></div>
+                <div class="monitor-meta-item"><div class="k">Last-Modified</div><div class="v">${escapeHtml(m.lastModified || '—')}</div></div>
+                <div class="monitor-meta-item"><div class="k">说明</div><div class="v">${escapeHtml(m.detail || '点击检测获取详情')}</div></div>
+              </div>
+              <div class="monitor-card-actions">
+                <button class="monitor-mini-btn" data-check="${item.id}">重新检测</button>
+                <button class="monitor-mini-btn" data-open="${escapeHtml(item.webUrl || '')}">打开网站</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      `;
+
+      const allBtn = document.getElementById('monitorCheckAll');
+      if (allBtn) {
+        allBtn.onclick = async () => {
+          allBtn.disabled = true;
+          allBtn.innerHTML = '<div class="spin"></div>检测中';
+          await checkAllConfigs();
+          allBtn.disabled = false;
+          allBtn.textContent = '全部检测';
+        };
+      }
+      box.querySelectorAll('[data-check]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          btn.textContent = '检测中…';
+          await checkOneConfig(btn.getAttribute('data-check'));
+          renderMonitor();
+        });
+      });
+      box.querySelectorAll('[data-open]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const u = btn.getAttribute('data-open');
+          if (u) window.open(u, '_blank');
+        });
+      });
+    }
 
     function initSettings() {
       const s = getSettings();
