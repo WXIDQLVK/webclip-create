@@ -1480,7 +1480,7 @@
                 <div class="settings-icon">
                   <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 </div>
-                <div class="settings-label">全屏启动</div>
+                <div class="settings-label">全屏模式</div>
                 <label class="toggle">
                   <input type="checkbox" id="fullscreen" checked>
                   <span class="slider"></span>
@@ -2681,18 +2681,26 @@
         });
       });
       box.querySelectorAll('[data-open]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const u = btn.getAttribute('data-open');
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          let u = btn.getAttribute('data-open');
           if (!u) return;
-          // 强制交由系统浏览器（Safari）打开，不在本应用内跳转
+          if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+          // 更新页：尽量交给系统 Safari，而不是在当前 WebClip/PWA 内打开
+          // iOS 主屏幕应用中，_blank 外部链接通常会唤起 Safari
+          try {
+            const opened = window.open(u, '_blank', 'noopener,noreferrer');
+            if (opened) return;
+          } catch (err) {}
           const a = document.createElement('a');
           a.href = u;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
-          a.style.display = 'none';
+          // 不使用 download，避免下载行为
           document.body.appendChild(a);
           a.click();
-          document.body.removeChild(a);
+          setTimeout(() => a.remove(), 100);
         });
       });
     }
