@@ -828,13 +828,13 @@
     .sheet-close-btn {
       display: flex;
       justify-content: center;
-      padding: 14px 0 8px;
+      padding: 6px 0 2px;
       flex-shrink: 0;
     }
 
     .sheet-close-btn button {
       width: 44px;
-      height: 30px;
+      height: 24px;
       border: none;
       background: transparent;
       cursor: pointer;
@@ -921,10 +921,6 @@
       stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
-    }
-    .tab-item[data-page="pageTools"] .tab-icon svg {
-      fill: currentColor;
-      stroke: none;
     }
     .tab-item[data-page="pageCreate"] .tab-icon svg {
       stroke-width: 1.6;
@@ -1362,7 +1358,7 @@
           </div>
           <div class="header-top-right">
             <button class="header-icon-btn" id="editToggleBtn" title="编辑">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.5"/><line x1="10" y1="6" x2="20" y2="6"/><circle cx="5" cy="12" r="1.5"/><line x1="10" y1="12" x2="20" y2="12"/><circle cx="5" cy="18" r="1.5"/><line x1="10" y1="18" x2="20" y2="18"/></svg>
             </button>
           </div>
         </div>
@@ -1382,7 +1378,7 @@
           <div class="header-top-left"></div>
           <div class="header-top-right"></div>
         </div>
-        <div class="page-title" id="createTitle">创建 WebClip</div>
+        <div class="page-title" id="createTitle">创建</div>
       </div>
       <div class="content">
         <div class="create-content">
@@ -1424,7 +1420,7 @@
           <div class="header-top-left"></div>
           <div class="header-top-right"></div>
         </div>
-        <div class="page-title">工具</div>
+        <div class="page-title">插件</div>
       </div>
       <div class="content">
         <div class="tool-list" id="toolList"></div>
@@ -1600,16 +1596,17 @@
         <div class="tab-item" data-page="pageCreate">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24">
-              <rect x="3.5" y="5" width="14" height="14" rx="3.2"/>
-              <circle cx="16.2" cy="7.8" r="3"/>
+              <rect x="4" y="4" width="16" height="16" rx="3"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
             </svg>
           </div>
-          <div>安装包</div>
+          <div>创建</div>
         </div>
         <div class="tab-item" data-page="pageTools">
           <div class="tab-icon">
             <svg viewBox="0 0 24 24">
-              <path d="M20.5 11H19V7a2 2 0 0 0-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4a2 2 0 0 0-2 2v3.5a2.5 2.5 0 0 0 0 5V18a2 2 0 0 0 2 2h3.5a2.5 2.5 0 0 0 5 0H15a2 2 0 0 0 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z"/>
+              <path d="M10.5 3.5a2 2 0 0 1 3 0V6h2.5a2 2 0 0 1 2 2v2.5h2.5a2 2 0 0 1 0 3H18V18a2 2 0 0 1-2 2h-2.5v2.5a2 2 0 0 1-3 0V20H8a2 2 0 0 1-2-2v-2.5H3.5a2 2 0 0 1 0-3H6V8a2 2 0 0 1 2-2h2.5V3.5z"/>
             </svg>
           </div>
           <div>插件</div>
@@ -2073,7 +2070,7 @@
     function renderList(containerId, list) {
       const container = document.getElementById(containerId);
       if (!list.length) {
-        container.innerHTML = `<div class="empty-tip">还没有创建任何配置文件<br>去「创建」页面生成一个吧～</div>`;
+        container.innerHTML = `<div class="empty-tip">还没有创建任何配置文件<br>去「创建」页生成一个吧～</div>`;
         return;
       }
       container.innerHTML = list.map(item => `
@@ -2230,7 +2227,7 @@
         btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
       } else {
         btn.title = '编辑';
-        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.5"/><line x1="10" y1="6" x2="20" y2="6"/><circle cx="5" cy="12" r="1.5"/><line x1="10" y1="12" x2="20" y2="12"/><circle cx="5" cy="18" r="1.5"/><line x1="10" y1="18" x2="20" y2="18"/></svg>';
       }
       renderHomeList(document.getElementById('appSearchInput').value);
     });
@@ -2620,7 +2617,7 @@
       if (!box) return;
       const list = getConfigs();
       if (!list.length) {
-        box.innerHTML = `<div class="monitor-empty">还没有可检测的网站<br>先去「安装包」创建，或点左上角 + 添加网址</div>`;
+        box.innerHTML = `<div class="monitor-empty">还没有可检测的网站<br>先去「创建」页创建，或点左上角 + 添加网址</div>`;
         return;
       }
       let updated = 0, ok = 0, err = 0, pending = 0;
@@ -2661,47 +2658,13 @@
                 <div class="monitor-meta-item"><div class="k">上次检测</div><div class="v">${formatMonitorTime(m.checkedAt)}</div></div>
                 <div class="monitor-meta-item"><div class="k">内容指纹</div><div class="v">${escapeHtml(m.fingerprint ? String(m.fingerprint).slice(0, 28) : '—')}</div></div>
                 <div class="monitor-meta-item"><div class="k">Last-Modified</div><div class="v">${escapeHtml(m.lastModified || '—')}</div></div>
-                <div class="monitor-meta-item"><div class="k">说明</div><div class="v">${escapeHtml(m.detail || '点击检测获取详情')}</div></div>
-              </div>
-              <div class="monitor-card-actions">
-                <button class="monitor-mini-btn" data-check="${item.id}">重新检测</button>
-                <button class="monitor-mini-btn" data-open="${escapeHtml(item.webUrl || '')}">打开网站</button>
+                <div class="monitor-meta-item"><div class="k">说明</div><div class="v">${escapeHtml(m.detail || '点右上角刷新可检测')}</div></div>
               </div>
             </div>
           `;
         }).join('')}
       `;
 
-      box.querySelectorAll('[data-check]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          btn.disabled = true;
-          btn.textContent = '检测中…';
-          await checkOneConfig(btn.getAttribute('data-check'));
-          renderMonitor();
-        });
-      });
-      box.querySelectorAll('[data-open]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          let u = btn.getAttribute('data-open');
-          if (!u) return;
-          if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
-          // 更新页：尽量交给系统 Safari，而不是在当前 WebClip/PWA 内打开
-          // iOS 主屏幕应用中，_blank 外部链接通常会唤起 Safari
-          try {
-            const opened = window.open(u, '_blank', 'noopener,noreferrer');
-            if (opened) return;
-          } catch (err) {}
-          const a = document.createElement('a');
-          a.href = u;
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-          // 不使用 download，避免下载行为
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(() => a.remove(), 100);
-        });
       });
     }
 
