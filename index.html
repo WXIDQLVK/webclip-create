@@ -113,8 +113,9 @@
       stroke-linejoin: round;
     }
 
-    .content aaaaaaaa{
+    .content {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: none;
@@ -151,7 +152,7 @@
       background: #3a3a3c;
     }
 
-    .create-content { padding: 4px 20px 40px; }
+    .create-content { padding: 4px 20px 56px; }
 
     .icon-upload {
       display: flex;
@@ -240,7 +241,7 @@
     .generate-btn:active { opacity: 0.8; }
 
     .home-list {
-      padding: 4px 16px 30px;
+      padding: 4px 16px 48px;
       position: relative;
     }
 
@@ -392,7 +393,7 @@
     body.edit-mode .drag-handle { display: flex; }
     body.edit-mode .open-btn { display: none; }
 
-    .tool-list { padding: 12px 16px 30px; }
+    .tool-list { padding: 12px 16px 48px; }
 
     .tool-card {
       background: var(--card);
@@ -436,7 +437,7 @@
       flex-shrink: 0;
     }
 
-    .settings-content { padding: 8px 16px 40px; }
+    .settings-content { padding: 8px 16px 56px; }
     .settings-section { margin-bottom: 28px; }
 
     .settings-section-title {
@@ -1006,7 +1007,7 @@
 
     /* 椭圆形底部导航 + 滑动指示器 */
     .tab-bar-wrapper {
-      margin: 0 16px calc(22px + env(safe-area-inset-bottom));
+      margin: 0 16px calc(36px + env(safe-area-inset-bottom));
       padding: 0;
       border: none;
       border-radius: 999px;
